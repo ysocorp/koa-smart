@@ -6,7 +6,7 @@
     "email": "contact@ysocorp.com",
     "url": "http://ysocorp.com"
   },
-  "description": "A oA RESTful API boilerplate with Koajs 2, @Decorator, Node v8, Sequelize, async-await, babel, and much more...",
+  "description": "A framework base on Koajs2 with Decorator, Params checker and a base of modules (cors, bodyparser, compress, I18n, etc…) to let you develop smart api easily",
   "license": "MIT",
   "main": "index.js",
   "engines": {
