@@ -13,6 +13,10 @@
     "node": "8.9.1",
     "npm": "5.5.1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ysocorp/koa-smart"
+  },
   "scripts": {
     "start": "cross-env NODE_ENV=development nodemon --exec babel-node example/index.js",
     "test": "cross-env NODE_ENV=test mocha --opts mocha.opts",
