@@ -1,0 +1,4 @@
+--compilers js:babel-register
+--recursive
+./src/lib/test/routes/*.spec.js
+--timeout 4000
