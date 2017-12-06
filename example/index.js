@@ -1,6 +1,6 @@
 import { join } from 'path';
 
-import App from '../App';
+import App from '../src/App';
 import { 
   I18n, 
   bodyParser, 
@@ -10,7 +10,7 @@ import {
   addDefaultBody,
   handleError,
   logger,
-} from '../middlewares';
+} from '../src/middlewares';
 
 const app = new App({
   port: 3001,

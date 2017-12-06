@@ -1,11 +1,5 @@
-import Route from './routes/Route';
-import App from './App';
-import ErrorApp from './utils/ErrorApp';
-import StatusCode from './utils/StatusCode';
+'use strict';
 
-module.exports = {
-  App,
-  Route,
-  ErrorApp,
-  StatusCode,
-};
+var index = require('./dist/index');
+
+module.exports = index;

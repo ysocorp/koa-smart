@@ -1,4 +1,4 @@
-import { Route } from '../../index';
+import { Route } from '../../src/index';
 
 @Route.Route({
   routeBase: 'tutu',
