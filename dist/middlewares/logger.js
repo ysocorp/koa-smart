@@ -27,7 +27,7 @@ var logger = function () {
             return next();
 
           case 5:
-            _context.next = 13;
+            _context.next = 14;
             break;
 
           case 7:
@@ -36,25 +36,27 @@ var logger = function () {
             msg = _context.t0;
             arraySequelize = ['SequelizeValidationError', 'SequelizeUniqueConstraintError'];
 
-            if (_context.t0 instanceof _ErrorApp2.default || arraySequelize.includes(_context.t0.name)) {
+            if (_context.t0 instanceof _ErrorApp2.default) {
+              msg = _context.t0.status + ': ' + _context.t0.message;
+            }if (arraySequelize.includes(_context.t0.name)) {
               msg = _context.t0.name + ': ' + _context.t0.message;
             }
             console.error(_chalk2.default.red('[ERROR]'), _chalk2.default.red.bold(ctx.method) + ' ' + ctx.url, msg);
 
-          case 13:
-            _context.prev = 13;
+          case 14:
+            _context.prev = 14;
             ms = new Date() - start;
             fColor = _chalk2.default[getColor(ctx.status)];
 
             console.log(fColor(dateFormat(new Date())) + ' - ' + fColor.bold(ctx.status) + ' ' + _chalk2.default.bold(ctx.method) + ' ' + ctx.url + ' - ' + fColor(ms + ' ms'));
-            return _context.finish(13);
+            return _context.finish(14);
 
-          case 18:
+          case 19:
           case 'end':
             return _context.stop();
         }
       }
-    }, _callee, this, [[1, 7, 13, 18]]);
+    }, _callee, this, [[1, 7, 14, 19]]);
   }));
 
   return function logger(_x, _x2) {

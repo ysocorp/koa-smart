@@ -35,6 +35,10 @@ var _koaRouter = require('koa-router');
 
 var _koaRouter2 = _interopRequireDefault(_koaRouter);
 
+var _chalk = require('chalk');
+
+var _chalk2 = _interopRequireDefault(_chalk);
+
 var _ErrorApp = require('../utils/ErrorApp');
 
 var _ErrorApp2 = _interopRequireDefault(_ErrorApp);
@@ -57,13 +61,16 @@ var Route = (_temp = _class = function () {
         prefix = _ref.prefix,
         routes = _ref.routes,
         models = _ref.models,
-        model = _ref.model;
+        model = _ref.model,
+        _ref$disable = _ref.disable,
+        disable = _ref$disable === undefined ? false : _ref$disable;
     (0, _classCallCheck3.default)(this, Route);
 
     this.app = app;
     this.prefix = prefix;
     this.allRoutesInstance = routes;
     this.models = models;
+    this.disable = disable;
     if (this.models && model) {
       this.model = this.models[model];
     }
@@ -75,8 +82,24 @@ var Route = (_temp = _class = function () {
   }
 
   (0, _createClass3.default)(Route, [{
+    key: 'log',
+    value: function log(str) {
+      if (Route.displayLog) {
+        var _console;
+
+        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+          args[_key - 1] = arguments[_key];
+        }
+
+        (_console = console).log.apply(_console, [str].concat(args));
+      }
+    }
+  }, {
     key: 'mount',
     value: function mount() {
+      if (this.disable) {
+        return this.log(_chalk2.default.yellow.bold('Routes "' + this.routeBase + '" of class ' + this.constructor.name + ' are\'t add'));
+      }
       for (var type in this.routes) {
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
@@ -87,8 +110,12 @@ var Route = (_temp = _class = function () {
             var route = _step.value;
 
             var routePath = ('/' + this.prefix + '/' + this.routeBase + '/' + route.path).replace(/[/]{2,10}/g, '/');
-            console.log('[Mount route] ', type, routePath);
-            this.koaRouter[type](routePath, this.beforeRoute(route), route.call.bind(this));
+            if (!route.options.disable) {
+              this.log(_chalk2.default.green.bold('[Mount route]'), type, routePath);
+              this.koaRouter[type](routePath, this._beforeRoute(route), route.call.bind(this));
+            } else {
+              return this.log(_chalk2.default.yellow.bold('[Disable Mount route]'), type, routePath);
+            }
           }
         } catch (err) {
           _didIteratorError = true;
@@ -110,29 +137,23 @@ var Route = (_temp = _class = function () {
     // ************************************ MIDDLEWARE *********************************
 
   }, {
-    key: 'beforeRoute',
-    value: function beforeRoute(_ref2) {
+    key: '_beforeRoute',
+    value: function _beforeRoute(infos) {
       var _this = this;
 
-      var options = _ref2.options;
-
       return function () {
-        var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(ctx, next) {
+        var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(ctx, next) {
           return _regenerator2.default.wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
-                  _this.mlParams(ctx, options);
+                  _context.next = 2;
+                  return _this.beforeRoute(ctx, infos, next);
 
-                  if (!next) {
-                    _context.next = 4;
-                    break;
-                  }
+                case 2:
+                  return _context.abrupt('return', _context.sent);
 
-                  _context.next = 4;
-                  return next();
-
-                case 4:
+                case 3:
                 case 'end':
                   return _context.stop();
               }
@@ -141,14 +162,47 @@ var Route = (_temp = _class = function () {
         }));
 
         return function (_x, _x2) {
-          return _ref3.apply(this, arguments);
+          return _ref2.apply(this, arguments);
         };
       }();
     }
   }, {
+    key: 'beforeRoute',
+    value: function () {
+      var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(ctx, _ref4, next) {
+        var options = _ref4.options;
+        return _regenerator2.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                this.mlParams(ctx, options);
+
+                if (!next) {
+                  _context2.next = 4;
+                  break;
+                }
+
+                _context2.next = 4;
+                return next();
+
+              case 4:
+              case 'end':
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function beforeRoute(_x3, _x4, _x5) {
+        return _ref3.apply(this, arguments);
+      }
+
+      return beforeRoute;
+    }()
+  }, {
     key: 'mlParams',
-    value: function mlParams(ctx, _ref4) {
-      var params = _ref4.params;
+    value: function mlParams(ctx, _ref5) {
+      var params = _ref5.params;
 
       ctx.request.bodyOrig = (0, _utils.deepCopy)(ctx.request.body);
       ctx.request.body = this.mlTestParams(ctx, ctx.request.body, params);
@@ -375,5 +429,5 @@ var Route = (_temp = _class = function () {
     }
   }]);
   return Route;
-}(), _class.Get = _RouteDecorators2.default.Get, _class.Post = _RouteDecorators2.default.Post, _class.Put = _RouteDecorators2.default.Put, _class.Patch = _RouteDecorators2.default.Patch, _class.Delete = _RouteDecorators2.default.Delete, _class.Route = _RouteDecorators2.default.Route, _temp);
+}(), _class.displayLog = true, _class.Get = _RouteDecorators2.default.Get, _class.Post = _RouteDecorators2.default.Post, _class.Put = _RouteDecorators2.default.Put, _class.Patch = _RouteDecorators2.default.Patch, _class.Delete = _RouteDecorators2.default.Delete, _class.Route = _RouteDecorators2.default.Route, _temp);
 exports.default = Route;
