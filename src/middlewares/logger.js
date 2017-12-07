@@ -24,7 +24,9 @@ async function logger(ctx, next) {
     let msg = err;
 
     const arraySequelize = ['SequelizeValidationError', 'SequelizeUniqueConstraintError'];
-    if (err instanceof ErrorApp || arraySequelize.includes(err.name)) {
+    if (err instanceof ErrorApp) {
+      msg = `${err.status}: ${err.message}`;
+    } if (arraySequelize.includes(err.name)) {
       msg = `${err.name}: ${err.message}`;
     }
     console.error(chalk.red('[ERROR]'), `${chalk.red.bold(ctx.method)} ${ctx.url}`, msg);
