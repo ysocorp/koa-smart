@@ -56,13 +56,15 @@ export default class Route {
   }
 
   // ************************************ MIDDLEWARE *********************************
-  beforeRoute({ options }) {
-    return async (ctx, next) => {
-      this.mlParams(ctx, options);
-      if (next) {
-        await next();
-      }
-    };
+  _beforeRoute(infos) {
+    return async (ctx, next) => await this.beforeRoute(ctx, infos, next);
+  }
+
+  async beforeRoute(ctx, { options }, next) {
+    this.mlParams(ctx, options);
+    if (next) {
+      await next();
+    }
   }
 
   mlParams(ctx, { params }) {
