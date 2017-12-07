@@ -375,77 +375,78 @@ A framework base on [Koajs2](https://github.com/koajs/koa) with **Decorator**, *
   In this example we will see how you can manage **accesses** to you route in 2 steps  
 
   1. Extends `Route` Class and overload  `beforeRoute` methode 
-    ```sh
-      export default class MyRoute extends Route {
-        static accesses = {
-          public: -1,
-          connected: 100,
-          admin: GROUPS.ADMIN_ID,
-          client: GROUPS.CLIENT_ID,
-          // whatever ...
-        };
-    
-        // overload beforeRoute
-        async beforeRoute(ctx, infos, next) {
-          // infos.options content all the param give to the route
 
-          if (this.mlCanAccessRoute(ctx, infos.options)) { // test if you can access
-            this.throw(StatusCode.forbidden, ctx.state.__('Forbidden access')); 
-          }
-          // call the super methode
-          await super.beforeRoute(ctx, infos, next);
-        }
+  ```sh
+  export default class MyRoute extends Route {
+    static accesses = {
+      public: -1,
+      connected: 100,
+      admin: GROUPS.ADMIN_ID,
+      client: GROUPS.CLIENT_ID,
+      // whatever ...
+    };
 
-        mlCanAccessRoute(ctx, { accesses }) {
-          if (accesses && Array.isArray(accesses)) {
-            const { user } = ctx.state;
-            return accesses.includes(Route.accesses.public) ||
-              (!!user && (
-                accesses.includes(Route.accesses.connected) ||
-                user.usergroup_id === Route.accesses.admin ||
-                accesses.includes(user.usergroup_id)
-              ));
-          }
-          return false;
-        }
+    // overload beforeRoute
+    async beforeRoute(ctx, infos, next) {
+      // infos.options content all the param give to the route
+
+      if (this.mlCanAccessRoute(ctx, infos.options)) { // test if you can access
+        this.throw(StatusCode.forbidden, ctx.state.__('Forbidden access')); 
       }
+      // call the super methode
+      await super.beforeRoute(ctx, infos, next);
+    }
 
-    ```
+    mlCanAccessRoute(ctx, { accesses }) {
+      if (accesses && Array.isArray(accesses)) {
+        const { user } = ctx.state;
+        return accesses.includes(Route.accesses.public) ||
+          (!!user && (
+            accesses.includes(Route.accesses.connected) ||
+            user.usergroup_id === Route.accesses.admin ||
+            accesses.includes(user.usergroup_id)
+          ));
+      }
+      return false;
+    }
+  }
+
+  ```
 
   2. Create an route with access 
 
-    ```sh
-      export default class RouteMyApi extends MyRoute {
-        constructor(params) {
-          super({ ...params });
-        }
+  ```sh
+  export default class RouteMyApi extends MyRoute {
+    constructor(params) {
+      super({ ...params });
+    }
 
-        @Route.Get({ accesses: [MyRoute.accesses.public] })
-        async publicRoute(ctx) {
-          this.sendOk(ctx, ctx.__('I can be call by any one'));
-        }
+    @Route.Get({ accesses: [MyRoute.accesses.public] })
+    async publicRoute(ctx) {
+      this.sendOk(ctx, ctx.__('I can be call by any one'));
+    }
 
-        @Route.Get({ accesses: [MyRoute.accesses.client] })
-        async clientRoute(ctx) {
-          this.sendOk(ctx, ctx.__('I can be call by only client user'));
-        }
+    @Route.Get({ accesses: [MyRoute.accesses.client] })
+    async clientRoute(ctx) {
+      this.sendOk(ctx, ctx.__('I can be call by only client user'));
+    }
 
-        @Route.Get({ accesses: [MyRoute.accesses.admin] })
-        async adminRoute(ctx) {
-          this.sendOk(ctx, ctx.state.__('I can be call by only admin user'));
-        }
+    @Route.Get({ accesses: [MyRoute.accesses.admin] })
+    async adminRoute(ctx) {
+      this.sendOk(ctx, ctx.state.__('I can be call by only admin user'));
+    }
 
-        @Route.Get({ accesses: [MyRoute.accesses.client, MyRoute.accesses.admin] })
-        async adminRoute(ctx) {
-          this.sendOk(ctx, ctx.state.__('I can be call by client and admin user'));
-        }
+    @Route.Get({ accesses: [MyRoute.accesses.client, MyRoute.accesses.admin] })
+    async adminRoute(ctx) {
+      this.sendOk(ctx, ctx.state.__('I can be call by client and admin user'));
+    }
 
-        @Route.Get({ accesses: [MyRoute.accesses.connected] })
-        async adminRoute(ctx) {
-          this.sendOk(ctx, ctx.state.__('I can be call by all connected users'));
-        }
-      }
-    ```
+    @Route.Get({ accesses: [MyRoute.accesses.connected] })
+    async adminRoute(ctx) {
+      this.sendOk(ctx, ctx.state.__('I can be call by all connected users'));
+    }
+  }
+  ```
 
 ## License
 
