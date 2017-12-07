@@ -1,4 +1,5 @@
 import KoaRouter from 'koa-router';
+import chalk from 'chalk';
 
 import ErrorApp from '../utils/ErrorApp';
 import StatusCode from '../utils/StatusCode';
@@ -6,11 +7,14 @@ import { isArray, isObject, deepCopy } from '../utils/utils';
 import RouteDecorators from './RouteDecorators';
 
 export default class Route {
-  constructor({ app, prefix, routes, models, model }) {
+  static displayLog = true;
+
+  constructor({ app, prefix, routes, models, model, disable = false }) {
     this.app = app;
     this.prefix = prefix;
     this.allRoutesInstance = routes;
     this.models = models;
+    this.disable = disable;
     if (this.models && model) {
       this.model = this.models[model];
     }
@@ -28,12 +32,25 @@ export default class Route {
   static Delete = RouteDecorators.Delete;
   static Route = RouteDecorators.Route;
 
+  log(str, ...args) {
+    if (Route.displayLog) {
+      console.log(str, ...args);
+    }
+  }
+
   mount() {
+    if (this.disable) {
+      return this.log(chalk.yellow.bold(`Routes "${this.routeBase}" of class ${this.constructor.name} are't add`))
+    }
     for (const type in this.routes) {
       for (const route of this.routes[type]) {
         const routePath = `/${this.prefix}/${this.routeBase}/${route.path}`.replace(/[/]{2,10}/g, '/');
-        console.log('[Mount route] ', type, routePath);
-        this.koaRouter[type](routePath, this.beforeRoute(route), route.call.bind(this));
+        if (!route.options.disable) {
+          this.log(chalk.green.bold('[Mount route]'), type, routePath);
+          this.koaRouter[type](routePath, this._beforeRoute(route), route.call.bind(this));
+        } else {
+          return this.log(chalk.yellow.bold('[Disable Mount route]'), type, routePath);
+        }
       }
     }
   }
