@@ -45,7 +45,7 @@ export default class Route {
           const routePath = `/${this.prefix}/${this.routeBase}/${route.path}`.replace(/[/]{2,10}/g, '/');
           if (!route.options.disable) {
             this.log(chalk.green.bold('[Mount route]'), type, routePath);
-            this.koaRouter[type](routePath, this._beforeRoute(route), route.call.bind(this));
+            this.koaRouter[type](routePath, ...this._use(route));
           } else {
             this.log(chalk.yellow.bold('[Disable Mount route]'), type, routePath);
           }
@@ -57,6 +57,17 @@ export default class Route {
   }
 
   // ************************************ MIDDLEWARE *********************************
+  _use(infos) {
+    const { options = {} } = infos;
+    const { before = [], after = [] } = options;
+
+    const middlewares = [this._beforeRoute(infos)];
+    middlewares.push(...before);
+    middlewares.push(infos.call.bind(this));
+    middlewares.push(...after);
+
+    return middlewares;
+  }
   _beforeRoute(infos) {
     return async (ctx, next) => await this.beforeRoute(ctx, infos, next);
   }
