@@ -3,6 +3,7 @@ import helmet from 'koa-helmet';
 import bodyParser from 'koa-bodyparser';
 import cors from 'kcors';
 import passport from 'koa-passport';
+import { RateLimit, Stores as RateLimitStores } from 'koa2-ratelimit';
 
 import I18n from './I18n';
 import addDefaultBody from './addDefaultBody';
@@ -19,4 +20,6 @@ module.exports = {
   addDefaultBody,
   handleError,
   logger,
+  RateLimit,
+  RateLimitStores,
 };

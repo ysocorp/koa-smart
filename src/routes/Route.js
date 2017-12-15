@@ -1,5 +1,6 @@
 import KoaRouter from 'koa-router';
 import chalk from 'chalk';
+import { RateLimit } from 'koa2-ratelimit';
 
 import ErrorApp from '../utils/ErrorApp';
 import StatusCode from '../utils/StatusCode';
@@ -67,6 +68,26 @@ export default class Route {
     middlewares.push(...after);
 
     return middlewares;
+  }
+  _getRateLimit(option, routePath, type) {
+      option.interval = RateLimit.RateLimit.timeToMs(option.interval);
+      return RateLimit.middleware({
+          prefixKey: `${type}|${routePath}|${option.interval}`,
+          ...option,
+      });
+  }
+  addRateLimit(middlewares, { options }) {
+      const { rateLimit, routePath, type } = options;
+
+      if (rateLimit) {
+          if (Array.isArray(rateLimit)) {
+              for (const elem of rateLimit) {
+                  middlewares.push(this._getRateLimit(elem, routePath, type));
+              }
+          } else {
+              middlewares.push(this._getRateLimit(rateLimit, routePath, type));
+          }
+      }
   }
   _beforeRoute(infos) {
     return async (ctx, next) => await this.beforeRoute(ctx, infos, next);

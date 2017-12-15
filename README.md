@@ -48,6 +48,7 @@ A framework base on [Koajs2](https://github.com/koajs/koa) with **Decorator**, *
 * **For routing**
     * [`koajs 2`](https://github.com/koajs/koa) as the main, underlying framework
     * [`kcors`](https://www.npmjs.com/package/kcors) is used to handle cross-domain requests
+    * [`koa2-ratelimit`](https://github.com/ysocorp/koa2-ratelimit) To limit bruteforce requests
     * [`koa-helmet`](https://www.npmjs.com/package/koa-helmet) helps you secure your api
     * [`koa-bodyparser`](https://github.com/koajs/bodyparser) to parse request bodies
     * [`koa-compress`](https://github.com/koajs/compress) to compress the response
@@ -162,6 +163,59 @@ A framework base on [Koajs2](https://github.com/koajs/koa) with **Decorator**, *
     }
     ```
 
+* **RateLimit** : more infos see [`koa2-ratelimit`](https://github.com/ysocorp/koa2-ratelimit) module
+
+  * **Configure**
+
+    ```sh
+    import { App } from 'koa-smart';
+    import { RateLimit, RateLimitStores } from 'koa-smart/middlewares';
+
+    conat app = new App({ port: 3000 });
+
+    // Set Default Option
+    const store = new RateLimitStores.Memory() OR new RateLimitStores.Sequelize(sequelizeInstance)
+    RateLimit.defaultOptions({
+        message: 'Too many requests, get out!',
+        store: store, // By default it will create MemoryStore
+    });
+
+    // limit 100 accesses per min on your API 
+    app.addMiddlewares([
+      // ...
+      RateLimit.middleware({ interval: { min: 1 }, max: 100 }), 
+      // ...
+    ]);
+    ```
+
+    * **RateLimit On Decorator**
+
+    Single RateLimit
+
+    ```sh
+    @Route.Get({ // allow only 100 requests per day to /view
+        rateLimit: { interval: { day: 1 }, max: 100 },
+    })
+    async view(ctx) {
+      this.sendOk(ctx, null, ctx.state.__('hello'));
+    }
+    ```
+
+    Multiple RateLimit
+
+    ```sh
+    // Multiple RateLimit
+    @Route.Get({
+        rateLimit: [
+            { interval: { day: 1 }, max: 100 }, // allow only 100 requests per day
+            { interval: { min: 2 }, max: 40 }, // allow only 40 requests in 2 minutes
+        ],
+    })
+    async hello(ctx) {
+      this.sendOk(ctx, null, ctx.state.__('hello'));
+    }
+    ```
+
 ## Params checker of POST body
 
 * **all other fields which aren't in the params object will be rejected**
@@ -237,6 +291,7 @@ A framework base on [Koajs2](https://github.com/koajs/koa) with **Decorator**, *
       bodyParser, 
       compress,
       cors,
+      RateLimit,
       ...
     } from 'koa-smart/middlewares';
     ```
@@ -258,6 +313,7 @@ A framework base on [Koajs2](https://github.com/koajs/koa) with **Decorator**, *
       bodyParser(),
       this.i18n.middleware,
       logger,
+      RateLimit.middleware({ interval: { min: 1 }, max: 100 }),
       ...
     ]);
     ```
@@ -293,6 +349,7 @@ A framework base on [Koajs2](https://github.com/koajs/koa) with **Decorator**, *
       addDefaultBody,
       handleError,
       logger,
+      RateLimit,
     } from 'koa-smart/middlewares';
 
     conat app = new App({
@@ -303,13 +360,12 @@ A framework base on [Koajs2](https://github.com/koajs/koa) with **Decorator**, *
       cors({ credentials: true }),
       helmet(),
       bodyParser(),
-      this.i18n.middleware,
+      new I18n({ path: join(__dirname, 'locales') }).middleware,
       logger,
       handleError,
       addDefaultBody,
-      passport.initialize(),
-      authentification,
       compress({}),
+      RateLimit.middleware({ interval: { min: 1 }, max: 100 }),
     ]);
         
     // mount a folder with an prefix (all file who extends from `Route` will be add and mount)
@@ -335,6 +391,7 @@ A framework base on [Koajs2](https://github.com/koajs/koa) with **Decorator**, *
       addDefaultBody,
       handleError,
       logger,
+      RateLimit,
     } from 'koa-smart/middlewares';
 
     // create an class who extends from App class
@@ -349,13 +406,12 @@ A framework base on [Koajs2](https://github.com/koajs/koa) with **Decorator**, *
           cors({ credentials: true }),
           helmet(),
           bodyParser(),
-          this.i18n.middleware,
+          new I18n({ path: join(__dirname, 'locales') }).middleware,
           logger,
           handleError,
-          addDefaultBody,
-          passport.initialize(),
           authentification,
           compress({}),
+          RateLimit.middleware({ interval: { min: 1 }, max: 100 }),
         ]);
 
         // mount a folder with an prefix (all file who extends from `Route` will be add and mount)
