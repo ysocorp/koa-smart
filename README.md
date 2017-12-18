@@ -171,7 +171,7 @@ A framework base on [Koajs2](https://github.com/koajs/koa) with **Decorator**, *
     import { App } from 'koa-smart';
     import { RateLimit, RateLimitStores } from 'koa-smart/middlewares';
 
-    conat app = new App({ port: 3000 });
+    const app = new App({ port: 3000 });
 
     // Set Default Option
     const store = new RateLimitStores.Memory() OR new RateLimitStores.Sequelize(sequelizeInstance)
@@ -213,6 +213,33 @@ A framework base on [Koajs2](https://github.com/koajs/koa) with **Decorator**, *
     })
     async hello(ctx) {
       this.sendOk(ctx, null, ctx.state.__('hello'));
+    }
+    ```
+
+    * **middlewares before / after**
+
+    ```sh
+    @Route.Get({
+        before: [ // Array of middlewares
+          async (ctx, next) => {
+            console.log('I'm the first');
+            await next();
+          },
+          async (ctx, next) => {
+            console.log('I'm the second');
+            await next();
+          }
+        ],
+        after: [ // Array of middlewares
+          async (ctx/*, next*/) => {
+            console.log('I'm the last');
+          }
+        ]
+    })
+    async view(ctx, next) {
+      console.log('I'm the third');
+      this.sendOk(ctx, null, ctx.state.__('hello'));
+      await next(); // not forget to wait "next" to allow doing after's middleware 
     }
     ```
 
@@ -352,7 +379,7 @@ A framework base on [Koajs2](https://github.com/koajs/koa) with **Decorator**, *
       RateLimit,
     } from 'koa-smart/middlewares';
 
-    conat app = new App({
+    const app = new App({
       port: 3000,
     });
 
@@ -506,4 +533,4 @@ A framework base on [Koajs2](https://github.com/koajs/koa) with **Decorator**, *
 
 ## License
 
-  MIT
+  MIT © [YSO Corp](http://ysocorp.com/)
