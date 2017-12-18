@@ -107,8 +107,9 @@ var Route = (_temp = _class = function () {
   }, {
     key: 'mount',
     value: function mount() {
-      if (this.disable) {
+      if (this.disable !== true) {
         for (var type in this.routes) {
+          // eslint-disable-line
           var _iteratorNormalCompletion = true;
           var _didIteratorError = false;
           var _iteratorError = undefined;
@@ -118,13 +119,15 @@ var Route = (_temp = _class = function () {
               var route = _step.value;
 
               var routePath = ('/' + this.prefix + '/' + this.routeBase + '/' + route.path).replace(/[/]{2,10}/g, '/');
+              route.options.routePath = routePath;
+              route.options.type = type;
               if (!route.options.disable) {
                 var _koaRouter;
 
-                this.log(_chalk2.default.green.bold('[Mount route]'), type, routePath);
+                this.log(_chalk2.default.green.bold('[Mount route]'), '\t' + type + '\t', routePath);
                 (_koaRouter = this.koaRouter)[type].apply(_koaRouter, [routePath].concat((0, _toConsumableArray3.default)(this._use(route))));
               } else {
-                this.log(_chalk2.default.yellow.bold('[Disable Mount route]'), type, routePath);
+                this.log(_chalk2.default.yellow.bold('[Disable Mount route]\t'), type, routePath);
               }
             }
           } catch (err) {

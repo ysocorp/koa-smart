@@ -40,15 +40,17 @@ export default class Route {
   }
 
   mount() {
-    if (this.disable) {
-      for (const type in this.routes) {
+    if (this.disable !== true) {
+      for (const type in this.routes) { // eslint-disable-line
         for (const route of this.routes[type]) {
           const routePath = `/${this.prefix}/${this.routeBase}/${route.path}`.replace(/[/]{2,10}/g, '/');
+          route.options.routePath = routePath;
+          route.options.type = type;
           if (!route.options.disable) {
-            this.log(chalk.green.bold('[Mount route]'), type, routePath);
+            this.log(chalk.green.bold('[Mount route]'), `\t${type}\t`, routePath);
             this.koaRouter[type](routePath, ...this._use(route));
           } else {
-            this.log(chalk.yellow.bold('[Disable Mount route]'), type, routePath);
+            this.log(chalk.yellow.bold('[Disable Mount route]\t'), type, routePath);
           }
         }
       }
@@ -70,24 +72,24 @@ export default class Route {
     return middlewares;
   }
   _getRateLimit(option, routePath, type) {
-      option.interval = RateLimit.RateLimit.timeToMs(option.interval);
-      return RateLimit.middleware({
-          prefixKey: `${type}|${routePath}|${option.interval}`,
-          ...option,
-      });
+    option.interval = RateLimit.RateLimit.timeToMs(option.interval);
+    return RateLimit.middleware({
+      prefixKey: `${type}|${routePath}|${option.interval}`,
+      ...option,
+    });
   }
   addRateLimit(middlewares, { options }) {
-      const { rateLimit, routePath, type } = options;
+    const { rateLimit, routePath, type } = options;
 
-      if (rateLimit) {
-          if (Array.isArray(rateLimit)) {
-              for (const elem of rateLimit) {
-                  middlewares.push(this._getRateLimit(elem, routePath, type));
-              }
-          } else {
-              middlewares.push(this._getRateLimit(rateLimit, routePath, type));
-          }
+    if (rateLimit) {
+      if (Array.isArray(rateLimit)) {
+        for (const elem of rateLimit) {
+          middlewares.push(this._getRateLimit(elem, routePath, type));
+        }
+      } else {
+        middlewares.push(this._getRateLimit(rateLimit, routePath, type));
       }
+    }
   }
   _beforeRoute(infos) {
     return async (ctx, next) => await this.beforeRoute(ctx, infos, next);
