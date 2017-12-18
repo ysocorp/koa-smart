@@ -43,7 +43,7 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
 
 ## What is in this framework ?
 
-**This framework give you a tools of modules as : **
+**This framework gives you the tools to use a set of modules: **
 
 * **For routing**
     * [`koajs 2`](https://github.com/koajs/koa) as the main, underlying framework
@@ -139,31 +139,31 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
 * **Disable route**
     * **Disable all routes in a class**
 
-    to disable all routes in class you should add `disable` on contant of your decorator class
+    to disable all routes in a class you should add `disable` in the content of your decorator class
     
     ```sh
     @Route.Route({
         disable: true,
     })
     export default class RouteMyApi extends Route {
-        // All route in this class will not be mount
+        // All routes in this class will not be mounted
     }
     ```
   
     * **Disable a specific route**
 
-    to disable a specific route you can add `disable` on contant of your decorator
+    to disable a specific route you can add `disable` in the content of your decorator
     
     ```sh
     @Route.Get({
-        disable: true, // this route will not be mount
+        disable: true, // this route will not be mounted
     })
     async hello(ctx) {
       this.sendOk(ctx, null, ctx.state.__('hello'));
     }
     ```
 
-* **RateLimit** : more infos see [`koa2-ratelimit`](https://github.com/ysocorp/koa2-ratelimit) module
+* **RateLimit** : For more infos, see the [`koa2-ratelimit`](https://github.com/ysocorp/koa2-ratelimit) module
 
   * **Configure**
 
@@ -216,32 +216,32 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
     }
     ```
 
-  * **middlewares before / after**
+* **middlewares before / after**
 
-    ```sh
-    @Route.Get({
-        before: [ // Array of middlewares
-          async (ctx, next) => {
-            console.log('I'm the first');
-            await next();
-          },
-          async (ctx, next) => {
-            console.log('I'm the second');
-            await next();
-          }
-        ],
-        after: [ // Array of middlewares
-          async (ctx/*, next*/) => {
-            console.log('I'm the last');
-          }
-        ]
-    })
-    async view(ctx, next) {
-      console.log('I'm the third');
-      this.sendOk(ctx, null, ctx.state.__('hello'));
-      await next(); // not forget to wait "next" to allow doing after's middleware 
+  ```sh
+  @Route.Get({
+      before: [ // Array of middlewares
+        async (ctx, next) => {
+          console.log('I'm the first');
+          await next();
+        },
+        async (ctx, next) => {
+          console.log('I'm the second');
+          await next();
+        }
+      ],
+      after: [ // Array of middlewares
+        async (ctx/*, next*/) => {
+          console.log('I'm the last');
+        }
+      ]
+  })
+  async view(ctx, next) {
+    console.log('I'm the third');
+    this.sendOk(ctx, null, ctx.state.__('hello'));
+    await next(); // don't forget to await "next" to allow the "after" middleware's execution.
     }
-    ```
+  ```
 
 ## Params checker of POST body
 
@@ -323,7 +323,7 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
     } from 'koa-smart/middlewares';
     ```
 
-  * create an app listen on port 3000
+  * create an app listening on port 3000
 
     ```sh
     const app = new App({
@@ -346,7 +346,7 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
     ```
   
   * add your routes
-    mount a folder with an prefix (all file who extends from `Route` will be add and mount)
+    mount a folder with a prefix (all file who extends from `Route` will be added and mounted)
 
     ```sh
         app.mountFolder(join(__dirname, 'routes'), '/');
@@ -455,7 +455,7 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
 ## Add treatment on route
   **you can add you own treatment and attribute to the route.**
 
-  In this example we will see how you can manage **accesses** to you route in 2 steps  
+  In this example we will see how you can manage **accesses** to your route in 2 steps  
 
   1. Extends `Route` Class and overload  `beforeRoute` methode 
 
