@@ -17,6 +17,14 @@ var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
+var _toConsumableArray2 = require('babel-runtime/helpers/toConsumableArray');
+
+var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
+
 var _getIterator2 = require('babel-runtime/core-js/get-iterator');
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
@@ -31,13 +39,15 @@ var _createClass3 = _interopRequireDefault(_createClass2);
 
 var _class, _temp;
 
-var _koaRouter = require('koa-router');
+var _koaRouter2 = require('koa-router');
 
-var _koaRouter2 = _interopRequireDefault(_koaRouter);
+var _koaRouter3 = _interopRequireDefault(_koaRouter2);
 
 var _chalk = require('chalk');
 
 var _chalk2 = _interopRequireDefault(_chalk);
+
+var _koa2Ratelimit = require('koa2-ratelimit');
 
 var _ErrorApp = require('../utils/ErrorApp');
 
@@ -74,7 +84,7 @@ var Route = (_temp = _class = function () {
     if (this.models && model) {
       this.model = this.models[model];
     }
-    this.koaRouter = new _koaRouter2.default();
+    this.koaRouter = new _koaRouter3.default();
     this.privateKeyInParamsRoute = ['__force', '__func'];
     // This Variable are set by RouteDecorators
     this.routes;
@@ -98,51 +108,120 @@ var Route = (_temp = _class = function () {
     key: 'mount',
     value: function mount() {
       if (this.disable) {
-        return this.log(_chalk2.default.yellow.bold('Routes "' + this.routeBase + '" of class ' + this.constructor.name + ' are\'t add'));
-      }
-      for (var type in this.routes) {
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+        for (var type in this.routes) {
+          var _iteratorNormalCompletion = true;
+          var _didIteratorError = false;
+          var _iteratorError = undefined;
 
-        try {
-          for (var _iterator = (0, _getIterator3.default)(this.routes[type]), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var route = _step.value;
-
-            var routePath = ('/' + this.prefix + '/' + this.routeBase + '/' + route.path).replace(/[/]{2,10}/g, '/');
-            if (!route.options.disable) {
-              this.log(_chalk2.default.green.bold('[Mount route]'), type, routePath);
-              this.koaRouter[type](routePath, this._beforeRoute(route), route.call.bind(this));
-            } else {
-              return this.log(_chalk2.default.yellow.bold('[Disable Mount route]'), type, routePath);
-            }
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
           try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
+            for (var _iterator = (0, _getIterator3.default)(this.routes[type]), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+              var route = _step.value;
+
+              var routePath = ('/' + this.prefix + '/' + this.routeBase + '/' + route.path).replace(/[/]{2,10}/g, '/');
+              if (!route.options.disable) {
+                var _koaRouter;
+
+                this.log(_chalk2.default.green.bold('[Mount route]'), type, routePath);
+                (_koaRouter = this.koaRouter)[type].apply(_koaRouter, [routePath].concat((0, _toConsumableArray3.default)(this._use(route))));
+              } else {
+                this.log(_chalk2.default.yellow.bold('[Disable Mount route]'), type, routePath);
+              }
             }
+          } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
           } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
+            try {
+              if (!_iteratorNormalCompletion && _iterator.return) {
+                _iterator.return();
+              }
+            } finally {
+              if (_didIteratorError) {
+                throw _iteratorError;
+              }
             }
           }
         }
+      } else {
+        this.log(_chalk2.default.yellow.bold('Routes "' + this.routeBase + '" of class ' + this.constructor.name + ' are\'t add'));
       }
     }
 
     // ************************************ MIDDLEWARE *********************************
 
   }, {
+    key: '_use',
+    value: function _use(infos) {
+      var _infos$options = infos.options,
+          options = _infos$options === undefined ? {} : _infos$options;
+      var _options$before = options.before,
+          before = _options$before === undefined ? [] : _options$before,
+          _options$after = options.after,
+          after = _options$after === undefined ? [] : _options$after;
+
+
+      var middlewares = [this._beforeRoute(infos)];
+      middlewares.push.apply(middlewares, (0, _toConsumableArray3.default)(before));
+      middlewares.push(infos.call.bind(this));
+      middlewares.push.apply(middlewares, (0, _toConsumableArray3.default)(after));
+
+      return middlewares;
+    }
+  }, {
+    key: '_getRateLimit',
+    value: function _getRateLimit(option, routePath, type) {
+      option.interval = _koa2Ratelimit.RateLimit.RateLimit.timeToMs(option.interval);
+      return _koa2Ratelimit.RateLimit.middleware((0, _extends3.default)({
+        prefixKey: type + '|' + routePath + '|' + option.interval
+      }, option));
+    }
+  }, {
+    key: 'addRateLimit',
+    value: function addRateLimit(middlewares, _ref2) {
+      var options = _ref2.options;
+      var rateLimit = options.rateLimit,
+          routePath = options.routePath,
+          type = options.type;
+
+
+      if (rateLimit) {
+        if (Array.isArray(rateLimit)) {
+          var _iteratorNormalCompletion2 = true;
+          var _didIteratorError2 = false;
+          var _iteratorError2 = undefined;
+
+          try {
+            for (var _iterator2 = (0, _getIterator3.default)(rateLimit), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+              var elem = _step2.value;
+
+              middlewares.push(this._getRateLimit(elem, routePath, type));
+            }
+          } catch (err) {
+            _didIteratorError2 = true;
+            _iteratorError2 = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                _iterator2.return();
+              }
+            } finally {
+              if (_didIteratorError2) {
+                throw _iteratorError2;
+              }
+            }
+          }
+        } else {
+          middlewares.push(this._getRateLimit(rateLimit, routePath, type));
+        }
+      }
+    }
+  }, {
     key: '_beforeRoute',
     value: function _beforeRoute(infos) {
       var _this = this;
 
       return function () {
-        var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(ctx, next) {
+        var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(ctx, next) {
           return _regenerator2.default.wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
@@ -162,15 +241,15 @@ var Route = (_temp = _class = function () {
         }));
 
         return function (_x, _x2) {
-          return _ref2.apply(this, arguments);
+          return _ref3.apply(this, arguments);
         };
       }();
     }
   }, {
     key: 'beforeRoute',
     value: function () {
-      var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(ctx, _ref4, next) {
-        var options = _ref4.options;
+      var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(ctx, _ref5, next) {
+        var options = _ref5.options;
         return _regenerator2.default.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
@@ -194,15 +273,15 @@ var Route = (_temp = _class = function () {
       }));
 
       function beforeRoute(_x3, _x4, _x5) {
-        return _ref3.apply(this, arguments);
+        return _ref4.apply(this, arguments);
       }
 
       return beforeRoute;
     }()
   }, {
     key: 'mlParams',
-    value: function mlParams(ctx, _ref5) {
-      var params = _ref5.params;
+    value: function mlParams(ctx, _ref6) {
+      var params = _ref6.params;
 
       ctx.request.bodyOrig = (0, _utils.deepCopy)(ctx.request.body);
       ctx.request.body = this.mlTestParams(ctx, ctx.request.body, params);
@@ -214,27 +293,27 @@ var Route = (_temp = _class = function () {
         var __func = param.__func;
 
         if (__func && Array.isArray(__func)) {
-          var _iteratorNormalCompletion2 = true;
-          var _didIteratorError2 = false;
-          var _iteratorError2 = undefined;
+          var _iteratorNormalCompletion3 = true;
+          var _didIteratorError3 = false;
+          var _iteratorError3 = undefined;
 
           try {
-            for (var _iterator2 = (0, _getIterator3.default)(__func), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-              var func = _step2.value;
+            for (var _iterator3 = (0, _getIterator3.default)(__func), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+              var func = _step3.value;
 
               body[keyBody] = func(body[keyBody], this, { ctx: ctx, body: body, keyBody: keyBody });
             }
           } catch (err) {
-            _didIteratorError2 = true;
-            _iteratorError2 = err;
+            _didIteratorError3 = true;
+            _iteratorError3 = err;
           } finally {
             try {
-              if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                _iterator2.return();
+              if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                _iterator3.return();
               }
             } finally {
-              if (_didIteratorError2) {
-                throw _iteratorError2;
+              if (_didIteratorError3) {
+                throw _iteratorError3;
               }
             }
           }
@@ -280,13 +359,13 @@ var Route = (_temp = _class = function () {
       var paramsConvert = {};
       // convert array to object
       if ((0, _utils.isArray)(paramsTest)) {
-        var _iteratorNormalCompletion3 = true;
-        var _didIteratorError3 = false;
-        var _iteratorError3 = undefined;
+        var _iteratorNormalCompletion4 = true;
+        var _didIteratorError4 = false;
+        var _iteratorError4 = undefined;
 
         try {
-          for (var _iterator3 = (0, _getIterator3.default)(paramsTest), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-            var elem = _step3.value;
+          for (var _iterator4 = (0, _getIterator3.default)(paramsTest), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+            var elem = _step4.value;
 
             if ((0, _utils.isObject)(elem, false)) {
               paramsConvert = (0, _assign2.default)(paramsConvert, elem);
@@ -295,16 +374,16 @@ var Route = (_temp = _class = function () {
             }
           }
         } catch (err) {
-          _didIteratorError3 = true;
-          _iteratorError3 = err;
+          _didIteratorError4 = true;
+          _iteratorError4 = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion3 && _iterator3.return) {
-              _iterator3.return();
+            if (!_iteratorNormalCompletion4 && _iterator4.return) {
+              _iterator4.return();
             }
           } finally {
-            if (_didIteratorError3) {
-              throw _iteratorError3;
+            if (_didIteratorError4) {
+              throw _iteratorError4;
             }
           }
         }

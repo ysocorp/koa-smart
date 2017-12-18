@@ -20,6 +20,8 @@ var _koaPassport = require('koa-passport');
 
 var _koaPassport2 = _interopRequireDefault(_koaPassport);
 
+var _koa2Ratelimit = require('koa2-ratelimit');
+
 var _I18n = require('./I18n');
 
 var _I18n2 = _interopRequireDefault(_I18n);
@@ -47,5 +49,7 @@ module.exports = {
   I18n: _I18n2.default,
   addDefaultBody: _addDefaultBody2.default,
   handleError: _handleError2.default,
-  logger: _logger2.default
+  logger: _logger2.default,
+  RateLimit: _koa2Ratelimit.RateLimit,
+  RateLimitStores: _koa2Ratelimit.Stores
 };
