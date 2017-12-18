@@ -58,15 +58,25 @@
     "supertest": "^3.0.0"
   },
   "keywords": [
+    "koa-smart",
+    "koa-boilerplate",
+    "koajs-boilerplate",
+    "koa2-boilerplate",
+    "boilerplate",
     "koa-decorator",
+    "koa2-decorator",
+    "koajs-2-decorator",
     "koajs",
-    "koa es6",
-    "koa es7",
-    "koajs2",
+    "koa-es6",
+    "koa-es7",
+    "koajs-2",
     "restfull",
     "api",
     "class",
     "decorator",
-    "koa decorator"
+    "koa-essential",
+    "koa-router",
+    "framework",
+    "router"
   ]
 }
