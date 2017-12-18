@@ -1,6 +1,6 @@
-# **KoaSmart** is a framework base on **Koajs2**, this allow you to develop RESTful API with : **Class**, **Decorator**, **Params checker**
+# **KoaSmart** is a framework based on **Koajs2**, which allows you to develop RESTful APIs with : **Class**, **Decorator**, **Params checker**
 
-A framework base on [Koajs2](https://github.com/koajs/koa) with **Decorator**, **Params checker** and a **base of modules** ([`cors`](https://www.npmjs.com/package/kcors), [`bodyparser`](https://github.com/koajs/bodyparser), [`compress`](https://github.com/koajs/compress), [`I18n`](https://github.com/alexanderwallin/node-gettext), etc... ) to let you develop smart api easily 
+A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, **Params checker** and a **base of modules** ([`cors`](https://www.npmjs.com/package/kcors), [`bodyparser`](https://github.com/koajs/bodyparser), [`compress`](https://github.com/koajs/compress), [`I18n`](https://github.com/alexanderwallin/node-gettext), etc... ) to allow you to develop a smart api easily 
 ```sh
   export default class RouteUsers extends Route {
 
@@ -188,7 +188,7 @@ A framework base on [Koajs2](https://github.com/koajs/koa) with **Decorator**, *
     ]);
     ```
 
-    * **RateLimit On Decorator**
+  * **RateLimit On Decorator**
 
     Single RateLimit
 
@@ -216,7 +216,7 @@ A framework base on [Koajs2](https://github.com/koajs/koa) with **Decorator**, *
     }
     ```
 
-    * **middlewares before / after**
+  * **middlewares before / after**
 
     ```sh
     @Route.Get({
