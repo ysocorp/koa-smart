@@ -20,9 +20,14 @@ export default class RouteDecorators {
     }
   }
 
-  static Route({ routeBase }) {
+  static Route({ routeBase, disable = false }) {
     return (target, key, descriptor) => { // eslint-disable-line no-unused-vars
-      target.prototype.routeBase = routeBase;
+      if (routeBase != null) { // null or undefined
+        target.prototype.routeBase = routeBase;
+      }
+      if (disable != null) {
+        target.prototype.disable = disable;
+      }
       RouteDecorators._initData(target);
     };
   }
@@ -32,7 +37,6 @@ export default class RouteDecorators {
       RouteDecorators._initData(target);
       options = {
         path: undefined,
-        fullPath: undefined,
         accesses: [],
         params: {},
         routeBase: target.routeBase,

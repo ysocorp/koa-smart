@@ -10,12 +10,12 @@ import RouteDecorators from './RouteDecorators';
 export default class Route {
   static displayLog = true;
 
-  constructor({ app, prefix, routes, models, model, disable = false }) {
+  constructor({ app, prefix, routes, models, model, disable }) {
     this.app = app;
     this.prefix = prefix;
     this.allRoutesInstance = routes;
     this.models = models;
-    this.disable = disable;
+    this.disable = disable != null ? disable : this.disable;
     if (this.models && model) {
       this.model = this.models[model];
     }
