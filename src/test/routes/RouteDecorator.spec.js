@@ -1,0 +1,103 @@
+import expect from 'expect';
+import supertest from 'supertest';
+
+import RDec from '../../routes/RouteDecorators';
+import createserver from '../_createserver';
+
+describe('RouteDecorator', () => {
+  let request;
+  let app;
+
+  before(async () => {
+    app = await createserver();
+    request = supertest.agent(app.listen());
+  });
+
+  describe('disabled', () => {
+    it('should disabled all route when disable = true on Class Decorator', async () => {
+      let res = await request.get('/disable/disabled/');
+      expect(res.statusCode).toBe(404);
+      res = await request.get('/disable/disabled/try-disable');
+      expect(res.statusCode).toBe(404);
+    });
+    it('should enabled a class when pass disable = false on super call', async () => {
+      const { statusCode } = await request.get('/disable/un-disabled');
+      expect(statusCode).toBe(200);
+    });
+    it('should disabled a single route', async () => {
+      const { statusCode } = await request.get('/disable/enabled/disabled');
+      expect(statusCode).toBe(404);
+    });
+    it('should disable a class when pass disable = false on super call but disable it on a route', async () => {
+      const { statusCode } = await request.get('/disable/un-disabled/disabled');
+      expect(statusCode).toBe(404);
+    });
+    it('should enable a route class when pass disable = true on Class Decorator', async () => {
+      const { statusCode } = await request.get('/disable/enabled');
+      expect(statusCode).toBe(200);
+      const res = await request.get('/disable/enabled/enabled2');
+      expect(res.statusCode).toBe(200);
+    });
+  });
+
+  describe('Path', () => {
+    describe('_getRouteFromMethode', () => {
+      it('should get the correct name of the path', async () => {
+        expect(RDec._getRouteFromMethode('MyPath')).toBe('my-path');
+        expect(RDec._getRouteFromMethode('myPath')).toBe('my-path');
+        expect(RDec._getRouteFromMethode('my-path')).toBe('my-path');
+        expect(RDec._getRouteFromMethode('MyPatH')).toBe('my-pat-h');
+        expect(RDec._getRouteFromMethode('my-pathMyPathMy2')).toBe('my-path-my-path-my2');
+      });
+    });
+    describe('routeBase', () => {
+      it('should replace the base route when routeBase is set on decorator class', async () => {
+        let res = await request.get('/path/path');
+        expect(res.statusCode).toBe(200);
+      });
+      it('should tranforme function name to path', async () => {
+        let res = await request.get('/path/path/my-path');
+        expect(res.statusCode).toBe(200);
+        res = await request.get('/path/path/mypath');
+        expect(res.statusCode).toBe(200);
+      });
+      it('should tranforme class name to path and put it to routeBase', async () => {
+        let res = await request.get('/path/base-path');
+        expect(res.statusCode).toBe(200);
+        res = await request.get('/path/base-path/my-path');
+        expect(res.statusCode).toBe(200);
+      });
+      it('should custom a route path with path route decorator', async () => {
+        let res = await request.get('/path/path/path-change');
+        expect(res.statusCode).toBe(200);
+      });
+    });
+  });
+
+  describe('params', () => {
+    it('should keep only elem in params decorator', async () => {
+      const bodySend = {
+        email: 'clientnew@new.com',
+        password: 'password',
+        notPermited: 'notPermited',
+      };
+      const { body, statusCode } = await request.post('/params').send(bodySend);
+
+      expect(statusCode).toBeLessThan(400);
+      expect(body.data.original).toEqual(bodySend);
+      expect(body.data.checked).toEqual({
+        email: 'clientnew@new.com',
+        password: 'password',
+      });
+      expect(body.data.checked.notPermited).toBe(undefined);
+    });
+    it('should return 400 if required params are not send', async () => {
+      const respKO = await request.post('/params').send({ password: 'password' });
+      expect(respKO.statusCode).toBe(400);
+
+      const respOK = await request.post('/params').send({ email: 'email' });
+      expect(respOK.statusCode).toBeLessThan(400);
+    });
+  });
+
+});
