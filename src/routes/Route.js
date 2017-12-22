@@ -127,7 +127,7 @@ export default class Route {
       const bodyElem = body ? body[key] : undefined;
       // test param
       if (param.__force && (bodyElem === undefined || bodyElem === null)) {
-        this.throw(400, `${ctx.state.__('param required:')} ${key}`);
+        this.throw(400, `${ctx.state.__ ? ctx.state.__('param required:') : 'param required:'} ${key}`);
       }
       this.mlParamsExecFunc(ctx, body, key, param);
 

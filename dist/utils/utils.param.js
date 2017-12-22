@@ -19,8 +19,9 @@ function test(func, errMsg) {
     var ctx = _ref.ctx,
         keyBody = _ref.keyBody;
 
+    const dafaultMsgBase = ctx.state.__ ? ctx.state.__('invalide param:') : 'invalide param:';
     if (!func(elem)) {
-      route.throw(_StatusCode2.default.badRequest, errMsg || ctx.state.__('invalide param:') + ' ' + keyBody);
+      route.throw(_StatusCode2.default.badRequest, errMsg || dafaultMsgBase + ' ' + keyBody);
     }
     return elem;
   };

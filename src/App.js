@@ -52,7 +52,7 @@ export default class App {
     }
   }
 
-  start() {
+  async start() {
     this.app.use(notFound);
     return this.app.listen(this.port);
   }
