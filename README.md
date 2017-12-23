@@ -1,5 +1,8 @@
 # **KoaSmart** is a framework based on **Koajs2**, which allows you to develop RESTful APIs with : **Class**, **Decorator**, **Params checker**
 
+[![Build Status](https://secure.travis-ci.org/ysocorp/koa-smart.png?branch=master "Test")](http://travis-ci.org/ysocorp/koa-smart)
+[![NPM version](http://badge.fury.io/js/koa-smart.png)](https://npmjs.org/package/koa-smart "View this project on NPM")
+
 A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, **Params checker** and a **base of modules** ([`cors`](https://www.npmjs.com/package/kcors), [`bodyparser`](https://github.com/koajs/bodyparser), [`compress`](https://github.com/koajs/compress), [`I18n`](https://github.com/alexanderwallin/node-gettext), etc... ) to allow you to develop a smart api easily 
 ```sh
   export default class RouteUsers extends Route {
