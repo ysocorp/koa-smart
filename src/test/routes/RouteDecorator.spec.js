@@ -8,11 +8,14 @@ import { wait } from '../../utils/utils';
 
 describe('RouteDecorator', () => {
   let request;
-  let app;
+  let _server;
 
   before(async () => {
-    app = await createserver();
-    request = supertest.agent(app.listen());
+    _server = await createserver(); // createserver will return = app.listen()
+    request = supertest.agent(_server);
+  });
+  after(async () => {
+    _server.close();
   });
 
   describe('disabled', () => {

@@ -12,9 +12,13 @@ export default class App {
   routeParam = null;
   routes = {};
 
-  constructor({ routeParam, port }) {
-    this.routeParam = routeParam || {};
-    this.port = port || process.env.PORT || 3000;
+  constructor(opt) {
+    const {
+      routeParam = {},
+      port = process.env.PORT || 3000,
+    } = opt;
+    this.routeParam = routeParam;
+    this.port = port;
     this.app = new Koa();
   }
 

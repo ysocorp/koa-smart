@@ -33,7 +33,6 @@ export default async function create(options = {}) {
   app.mountFolder(join(__dirname, '_routes/disable'), '/disable');
   console.log('********************MOUNT : PATH********************')
   app.mountFolder(join(__dirname, '_routes/path'), '/path');
-  await app.start();
 
-  return app.app;
+  return app.start();
 }
