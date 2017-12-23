@@ -9,6 +9,7 @@ import RouteDecorators from './RouteDecorators';
 
 export default class Route {
   static displayLog = true;
+  static StatusCode = StatusCode;
 
   constructor({ app, prefix, routes, models, model, disable }) {
     this.app = app;
@@ -72,7 +73,9 @@ export default class Route {
 
     return middlewares;
   }
-  _getRateLimit(option, routePath, type) {
+
+  // RateLimit
+  getRateLimit(option, routePath, type) {
     option.interval = RateLimit.RateLimit.timeToMs(option.interval);
     return RateLimit.middleware({
       prefixKey: `${type}|${routePath}|${option.interval}`,
@@ -85,30 +88,32 @@ export default class Route {
     if (rateLimit) {
       if (Array.isArray(rateLimit)) {
         for (const elem of rateLimit) {
-          middlewares.push(this._getRateLimit(elem, routePath, type));
+          middlewares.push(this.getRateLimit(elem, routePath, type));
         }
       } else {
-        middlewares.push(this._getRateLimit(rateLimit, routePath, type));
+        middlewares.push(this.getRateLimit(rateLimit, routePath, type));
       }
     }
   }
+
+  // beforeRoute
   _beforeRoute(infos) {
     return async (ctx, next) => await this.beforeRoute(ctx, infos, next);
   }
-
   async beforeRoute(ctx, { options }, next) {
-    this.mlParams(ctx, options);
+    this._mlParams(ctx, options);
     if (next) {
       await next();
     }
   }
-
-  mlParams(ctx, { params }) {
+  
+  // test params
+  _mlParams(ctx, { params }) {
     ctx.request.bodyOrig = deepCopy(ctx.request.body);
-    ctx.request.body = this.mlTestParams(ctx, ctx.request.body, params);
+    ctx.request.body = this._mlTestParams(ctx, ctx.request.body, params);
   }
 
-  mlParamsExecFunc(ctx, body, keyBody, param) {
+  _mlParamsExecFunc(ctx, body, keyBody, param) {
     if (body && body[keyBody]) {
       const { __func } = param;
       if (__func && Array.isArray(__func)) {
@@ -119,9 +124,9 @@ export default class Route {
     }
   }
 
-  mlTestParams(ctx, body, paramsTest) {
+  _mlTestParams(ctx, body, paramsTest) {
     const bodyVerif = {};
-    const paramsConvert = this.paramsNormalize(paramsTest);
+    const paramsConvert = this._paramsNormalize(paramsTest);
     for (const key in paramsConvert) {
       const param = paramsConvert[key];
 
@@ -130,17 +135,17 @@ export default class Route {
       if (param.__force && (bodyElem === undefined || bodyElem === null)) {
         this.throw(400, `${ctx.state.__ ? ctx.state.__('param required:') : 'param required:'} ${key}`);
       }
-      this.mlParamsExecFunc(ctx, body, key, param);
+      this._mlParamsExecFunc(ctx, body, key, param);
 
 
-      if (this.paramsHasSubElement(param)) {
+      if (this._paramsHasSubElement(param)) {
         if (body && isObject(body)) {
-          const tmp = this.mlTestParams(ctx, body[key], param);
+          const tmp = this._mlTestParams(ctx, body[key], param);
           if (body[key]) {
             bodyVerif[key] = tmp;
           }
         } else {
-          const tmp = this.mlTestParams(ctx, undefined, param);
+          const tmp = this._mlTestParams(ctx, undefined, param);
           if (body && isObject(body) && body[key] !== undefined) {
             bodyVerif[key] = tmp;
           }
@@ -152,7 +157,7 @@ export default class Route {
     return bodyVerif;
   }
 
-  paramsNormalize(paramsTest) {
+  _paramsNormalize(paramsTest) {
     let paramsConvert = {};
     // convert array to object
     if (isArray(paramsTest)) {
@@ -172,7 +177,7 @@ export default class Route {
       const elem = paramsConvert[key];
       if (!this.privateKeyInParamsRoute.includes(key)) {
         if (isObject(elem) || isArray(elem)) {
-          paramsConvert[key] = this.paramsNormalize(elem);
+          paramsConvert[key] = this._paramsNormalize(elem);
         } else if (elem === false || elem === true) {
           paramsConvert[key] = { __force: elem };
         }
@@ -181,7 +186,7 @@ export default class Route {
     return paramsConvert;
   }
 
-  paramsHasSubElement(paramsTest) {
+  _paramsHasSubElement(paramsTest) {
     for (const key in paramsTest) {
       if (!this.privateKeyInParamsRoute.includes(key)) {
         return true;
@@ -202,37 +207,37 @@ export default class Route {
 
   send(ctx, status = 200, data, message) {
     ctx.status = status;
-    if (data) {
+    if (data != null) {
       ctx.body.data = data;
     }
     if (message) {
       ctx.body.message = message;
     }
-    ctx.body.date = new Date();
+    ctx.body.date = Date.now();
   }
   sendOk(ctx, data, message) {
-    return this.send(ctx, StatusCode.ok, data, message);
+    return this.send(ctx, Route.StatusCode.ok, data, message);
   }
   sendCreated(ctx, data, message) {
-    return this.send(ctx, StatusCode.created, data, message);
+    return this.send(ctx, Route.StatusCode.created, data, message);
   }
-  sendNoContent(ctx, data, message) {
-    return this.send(ctx, StatusCode.noContent, data, message);
+  sendNoContent(ctx, message) {
+    return this.send(ctx, Route.StatusCode.noContent, undefined, message);
   }
   sendBadRequest(ctx, data, message) {
-    return this.send(ctx, StatusCode.badRequest, data, message);
+    return this.send(ctx, Route.StatusCode.badRequest, data, message);
   }
   sendUnauthorized(ctx, data, message) {
-    return this.send(ctx, StatusCode.unauthorized, data, message);
+    return this.send(ctx, Route.StatusCode.unauthorized, data, message);
   }
   sendForbidden(ctx, data, message) {
-    return this.send(ctx, StatusCode.forbidden, data, message);
+    return this.send(ctx, Route.StatusCode.forbidden, data, message);
   }
   sendNotFound(ctx, data, message) {
-    return this.send(ctx, StatusCode.notFound, data, message);
+    return this.send(ctx, Route.StatusCode.notFound, data, message);
   }
   sendInternalServerError(ctx, data, message) {
-    return this.send(ctx, StatusCode.internalServerError, data, message);
+    return this.send(ctx, Route.StatusCode.internalServerError, data, message);
   }
 
   throw(status, message, translate = false) {
