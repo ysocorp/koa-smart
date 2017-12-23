@@ -10,8 +10,7 @@
   "license": "MIT",
   "main": "index.js",
   "engines": {
-    "node": "8.9.1",
-    "npm": "5.5.1"
+    "node": ">=7.10.1"
   },
   "repository": {
     "type": "git",
