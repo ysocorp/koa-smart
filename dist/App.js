@@ -5,6 +5,14 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = undefined;
 
+var _regenerator = require('babel-runtime/regenerator');
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
 var _getIterator2 = require('babel-runtime/core-js/get-iterator');
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
@@ -42,15 +50,17 @@ var _utils = require('./utils/utils');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var App = function () {
-  function App(_ref) {
-    var routeParam = _ref.routeParam,
-        port = _ref.port;
+  function App(opt) {
     (0, _classCallCheck3.default)(this, App);
     this.routeParam = null;
     this.routes = {};
+    var _opt$routeParam = opt.routeParam,
+        routeParam = _opt$routeParam === undefined ? {} : _opt$routeParam,
+        _opt$port = opt.port,
+        port = _opt$port === undefined ? process.env.PORT || 3000 : _opt$port;
 
-    this.routeParam = routeParam || {};
-    this.port = port || process.env.PORT || 3000;
+    this.routeParam = routeParam;
+    this.port = port;
     this.app = new _koa2.default();
   }
 
@@ -138,10 +148,29 @@ var App = function () {
     }
   }, {
     key: 'start',
-    value: function start() {
-      this.app.use(_notFound2.default);
-      return this.app.listen(this.port);
-    }
+    value: function () {
+      var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
+        return _regenerator2.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                this.app.use(_notFound2.default);
+                return _context.abrupt('return', this.app.listen(this.port));
+
+              case 2:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function start() {
+        return _ref.apply(this, arguments);
+      }
+
+      return start;
+    }()
   }]);
   return App;
 }();

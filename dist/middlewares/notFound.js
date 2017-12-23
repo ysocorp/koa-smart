@@ -20,7 +20,7 @@ var notFound = function () {
           case 0:
             ctx.status = 404;
             ctx.body = {
-              message: ctx.state.__('Not found')
+              message: ctx.state.__ ? ctx.state.__('Not found') : 'Not found'
             };
 
           case 2:

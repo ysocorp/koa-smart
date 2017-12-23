@@ -53,11 +53,19 @@ var RouteDecorators = function () {
   }, {
     key: 'Route',
     value: function Route(_ref) {
-      var routeBase = _ref.routeBase;
+      var routeBase = _ref.routeBase,
+          _ref$disable = _ref.disable,
+          disable = _ref$disable === undefined ? false : _ref$disable;
 
       return function (target, key, descriptor) {
         // eslint-disable-line no-unused-vars
-        target.prototype.routeBase = routeBase;
+        if (routeBase != null) {
+          // null or undefined
+          target.prototype.routeBase = routeBase;
+        }
+        if (disable != null) {
+          target.prototype.disable = disable;
+        }
         RouteDecorators._initData(target);
       };
     }
@@ -70,7 +78,6 @@ var RouteDecorators = function () {
         RouteDecorators._initData(target);
         options = (0, _extends3.default)({
           path: undefined,
-          fullPath: undefined,
           accesses: [],
           params: {},
           routeBase: target.routeBase

@@ -72,15 +72,14 @@ var Route = (_temp = _class = function () {
         routes = _ref.routes,
         models = _ref.models,
         model = _ref.model,
-        _ref$disable = _ref.disable,
-        disable = _ref$disable === undefined ? false : _ref$disable;
+        disable = _ref.disable;
     (0, _classCallCheck3.default)(this, Route);
 
     this.app = app;
     this.prefix = prefix;
     this.allRoutesInstance = routes;
     this.models = models;
-    this.disable = disable;
+    this.disable = disable != null ? disable : this.disable;
     if (this.models && model) {
       this.model = this.models[model];
     }
@@ -165,14 +164,18 @@ var Route = (_temp = _class = function () {
 
       var middlewares = [this._beforeRoute(infos)];
       middlewares.push.apply(middlewares, (0, _toConsumableArray3.default)(before));
+      this.addRateLimit(middlewares, infos);
       middlewares.push(infos.call.bind(this));
       middlewares.push.apply(middlewares, (0, _toConsumableArray3.default)(after));
 
       return middlewares;
     }
+
+    // RateLimit
+
   }, {
-    key: '_getRateLimit',
-    value: function _getRateLimit(option, routePath, type) {
+    key: 'getRateLimit',
+    value: function getRateLimit(option, routePath, type) {
       option.interval = _koa2Ratelimit.RateLimit.RateLimit.timeToMs(option.interval);
       return _koa2Ratelimit.RateLimit.middleware((0, _extends3.default)({
         prefixKey: type + '|' + routePath + '|' + option.interval
@@ -197,7 +200,7 @@ var Route = (_temp = _class = function () {
             for (var _iterator2 = (0, _getIterator3.default)(rateLimit), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
               var elem = _step2.value;
 
-              middlewares.push(this._getRateLimit(elem, routePath, type));
+              middlewares.push(this.getRateLimit(elem, routePath, type));
             }
           } catch (err) {
             _didIteratorError2 = true;
@@ -214,10 +217,13 @@ var Route = (_temp = _class = function () {
             }
           }
         } else {
-          middlewares.push(this._getRateLimit(rateLimit, routePath, type));
+          middlewares.push(this.getRateLimit(rateLimit, routePath, type));
         }
       }
     }
+
+    // beforeRoute
+
   }, {
     key: '_beforeRoute',
     value: function _beforeRoute(infos) {
@@ -257,7 +263,7 @@ var Route = (_temp = _class = function () {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                this.mlParams(ctx, options);
+                this._mlParams(ctx, options);
 
                 if (!next) {
                   _context2.next = 4;
@@ -281,17 +287,20 @@ var Route = (_temp = _class = function () {
 
       return beforeRoute;
     }()
+
+    // test params
+
   }, {
-    key: 'mlParams',
-    value: function mlParams(ctx, _ref6) {
+    key: '_mlParams',
+    value: function _mlParams(ctx, _ref6) {
       var params = _ref6.params;
 
       ctx.request.bodyOrig = (0, _utils.deepCopy)(ctx.request.body);
-      ctx.request.body = this.mlTestParams(ctx, ctx.request.body, params);
+      ctx.request.body = this._mlTestParams(ctx, ctx.request.body, params);
     }
   }, {
-    key: 'mlParamsExecFunc',
-    value: function mlParamsExecFunc(ctx, body, keyBody, param) {
+    key: '_mlParamsExecFunc',
+    value: function _mlParamsExecFunc(ctx, body, keyBody, param) {
       if (body && body[keyBody]) {
         var __func = param.__func;
 
@@ -324,28 +333,28 @@ var Route = (_temp = _class = function () {
       }
     }
   }, {
-    key: 'mlTestParams',
-    value: function mlTestParams(ctx, body, paramsTest) {
+    key: '_mlTestParams',
+    value: function _mlTestParams(ctx, body, paramsTest) {
       var bodyVerif = {};
-      var paramsConvert = this.paramsNormalize(paramsTest);
+      var paramsConvert = this._paramsNormalize(paramsTest);
       for (var key in paramsConvert) {
         var param = paramsConvert[key];
 
         var bodyElem = body ? body[key] : undefined;
         // test param
         if (param.__force && (bodyElem === undefined || bodyElem === null)) {
-          this.throw(400, ctx.state.__('param required:') + ' ' + key);
+          this.throw(400, (ctx.state.__ ? ctx.state.__('param required:') : 'param required:') + ' ' + key);
         }
-        this.mlParamsExecFunc(ctx, body, key, param);
+        this._mlParamsExecFunc(ctx, body, key, param);
 
-        if (this.paramsHasSubElement(param)) {
+        if (this._paramsHasSubElement(param)) {
           if (body && (0, _utils.isObject)(body)) {
-            var tmp = this.mlTestParams(ctx, body[key], param);
+            var tmp = this._mlTestParams(ctx, body[key], param);
             if (body[key]) {
               bodyVerif[key] = tmp;
             }
           } else {
-            var _tmp = this.mlTestParams(ctx, undefined, param);
+            var _tmp = this._mlTestParams(ctx, undefined, param);
             if (body && (0, _utils.isObject)(body) && body[key] !== undefined) {
               bodyVerif[key] = _tmp;
             }
@@ -357,8 +366,8 @@ var Route = (_temp = _class = function () {
       return bodyVerif;
     }
   }, {
-    key: 'paramsNormalize',
-    value: function paramsNormalize(paramsTest) {
+    key: '_paramsNormalize',
+    value: function _paramsNormalize(paramsTest) {
       var paramsConvert = {};
       // convert array to object
       if ((0, _utils.isArray)(paramsTest)) {
@@ -399,7 +408,7 @@ var Route = (_temp = _class = function () {
         var _elem = paramsConvert[key];
         if (!this.privateKeyInParamsRoute.includes(key)) {
           if ((0, _utils.isObject)(_elem) || (0, _utils.isArray)(_elem)) {
-            paramsConvert[key] = this.paramsNormalize(_elem);
+            paramsConvert[key] = this._paramsNormalize(_elem);
           } else if (_elem === false || _elem === true) {
             paramsConvert[key] = { __force: _elem };
           }
@@ -408,8 +417,8 @@ var Route = (_temp = _class = function () {
       return paramsConvert;
     }
   }, {
-    key: 'paramsHasSubElement',
-    value: function paramsHasSubElement(paramsTest) {
+    key: '_paramsHasSubElement',
+    value: function _paramsHasSubElement(paramsTest) {
       for (var key in paramsTest) {
         if (!this.privateKeyInParamsRoute.includes(key)) {
           return true;
@@ -444,54 +453,60 @@ var Route = (_temp = _class = function () {
       var data = arguments[2];
       var message = arguments[3];
 
+      ctx.body = ctx.body || {}; // add default body
       ctx.status = status;
-      if (data) {
-        ctx.body.data = data;
+      // Do not remove this test because if status = 204 || 304, node will remove body
+      // see _hasBody on
+      // https://github.com/nodejs/node/blob/master/lib/_http_server.js#L235-L250
+      if (ctx.body) {
+        if (data != null) {
+          ctx.body.data = data;
+        }
+        if (message != null) {
+          ctx.body.message = message;
+        }
+        ctx.body.date = Date.now();
       }
-      if (message) {
-        ctx.body.message = message;
-      }
-      ctx.body.date = new Date();
     }
   }, {
     key: 'sendOk',
     value: function sendOk(ctx, data, message) {
-      return this.send(ctx, _StatusCode2.default.ok, data, message);
+      return this.send(ctx, Route.StatusCode.ok, data, message);
     }
   }, {
     key: 'sendCreated',
     value: function sendCreated(ctx, data, message) {
-      return this.send(ctx, _StatusCode2.default.created, data, message);
+      return this.send(ctx, Route.StatusCode.created, data, message);
     }
   }, {
     key: 'sendNoContent',
-    value: function sendNoContent(ctx, data, message) {
-      return this.send(ctx, _StatusCode2.default.noContent, data, message);
+    value: function sendNoContent(ctx) {
+      return this.send(ctx, Route.StatusCode.noContent);
     }
   }, {
     key: 'sendBadRequest',
     value: function sendBadRequest(ctx, data, message) {
-      return this.send(ctx, _StatusCode2.default.badRequest, data, message);
+      return this.send(ctx, Route.StatusCode.badRequest, data, message);
     }
   }, {
     key: 'sendUnauthorized',
     value: function sendUnauthorized(ctx, data, message) {
-      return this.send(ctx, _StatusCode2.default.unauthorized, data, message);
+      return this.send(ctx, Route.StatusCode.unauthorized, data, message);
     }
   }, {
     key: 'sendForbidden',
     value: function sendForbidden(ctx, data, message) {
-      return this.send(ctx, _StatusCode2.default.forbidden, data, message);
+      return this.send(ctx, Route.StatusCode.forbidden, data, message);
     }
   }, {
     key: 'sendNotFound',
     value: function sendNotFound(ctx, data, message) {
-      return this.send(ctx, _StatusCode2.default.notFound, data, message);
+      return this.send(ctx, Route.StatusCode.notFound, data, message);
     }
   }, {
     key: 'sendInternalServerError',
     value: function sendInternalServerError(ctx, data, message) {
-      return this.send(ctx, _StatusCode2.default.internalServerError, data, message);
+      return this.send(ctx, Route.StatusCode.internalServerError, data, message);
     }
   }, {
     key: 'throw',
@@ -511,5 +526,5 @@ var Route = (_temp = _class = function () {
     }
   }]);
   return Route;
-}(), _class.displayLog = true, _class.Get = _RouteDecorators2.default.Get, _class.Post = _RouteDecorators2.default.Post, _class.Put = _RouteDecorators2.default.Put, _class.Patch = _RouteDecorators2.default.Patch, _class.Delete = _RouteDecorators2.default.Delete, _class.Route = _RouteDecorators2.default.Route, _temp);
+}(), _class.displayLog = true, _class.StatusCode = _StatusCode2.default, _class.Get = _RouteDecorators2.default.Get, _class.Post = _RouteDecorators2.default.Post, _class.Put = _RouteDecorators2.default.Put, _class.Patch = _RouteDecorators2.default.Patch, _class.Delete = _RouteDecorators2.default.Delete, _class.Route = _RouteDecorators2.default.Route, _temp);
 exports.default = Route;
