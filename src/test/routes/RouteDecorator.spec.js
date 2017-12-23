@@ -1,8 +1,10 @@
 import expect from 'expect';
 import supertest from 'supertest';
+import { Stores } from 'koa2-ratelimit';
 
 import RDec from '../../routes/RouteDecorators';
 import createserver from '../_createserver';
+import { wait } from '../../utils/utils';
 
 describe('RouteDecorator', () => {
   let request;
@@ -100,4 +102,52 @@ describe('RouteDecorator', () => {
     });
   });
 
+  describe('ratelimit', () => {
+    beforeEach(async () => {
+      Stores.Memory.cleanAll();      
+    });
+
+    it('should stop user when too much request are made', async () => {
+      let res = await request.get('/rate-limit/min1max2');
+      expect(res.statusCode).toBeLessThan(400);
+      res = await request.get('/rate-limit/min1max2');
+      expect(res.statusCode).toBeLessThan(400);
+      res = await request.get('/rate-limit/min1max2');
+      expect(res.statusCode).toBe(429);
+    });
+
+    it('should stop user only on a specific route', async () => {
+      let res = await request.get('/rate-limit/min1max2');
+      expect(res.statusCode).toBeLessThan(400);
+      res = await request.get('/rate-limit/min1max2');
+      expect(res.statusCode).toBeLessThan(400);
+      res = await request.get('/rate-limit/min1max2');
+      expect(res.statusCode).toBe(429);
+
+      res = await request.get('/rate-limit/sec2max2');
+      expect(res.statusCode).toBeLessThan(400);
+    });
+
+    it('should stop user when too much request are made et let him when time is past', async () => {
+      let res = await request.get('/rate-limit/sec2max2');
+      expect(res.statusCode).toBeLessThan(400);
+      res = await request.get('/rate-limit/sec2max2');
+      expect(res.statusCode).toBeLessThan(400);
+      res = await request.get('/rate-limit/sec2max2');
+      expect(res.statusCode).toBe(429);
+
+      await wait(2000);
+      res = await request.get('/rate-limit/sec2max2');
+      expect(res.statusCode).toBeLessThan(400);
+    });
+
+    it('should allow multiple ratelimit', async () => {
+      let res = await request.get('/rate-limit/min1max2-sec1max5');
+      expect(res.statusCode).toBeLessThan(400);
+      res = await request.get('/rate-limit/min1max2-sec1max5');
+      expect(res.statusCode).toBeLessThan(400);
+      res = await request.get('/rate-limit/min1max2-sec1max5');
+      expect(res.statusCode).toBe(429);
+    });
+  });
 });
