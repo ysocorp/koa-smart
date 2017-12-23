@@ -206,14 +206,20 @@ export default class Route {
   paramsGet(ctx) { return this.bodyGet(ctx); }
 
   send(ctx, status = 200, data, message) {
+    ctx.body = ctx.body || {}; // add default body
     ctx.status = status;
-    if (data != null) {
-      ctx.body.data = data;
+    // Do not remove this test because if status = 204 || 304, node will remove body
+    // see _hasBody on
+    // https://github.com/nodejs/node/blob/master/lib/_http_server.js#L235-L250
+    if (ctx.body) { 
+      if (data != null) {
+        ctx.body.data = data;
+      }
+      if (message != null) {
+        ctx.body.message = message;
+      }
+      ctx.body.date = Date.now();
     }
-    if (message) {
-      ctx.body.message = message;
-    }
-    ctx.body.date = Date.now();
   }
   sendOk(ctx, data, message) {
     return this.send(ctx, Route.StatusCode.ok, data, message);
@@ -221,8 +227,8 @@ export default class Route {
   sendCreated(ctx, data, message) {
     return this.send(ctx, Route.StatusCode.created, data, message);
   }
-  sendNoContent(ctx, message) {
-    return this.send(ctx, Route.StatusCode.noContent, undefined, message);
+  sendNoContent(ctx) {
+    return this.send(ctx, Route.StatusCode.noContent);
   }
   sendBadRequest(ctx, data, message) {
     return this.send(ctx, Route.StatusCode.badRequest, data, message);

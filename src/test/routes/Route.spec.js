@@ -153,11 +153,9 @@ describe('Route', () => {
         message = 'message test';
       });
 
-      function testCtx(statusCode, testData = true) {
+      function testCtx(statusCode) {
         expect(ctx.body.message).toEqual(message);
-        if (testData) {
-          expect(ctx.body.data).toEqual(data);
-        }
+        expect(ctx.body.data).toEqual(data);
         expect(ctx.status).toEqual(statusCode);
       }
 
@@ -168,7 +166,7 @@ describe('Route', () => {
         });
       });
       describe('sendOk(ctx, data, message)', () => {
-        it('should fill body with data, message and statusCode = 200', () => {
+        it('should fill body with data, message and set statusCode = 200', () => {
           route.sendOk(ctx, data, message);
           testCtx(Route.StatusCode.ok);
         });
@@ -189,43 +187,45 @@ describe('Route', () => {
         });
       });
       describe('sendCreated(ctx, data, message)', () => {
-        it('should fill body with data, message and statusCode = 201', () => {
+        it('should fill body with data, message and set statusCode = 201', () => {
           route.sendCreated(ctx, data, message);
           testCtx(Route.StatusCode.created);
         });
       });
-      describe('sendNoContent(ctx, message)', () => {
-        it('should fill body with message and statusCode = 204', () => {
-          route.sendNoContent(ctx, message);
-          testCtx(Route.StatusCode.noContent, false);
+      describe('sendNoContent(ctx)', () => {
+        it('should not fill body and set statusCode = 204', () => {
+          route.sendNoContent(ctx);
+          expect(ctx.body.message).toBe(undefined);
+          expect(ctx.body.data).toBe(undefined);
+          expect(ctx.status).toBe(Route.StatusCode.noContent);
         });
       });
       describe('sendBadRequest(ctx, data, message)', () => {
-        it('should fill body with data, message and statusCode = 400', () => {
+        it('should fill body with data, message and set statusCode = 400', () => {
           route.sendBadRequest(ctx, data, message);
           testCtx(Route.StatusCode.badRequest);
         });
       });
       describe('sendUnauthorized(ctx, data, message)', () => {
-        it('should fill body with data, message and statusCode = 401', () => {
+        it('should fill body with data, message and set statusCode = 401', () => {
           route.sendUnauthorized(ctx, data, message);
           testCtx(Route.StatusCode.unauthorized);
         });
       });
       describe('sendForbidden(ctx, data, message)', () => {
-        it('should fill body with data, message and statusCode = 403', () => {
+        it('should fill body with data, message and set statusCode = 403', () => {
           route.sendForbidden(ctx, data, message);
           testCtx(Route.StatusCode.forbidden);
         });
       });
       describe('sendNotFound(ctx, data, message)', () => {
-        it('should fill body with data, message and statusCode = 404', () => {
+        it('should fill body with data, message and set statusCode = 404', () => {
           route.sendNotFound(ctx, data, message);
           testCtx(Route.StatusCode.notFound);
         });
       });
       describe('sendInternalServerError(ctx, data, message)', () => {
-        it('should fill body with data, message and statusCode = 500', () => {
+        it('should fill body with data, message and set statusCode = 500', () => {
           route.sendInternalServerError(ctx, data, message);
           testCtx(Route.StatusCode.internalServerError);
         });
