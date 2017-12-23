@@ -66,6 +66,7 @@ export default class Route {
 
     const middlewares = [this._beforeRoute(infos)];
     middlewares.push(...before);
+    this.addRateLimit(middlewares, infos);
     middlewares.push(infos.call.bind(this));
     middlewares.push(...after);
 
