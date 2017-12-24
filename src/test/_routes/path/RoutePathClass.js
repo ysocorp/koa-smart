@@ -29,4 +29,29 @@ export default class RoutePathClass extends Route {
   async myNewPath(ctx) {
     this.sendOk(ctx, "hellow");
   }
+
+  @Route.Get({ path: 'samepath' })
+  async samepathGet(ctx) {
+    this.sendOk(ctx, "get");
+  }
+
+  @Route.Post({ path: 'samepath' })
+  async samepathPost(ctx) {
+    this.sendOk(ctx, "post");
+  }
+
+  @Route.Patch({ path: 'samepath' })
+  async samepathPatch(ctx) {
+    this.sendOk(ctx, "patch");
+  }
+
+  @Route.Put({ path: 'samepath' })
+  async samepathPut(ctx) {
+    this.sendOk(ctx, "put");
+  }
+
+  @Route.Delete({ path: 'samepath' })
+  async samepathDelete(ctx) {
+    this.sendOk(ctx, "delete");
+  }
 }

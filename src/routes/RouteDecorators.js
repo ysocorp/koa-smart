@@ -13,6 +13,8 @@ export default class RouteDecorators {
       get: [],
       post: [],
       delete: [],
+      patch: [],
+      put: [],
     };
     if (target.routeBase === undefined) {
       target.routeBase = target.constructor.name.replace('Route', '');

@@ -14,6 +14,7 @@ describe('RouteDecorator', () => {
     _server = await createserver(); // createserver will return = app.listen()
     request = supertest.agent(_server);
   });
+
   after(async () => {
     _server.close();
   });
@@ -75,6 +76,44 @@ describe('RouteDecorator', () => {
       it('should custom a route path with path route decorator', async () => {
         let res = await request.get('/path/path/path-change');
         expect(res.statusCode).toBe(200);
+      });
+    });
+
+    describe('Route.Type with same name', () => {
+      describe('Route.Get', () => {
+        it('should call the get route', async () => {
+          let res = await request.get('/path/path/samepath');
+          expect(res.statusCode).toBeLessThan(400);
+          expect(res.body.data).toBe('get');
+        });
+      });
+      describe('Route.Post', () => {
+        it('should call the post route', async () => {
+          let res = await request.post('/path/path/samepath');
+          expect(res.statusCode).toBeLessThan(400);
+          expect(res.body.data).toBe('post');
+        });
+      });
+      describe('Route.Put', () => {
+        it('should call the put route', async () => {
+          let res = await request.put('/path/path/samepath');
+          expect(res.statusCode).toBeLessThan(400);
+          expect(res.body.data).toBe('put');
+        });
+      });
+      describe('Route.Patch', () => {
+        it('should call the patch route', async () => {
+          let res = await request.patch('/path/path/samepath');
+          expect(res.statusCode).toBeLessThan(400);
+          expect(res.body.data).toBe('patch');
+        });
+      });
+      describe('Route.Delete', () => {
+        it('should call the delete route', async () => {
+          let res = await request.delete('/path/path/samepath');
+          expect(res.statusCode).toBeLessThan(400);
+          expect(res.body.data).toBe('delete');
+        });
       });
     });
   });
