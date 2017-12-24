@@ -10,6 +10,6 @@ export default class RouteTests extends Route {
 
   @Route.Get({})
   async hellow(ctx) {
-    this.sendOk(ctx, "hellow");
+    this.sendOk(ctx, ctx.state.__("hellow"));
   }
 }

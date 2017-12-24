@@ -1,8 +1,8 @@
 import { join } from 'path';
 
 import App from '../src/App';
-import { 
-  I18n, 
+import {
+  i18n,
   bodyParser, 
   compress, 
   cors, 
@@ -12,25 +12,27 @@ import {
   logger,
 } from '../src/middlewares';
 
-const app = new App({
+const myApp = new App({
   port: 3001,
 });
 
-const i18n = new I18n({
-  path: join(__dirname, 'locales'),
-});
+const i18nMd = i18n(myApp.app, {
+  directory: join(__dirname, 'locales'),
+  locales: ['en', 'fr'],
+  modes: ['query', 'subdomain', 'cookie', 'header', 'tld'],
+})
 
-app.addMiddlewares([
+myApp.addMiddlewares([
   cors({ credentials: true }),
   helmet(),
   bodyParser(),
-  i18n.middleware,
+  i18nMd,
   logger,
   handleError,
   addDefaultBody,
   compress({}),
 ]);
 
-app.mountFolder(join(__dirname, 'routes'), '/toto');
+myApp.mountFolder(join(__dirname, 'routes'), '/toto');
 
-app.start();
+myApp.start();

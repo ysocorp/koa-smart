@@ -3,7 +3,7 @@
 [![Build Status](https://secure.travis-ci.org/ysocorp/koa-smart.png?branch=master "Test")](http://travis-ci.org/ysocorp/koa-smart)
 [![NPM version](http://badge.fury.io/js/koa-smart.png)](https://npmjs.org/package/koa-smart "View this project on NPM")
 
-A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, **Params checker** and a **base of modules** ([`cors`](https://www.npmjs.com/package/kcors), [`bodyparser`](https://github.com/koajs/bodyparser), [`compress`](https://github.com/koajs/compress), [`I18n`](https://github.com/alexanderwallin/node-gettext), etc... ) to allow you to develop a smart api easily 
+A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, **Params checker** and a **base of modules** ([`cors`](https://www.npmjs.com/package/kcors), [`bodyparser`](https://github.com/koajs/bodyparser), [`compress`](https://github.com/koajs/compress), [`I18n`](https://github.com/koa-modules/i18n), etc... ) to allow you to develop a smart api easily 
 ```sh
   export default class RouteUsers extends Route {
 
@@ -55,7 +55,7 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
     * [`koa-helmet`](https://www.npmjs.com/package/koa-helmet) helps you secure your api
     * [`koa-bodyparser`](https://github.com/koajs/bodyparser) to parse request bodies
     * [`koa-compress`](https://github.com/koajs/compress) to compress the response
-    * [`node-gettext`](https://github.com/alexanderwallin/node-gettext) for Internationalization (I18n)
+    * [`koa-i18n`](https://github.com/koa-modules/i18n) for Internationalization (I18n)
 * [`@Decorators`](https://babeljs.io/docs/plugins/transform-decorators/) to ensure a better project structure
 * [`moment`](https://github.com/moment/moment) Parse, validate, manipulate, and display dates in javascript.
 * [`lodash`](https://github.com/lodash/lodash) A modern JavaScript utility library delivering modularity, performance, & extras
@@ -316,8 +316,7 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
     // import the app
     import { App } from 'koa-smart';
     // import middlewares koa-smart give you OR others
-    import { 
-      I18n,
+    import {
       bodyParser, 
       compress,
       cors,
@@ -329,7 +328,7 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
   * create an app listening on port 3000
 
     ```sh
-    const app = new App({
+    const myApp = new App({
       port: 3000,
     });
     ```
@@ -337,11 +336,10 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
   * add your middlewares
 
     ```sh
-    app.addMiddlewares([
+    myApp.addMiddlewares([
       cors({ credentials: true }),
       helmet(),
       bodyParser(),
-      this.i18n.middleware,
       logger,
       RateLimit.middleware({ interval: { min: 1 }, max: 100 }),
       ...
@@ -352,13 +350,13 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
     mount a folder with a prefix (all file who extends from `Route` will be added and mounted)
 
     ```sh
-        app.mountFolder(join(__dirname, 'routes'), '/');
+        myApp.mountFolder(join(__dirname, 'routes'), '/');
     ```
 
   * Start your app
 
     ```sh
-    app.start();
+    myApp.start();
     ```
   
 ### Full example
@@ -371,7 +369,7 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
     import { App } from 'koa-smart';
     // import middlewares koa-smart give you OR others
     import { 
-      I18n,
+      i18n,
       bodyParser, 
       compress,
       cors,
@@ -382,15 +380,19 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
       RateLimit,
     } from 'koa-smart/middlewares';
 
-    const app = new App({
+    const myApp = new App({
       port: 3000,
     });
 
-    app.addMiddlewares([
+    myApp.addMiddlewares([
       cors({ credentials: true }),
       helmet(),
       bodyParser(),
-      new I18n({ path: join(__dirname, 'locales') }).middleware,
+      i18n(myApp.app, {
+        directory: join(__dirname, 'locales'),
+        locales: ['en', 'fr'],
+        modes: ['query', 'subdomain', 'cookie', 'header', 'tld'],
+      }),
       logger,
       handleError,
       addDefaultBody,
@@ -399,10 +401,10 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
     ]);
         
     // mount a folder with an prefix (all file who extends from `Route` will be add and mount)
-    app.mountFolder(join(__dirname, 'routes'), '/');
+    myApp.mountFolder(join(__dirname, 'routes'), '/');
 
     // start the app
-    app.start();
+    myApp.start();
     ```
   
   * Other example who Extends class App
@@ -413,7 +415,7 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
     import { App } from 'koa-smart';
     // import middlewares koa-smart give you OR others
     import { 
-      I18n,
+      i18n,
       bodyParser, 
       compress,
       cors,
@@ -436,7 +438,11 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
           cors({ credentials: true }),
           helmet(),
           bodyParser(),
-          new I18n({ path: join(__dirname, 'locales') }).middleware,
+          i18n(this.app, {
+            directory: join(__dirname, 'locales'),
+            locales: ['en', 'fr'],
+            modes: ['query', 'subdomain', 'cookie', 'header', 'tld'],
+          }),
           logger,
           handleError,
           authentification,
@@ -451,8 +457,8 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
     }
 
     // start the app
-    const app = new MyApp();
-    app.start();
+    const myApp = new MyApp();
+    myApp.start();
     ```
 
 ## Add treatment on route
@@ -509,12 +515,12 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
 
     @Route.Get({ accesses: [MyRoute.accesses.public] })
     async publicRoute(ctx) {
-      this.sendOk(ctx, ctx.__('I can be call by any one'));
+      this.sendOk(ctx, ctx.i18n.__('I can be call by any one'));
     }
 
     @Route.Get({ accesses: [MyRoute.accesses.client] })
     async clientRoute(ctx) {
-      this.sendOk(ctx, ctx.__('I can be call by only client user'));
+      this.sendOk(ctx, ctx.i18n.__('I can be call by only client user'));
     }
 
     @Route.Get({ accesses: [MyRoute.accesses.admin] })

@@ -1,6 +1,7 @@
 import { join as pathJoin } from 'path';
 import { readdirSync } from 'fs';
 import Koa from 'koa';
+import locale from 'koa-locale';
 
 import Route from './routes/Route';
 import notFound from './middlewares/notFound';
@@ -20,6 +21,8 @@ export default class App {
     this.routeParam = routeParam;
     this.port = port;
     this.app = new Koa();
+
+    locale(this.app)
   }
 
   _getAllRoutes(path, prefix) {
