@@ -19,4 +19,23 @@ export default class RouteParams extends Route {
     });
   }
 
+  @Route.Post({ 
+    path: 'samepath',
+    params: {
+      post: true,
+    },
+  })
+  async samepathPost(ctx) {
+    this.sendOk(ctx, this.body(ctx));
+  }
+
+  @Route.Patch({ 
+    path: 'samepath',
+    params: {
+      patch: true,
+    },
+  })
+  async samepathPatch(ctx) {
+    this.sendOk(ctx, this.body(ctx));
+  }
 }

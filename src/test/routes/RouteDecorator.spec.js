@@ -142,11 +142,25 @@ describe('RouteDecorator', () => {
       const respOK = await request.post('/params').send({ email: 'email' });
       expect(respOK.statusCode).toBeLessThan(400);
     });
+    it('should apply param only in the specific path and type', async () => {
+      const bodySend = {
+        post: 'post',
+        patch: 'patch',
+      };
+      let res = await request.post('/params/samepath').send(bodySend);
+      expect(res.statusCode).toBeLessThan(400);
+      expect(res.body.data).toEqual({ post: 'post' });
+      expect(res.body.data.patch).toBe(undefined);
+      res = await request.patch('/params/samepath').send(bodySend);
+      expect(res.statusCode).toBeLessThan(400);
+      expect(res.body.data).toEqual({ patch: 'patch' });
+      expect(res.body.data.post).toBe(undefined);
+    });
   });
 
   describe('ratelimit', () => {
     beforeEach(async () => {
-      Stores.Memory.cleanAll();      
+      Stores.Memory.cleanAll();
     });
 
     it('should stop user when too much request are made', async () => {
