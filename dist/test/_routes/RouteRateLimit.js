@@ -41,7 +41,7 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
-var _dec, _dec2, _dec3, _desc, _value, _class;
+var _dec, _dec2, _dec3, _dec4, _dec5, _desc, _value, _class;
 
 var _Route2 = require('../../routes/Route');
 
@@ -80,6 +80,12 @@ function _applyDecoratedDescriptor(target, property, decorators, descriptor, con
 
 var RouteRateLimit = (_dec = _Route3.default.Get({ rateLimit: { interval: { min: 1 }, max: 2 } }), _dec2 = _Route3.default.Get({ rateLimit: { interval: { sec: 2 }, max: 2 } }), _dec3 = _Route3.default.Get({
   rateLimit: [{ interval: { min: 1 }, max: 2 }, { interval: { sec: 1 }, max: 5 }]
+}), _dec4 = _Route3.default.Get({
+  path: 'samepath-min1max2',
+  rateLimit: { interval: { min: 1 }, max: 2 }
+}), _dec5 = _Route3.default.Post({
+  path: 'samepath-min1max2',
+  rateLimit: { interval: { min: 1 }, max: 2 }
 }), (_class = function (_Route) {
   (0, _inherits3.default)(RouteRateLimit, _Route);
 
@@ -160,7 +166,55 @@ var RouteRateLimit = (_dec = _Route3.default.Get({ rateLimit: { interval: { min:
 
       return min1max2Sec1max5;
     }()
+  }, {
+    key: 'samepathMin1max2Get',
+    value: function () {
+      var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee4(ctx) {
+        return _regenerator2.default.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                this.sendOk(ctx, this.body(ctx));
+
+              case 1:
+              case 'end':
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
+      }));
+
+      function samepathMin1max2Get(_x4) {
+        return _ref4.apply(this, arguments);
+      }
+
+      return samepathMin1max2Get;
+    }()
+  }, {
+    key: 'samepathMin1max2Post',
+    value: function () {
+      var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5(ctx) {
+        return _regenerator2.default.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                this.sendOk(ctx, this.body(ctx));
+
+              case 1:
+              case 'end':
+                return _context5.stop();
+            }
+          }
+        }, _callee5, this);
+      }));
+
+      function samepathMin1max2Post(_x5) {
+        return _ref5.apply(this, arguments);
+      }
+
+      return samepathMin1max2Post;
+    }()
   }]);
   return RouteRateLimit;
-}(_Route3.default), (_applyDecoratedDescriptor(_class.prototype, 'min1max2', [_dec], (0, _getOwnPropertyDescriptor2.default)(_class.prototype, 'min1max2'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'sec2max2', [_dec2], (0, _getOwnPropertyDescriptor2.default)(_class.prototype, 'sec2max2'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'min1max2Sec1max5', [_dec3], (0, _getOwnPropertyDescriptor2.default)(_class.prototype, 'min1max2Sec1max5'), _class.prototype)), _class));
+}(_Route3.default), (_applyDecoratedDescriptor(_class.prototype, 'min1max2', [_dec], (0, _getOwnPropertyDescriptor2.default)(_class.prototype, 'min1max2'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'sec2max2', [_dec2], (0, _getOwnPropertyDescriptor2.default)(_class.prototype, 'sec2max2'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'min1max2Sec1max5', [_dec3], (0, _getOwnPropertyDescriptor2.default)(_class.prototype, 'min1max2Sec1max5'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'samepathMin1max2Get', [_dec4], (0, _getOwnPropertyDescriptor2.default)(_class.prototype, 'samepathMin1max2Get'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'samepathMin1max2Post', [_dec5], (0, _getOwnPropertyDescriptor2.default)(_class.prototype, 'samepathMin1max2Post'), _class.prototype)), _class));
 exports.default = RouteRateLimit;

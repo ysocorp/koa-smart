@@ -41,7 +41,7 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
-var _dec, _dec2, _dec3, _dec4, _dec5, _class, _desc, _value, _class2;
+var _dec, _dec2, _dec3, _dec4, _dec5, _dec6, _dec7, _dec8, _dec9, _dec10, _class, _desc, _value, _class2;
 
 var _Route2 = require('../../../routes/Route');
 
@@ -82,7 +82,7 @@ var RoutePathClass = (_dec = _Route3.default.Route({
   routeBase: 'path'
 }), _dec2 = _Route3.default.Get({ path: '' }), _dec3 = _Route3.default.Get({}), _dec4 = _Route3.default.Get({}), _dec5 = _Route3.default.Get({
   path: 'path-change'
-}), _dec(_class = (_class2 = function (_Route) {
+}), _dec6 = _Route3.default.Get({ path: 'samepath' }), _dec7 = _Route3.default.Post({ path: 'samepath' }), _dec8 = _Route3.default.Patch({ path: 'samepath' }), _dec9 = _Route3.default.Put({ path: 'samepath' }), _dec10 = _Route3.default.Delete({ path: 'samepath' }), _dec(_class = (_class2 = function (_Route) {
   (0, _inherits3.default)(RoutePathClass, _Route);
 
   function RoutePathClass(params) {
@@ -186,7 +186,127 @@ var RoutePathClass = (_dec = _Route3.default.Route({
 
       return myNewPath;
     }()
+  }, {
+    key: 'samepathGet',
+    value: function () {
+      var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee5(ctx) {
+        return _regenerator2.default.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                this.sendOk(ctx, "get");
+
+              case 1:
+              case 'end':
+                return _context5.stop();
+            }
+          }
+        }, _callee5, this);
+      }));
+
+      function samepathGet(_x5) {
+        return _ref5.apply(this, arguments);
+      }
+
+      return samepathGet;
+    }()
+  }, {
+    key: 'samepathPost',
+    value: function () {
+      var _ref6 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee6(ctx) {
+        return _regenerator2.default.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                this.sendOk(ctx, "post");
+
+              case 1:
+              case 'end':
+                return _context6.stop();
+            }
+          }
+        }, _callee6, this);
+      }));
+
+      function samepathPost(_x6) {
+        return _ref6.apply(this, arguments);
+      }
+
+      return samepathPost;
+    }()
+  }, {
+    key: 'samepathPatch',
+    value: function () {
+      var _ref7 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee7(ctx) {
+        return _regenerator2.default.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                this.sendOk(ctx, "patch");
+
+              case 1:
+              case 'end':
+                return _context7.stop();
+            }
+          }
+        }, _callee7, this);
+      }));
+
+      function samepathPatch(_x7) {
+        return _ref7.apply(this, arguments);
+      }
+
+      return samepathPatch;
+    }()
+  }, {
+    key: 'samepathPut',
+    value: function () {
+      var _ref8 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee8(ctx) {
+        return _regenerator2.default.wrap(function _callee8$(_context8) {
+          while (1) {
+            switch (_context8.prev = _context8.next) {
+              case 0:
+                this.sendOk(ctx, "put");
+
+              case 1:
+              case 'end':
+                return _context8.stop();
+            }
+          }
+        }, _callee8, this);
+      }));
+
+      function samepathPut(_x8) {
+        return _ref8.apply(this, arguments);
+      }
+
+      return samepathPut;
+    }()
+  }, {
+    key: 'samepathDelete',
+    value: function () {
+      var _ref9 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee9(ctx) {
+        return _regenerator2.default.wrap(function _callee9$(_context9) {
+          while (1) {
+            switch (_context9.prev = _context9.next) {
+              case 0:
+                this.sendOk(ctx, "delete");
+
+              case 1:
+              case 'end':
+                return _context9.stop();
+            }
+          }
+        }, _callee9, this);
+      }));
+
+      function samepathDelete(_x9) {
+        return _ref9.apply(this, arguments);
+      }
+
+      return samepathDelete;
+    }()
   }]);
   return RoutePathClass;
-}(_Route3.default), (_applyDecoratedDescriptor(_class2.prototype, 'index', [_dec2], (0, _getOwnPropertyDescriptor2.default)(_class2.prototype, 'index'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'MyPath', [_dec3], (0, _getOwnPropertyDescriptor2.default)(_class2.prototype, 'MyPath'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'mypath', [_dec4], (0, _getOwnPropertyDescriptor2.default)(_class2.prototype, 'mypath'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'myNewPath', [_dec5], (0, _getOwnPropertyDescriptor2.default)(_class2.prototype, 'myNewPath'), _class2.prototype)), _class2)) || _class);
+}(_Route3.default), (_applyDecoratedDescriptor(_class2.prototype, 'index', [_dec2], (0, _getOwnPropertyDescriptor2.default)(_class2.prototype, 'index'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'MyPath', [_dec3], (0, _getOwnPropertyDescriptor2.default)(_class2.prototype, 'MyPath'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'mypath', [_dec4], (0, _getOwnPropertyDescriptor2.default)(_class2.prototype, 'mypath'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'myNewPath', [_dec5], (0, _getOwnPropertyDescriptor2.default)(_class2.prototype, 'myNewPath'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'samepathGet', [_dec6], (0, _getOwnPropertyDescriptor2.default)(_class2.prototype, 'samepathGet'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'samepathPost', [_dec7], (0, _getOwnPropertyDescriptor2.default)(_class2.prototype, 'samepathPost'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'samepathPatch', [_dec8], (0, _getOwnPropertyDescriptor2.default)(_class2.prototype, 'samepathPatch'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'samepathPut', [_dec9], (0, _getOwnPropertyDescriptor2.default)(_class2.prototype, 'samepathPut'), _class2.prototype), _applyDecoratedDescriptor(_class2.prototype, 'samepathDelete', [_dec10], (0, _getOwnPropertyDescriptor2.default)(_class2.prototype, 'samepathDelete'), _class2.prototype)), _class2)) || _class);
 exports.default = RoutePathClass;

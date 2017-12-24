@@ -43,7 +43,9 @@ var RouteDecorators = function () {
       target.routes = target.routes || {
         get: [],
         post: [],
-        delete: []
+        delete: [],
+        patch: [],
+        put: []
       };
       if (target.routeBase === undefined) {
         target.routeBase = target.constructor.name.replace('Route', '');

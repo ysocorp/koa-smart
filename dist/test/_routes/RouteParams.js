@@ -41,7 +41,7 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
-var _dec, _desc, _value, _class;
+var _dec, _dec2, _dec3, _desc, _value, _class;
 
 var _Route2 = require('../../routes/Route');
 
@@ -84,6 +84,16 @@ var RouteParams = (_dec = _Route3.default.Post({
     email: true,
     password: false
   }
+}), _dec2 = _Route3.default.Post({
+  path: 'samepath',
+  params: {
+    post: true
+  }
+}), _dec3 = _Route3.default.Patch({
+  path: 'samepath',
+  params: {
+    patch: true
+  }
 }), (_class = function (_Route) {
   (0, _inherits3.default)(RouteParams, _Route);
 
@@ -119,7 +129,55 @@ var RouteParams = (_dec = _Route3.default.Post({
 
       return params;
     }()
+  }, {
+    key: 'samepathPost',
+    value: function () {
+      var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(ctx) {
+        return _regenerator2.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                this.sendOk(ctx, this.body(ctx));
+
+              case 1:
+              case 'end':
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+
+      function samepathPost(_x2) {
+        return _ref2.apply(this, arguments);
+      }
+
+      return samepathPost;
+    }()
+  }, {
+    key: 'samepathPatch',
+    value: function () {
+      var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(ctx) {
+        return _regenerator2.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                this.sendOk(ctx, this.body(ctx));
+
+              case 1:
+              case 'end':
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+
+      function samepathPatch(_x3) {
+        return _ref3.apply(this, arguments);
+      }
+
+      return samepathPatch;
+    }()
   }]);
   return RouteParams;
-}(_Route3.default), (_applyDecoratedDescriptor(_class.prototype, 'params', [_dec], (0, _getOwnPropertyDescriptor2.default)(_class.prototype, 'params'), _class.prototype)), _class));
+}(_Route3.default), (_applyDecoratedDescriptor(_class.prototype, 'params', [_dec], (0, _getOwnPropertyDescriptor2.default)(_class.prototype, 'params'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'samepathPost', [_dec2], (0, _getOwnPropertyDescriptor2.default)(_class.prototype, 'samepathPost'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'samepathPatch', [_dec3], (0, _getOwnPropertyDescriptor2.default)(_class.prototype, 'samepathPatch'), _class.prototype)), _class));
 exports.default = RouteParams;
