@@ -24,4 +24,20 @@ export default class RouteRateLimit extends Route {
   async min1max2Sec1max5(ctx) {
     this.sendNoContent(ctx);
   }
+
+  @Route.Get({
+    path: 'samepath-min1max2',
+    rateLimit: { interval: { min: 1 }, max: 2 },
+  })
+  async samepathMin1max2Get(ctx) {
+    this.sendOk(ctx, this.body(ctx));
+  }
+
+  @Route.Post({
+    path: 'samepath-min1max2',
+    rateLimit: { interval: { min: 1 }, max: 2 },
+  })
+  async samepathMin1max2Post(ctx) {
+    this.sendOk(ctx, this.body(ctx));
+  }
 }

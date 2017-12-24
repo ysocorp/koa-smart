@@ -205,5 +205,22 @@ describe('RouteDecorator', () => {
       res = await request.get('/rate-limit/min1max2-sec1max5');
       expect(res.statusCode).toBe(429);
     });
+
+    it('should apply ratelimit only on specific type and path', async () => {
+      let res = await request.get('/rate-limit/samepath-min1max2');
+      expect(res.statusCode).toBeLessThan(400);
+      res = await request.get('/rate-limit/samepath-min1max2');
+      expect(res.statusCode).toBeLessThan(400);
+      res = await request.get('/rate-limit/samepath-min1max2');
+      expect(res.statusCode).toBe(429);
+
+      res = await request.post('/rate-limit/samepath-min1max2');
+      expect(res.statusCode).toBeLessThan(400);
+      res = await request.post('/rate-limit/samepath-min1max2');
+      expect(res.statusCode).toBeLessThan(400);
+      res = await request.post('/rate-limit/samepath-min1max2');
+      expect(res.statusCode).toBe(429);
+    });
+
   });
 });
