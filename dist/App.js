@@ -37,6 +37,10 @@ var _koa = require('koa');
 
 var _koa2 = _interopRequireDefault(_koa);
 
+var _koaLocale = require('koa-locale');
+
+var _koaLocale2 = _interopRequireDefault(_koaLocale);
+
 var _Route = require('./routes/Route');
 
 var _Route2 = _interopRequireDefault(_Route);
@@ -62,6 +66,8 @@ var App = function () {
     this.routeParam = routeParam;
     this.port = port;
     this.app = new _koa2.default();
+
+    (0, _koaLocale2.default)(this.app);
   }
 
   (0, _createClass3.default)(App, [{

@@ -72,7 +72,9 @@ var __ = function __(string) {
 };
 
 function getMessageTranslate(ctx, msg) {
-  if (ctx.state.__) {
+  if (ctx.i18n.__) {
+    return ctx.i18n.__(msg);
+  } else if (ctx.state.__) {
     return ctx.state.__(msg);
   }
   return msg;
