@@ -308,7 +308,10 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
     },
     ```
 
-## Get Started
+## Get Started ([quick-start boilerplate](https://github.com/ysocorp/koa-smart-light-example))
+
+in order to get started quickly, look at [this boilerplate](https://github.com/ysocorp/koa-smart-light-example), or follow the following instructions:
+
   * import the app and your middlewares
 
     ```sh
