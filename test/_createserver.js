@@ -22,9 +22,9 @@ export default async function create(options = {}) {
     cors({ credentials: true }),
     helmet(),
     bodyParser(),
-    handleError,
-    // logger,
-    addDefaultBody,
+    handleError({ logAll: true }),
+    // logger(),
+    addDefaultBody(),
     compress({}),
   ]);
   console.log('********************MOUNT : GENERAL********************')
