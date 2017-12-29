@@ -1,4 +1,4 @@
-import Route from '../../../routes/Route';
+import Route from '../../../dist/routes/Route';
 
 export default class RouteBasePath extends Route {
   constructor(params) {

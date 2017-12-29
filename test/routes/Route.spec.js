@@ -1,9 +1,9 @@
 import expect from 'expect';
 
-import Route from '../../routes/Route';
-import ErrorApp from '../../utils/ErrorApp';
-import * as utils from '../../utils/utils';
-import * as utilsParam from '../../utils/utils.param';
+import Route from '../../dist/routes/Route';
+import ErrorApp from '../../dist/utils/ErrorApp';
+import * as utils from '../../dist/utils/utils';
+import * as utilsParam from '../../dist/utils/utils.param';
 
 describe('Route', () => {
   let route;

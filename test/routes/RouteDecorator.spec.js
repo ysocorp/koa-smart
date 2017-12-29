@@ -2,9 +2,9 @@ import expect from 'expect';
 import supertest from 'supertest';
 import { Stores } from 'koa2-ratelimit';
 
-import RDec from '../../routes/RouteDecorators';
+import RDec from '../../dist/routes/RouteDecorators';
+import { wait } from '../../dist/utils/utils';
 import createserver from '../_createserver';
-import { wait } from '../../utils/utils';
 
 describe('RouteDecorator', () => {
   let request;

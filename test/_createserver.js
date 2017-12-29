@@ -1,6 +1,6 @@
 import { join } from 'path';
 
-import App from '../App';
+import App from '../dist/App';
 import {
   bodyParser,
   compress,
@@ -9,7 +9,7 @@ import {
   addDefaultBody,
   handleError,
   logger,
-} from '../middlewares';
+} from '../dist/middlewares';
 
 
 export default async function create(options = {}) {
@@ -22,8 +22,8 @@ export default async function create(options = {}) {
     cors({ credentials: true }),
     helmet(),
     bodyParser(),
-    // logger,
     handleError,
+    // logger,
     addDefaultBody,
     compress({}),
   ]);
