@@ -22,13 +22,16 @@ export default class RouteDecorators {
     }
   }
 
-  static Route({ routeBase, disable = false }) {
+  static Route({ routeBase, disable = false, middlewares = null }) {
     return (target, key, descriptor) => { // eslint-disable-line no-unused-vars
       if (routeBase != null) { // null or undefined
         target.prototype.routeBase = routeBase;
       }
       if (disable != null) {
         target.prototype.disable = disable;
+      }
+      if (Array.isArray(middlewares)) {
+        target.prototype.middlewares = middlewares;
       }
       RouteDecorators._initData(target);
     };

@@ -17,6 +17,7 @@ export default class Route {
     this.allRoutesInstance = routes;
     this.models = models;
     this.disable = disable != null ? disable : this.disable;
+    this.middlewares = this.middlewares || [];
     if (this.models && model) {
       this.model = this.models[model];
     }
@@ -63,15 +64,15 @@ export default class Route {
   // ************************************ MIDDLEWARE *********************************
   _use(infos) {
     const { options = {} } = infos;
-    const { before = [], after = [] } = options;
+    const { middlewares = [] } = options;
 
-    const middlewares = [this._beforeRoute(infos)];
-    middlewares.push(...before);
-    this.addRateLimit(middlewares, infos);
-    middlewares.push(infos.call.bind(this));
-    middlewares.push(...after);
+    const middlewaresToAdd = [this._beforeRoute(infos)];
+    middlewaresToAdd.push(...this.middlewares); // add middlewares of the class
+    middlewaresToAdd.push(...middlewares); // add middlewares of the specific route
+    this.addRateLimit(middlewaresToAdd, infos);
+    middlewaresToAdd.push(infos.call.bind(this));
 
-    return middlewares;
+    return middlewaresToAdd;
   }
 
   // RateLimit
