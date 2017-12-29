@@ -219,31 +219,40 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
     }
     ```
 
-* **middlewares before / after**
+* **middlewares of an Class**
+
+  ```sh
+  @Route.Route({
+      middlewares: [ // Array of middlewares
+        async (ctx, next) => {
+          console.log('I will be call before all route in this class');
+          await next();
+        },
+      ],
+  })
+  class RouteMiddlewares extends Route {
+      async view(ctx, next) {
+        console.log('I will be call after middlewares of class');
+        this.sendOk(ctx, null, ctx.state.__('hello'));
+      }
+  }
+  ```
+
+* **middlewares of a specific route**
 
   ```sh
   @Route.Get({
-      before: [ // Array of middlewares
+      middlewares: [ // Array of middlewares
         async (ctx, next) => {
-          console.log('I'm the first');
+          console.log('I will be call before the route but after middlewares of class');
           await next();
         },
-        async (ctx, next) => {
-          console.log('I'm the second');
-          await next();
-        }
       ],
-      after: [ // Array of middlewares
-        async (ctx/*, next*/) => {
-          console.log('I'm the last');
-        }
-      ]
   })
   async view(ctx, next) {
-    console.log('I'm the third');
-    this.sendOk(ctx, null, ctx.state.__('hello'));
-    await next(); // don't forget to await "next" to allow the "after" middleware's execution.
-    }
+      console.log('I will be call after middlewares of the class and route');
+      this.sendOk(ctx, null, ctx.state.__('hello'));
+  }
   ```
 
 ## Params checker of POST body
