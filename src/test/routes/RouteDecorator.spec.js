@@ -223,4 +223,21 @@ describe('RouteDecorator', () => {
     });
 
   });
+
+  describe('middlewares', () => {
+    it('should call class middlewares and then the route function', async () => {
+      const { body } = await request.get('/middlewares/without');
+
+      expect(body.middleware).toEqual('class');
+      expect(body.data).toEqual('content');
+    });
+    it('should call class middlewares then middlewares of the route and finish with the route function', async () => {
+      const { body } = await request.get('/middlewares/with');
+
+      expect(body.start).toEqual('class');
+      expect(body.middleware).toEqual('route');
+      expect(body.data).toEqual('content');
+    });
+  });
+
 });
