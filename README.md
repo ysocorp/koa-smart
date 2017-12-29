@@ -332,6 +332,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
       bodyParser, 
       compress,
       cors,
+      handleError,
       RateLimit,
       ...
     } from 'koa-smart/middlewares';
@@ -352,7 +353,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
       cors({ credentials: true }),
       helmet(),
       bodyParser(),
-      logger,
+      handleError(),
       RateLimit.middleware({ interval: { min: 1 }, max: 100 }),
       ...
     ]);
@@ -405,9 +406,9 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
         locales: ['en', 'fr'],
         modes: ['query', 'subdomain', 'cookie', 'header', 'tld'],
       }),
-      logger,
-      handleError,
-      addDefaultBody,
+      handleError(),
+      logger(),
+      addDefaultBody(),
       compress({}),
       RateLimit.middleware({ interval: { min: 1 }, max: 100 }),
     ]);
@@ -455,9 +456,9 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
             locales: ['en', 'fr'],
             modes: ['query', 'subdomain', 'cookie', 'header', 'tld'],
           }),
-          logger,
-          handleError,
-          authentification,
+          handleError(),
+          logger(),
+          addDefaultBody(),
           compress({}),
           RateLimit.middleware({ interval: { min: 1 }, max: 100 }),
         ]);
