@@ -62,7 +62,7 @@ export default class App {
   }
 
   async start() {
-    this.app.use(notFound);
+    this.app.use(notFound());
     return this.app.listen(this.port);
   }
 }

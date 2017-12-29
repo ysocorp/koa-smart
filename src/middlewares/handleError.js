@@ -1,13 +1,14 @@
 const __ = string => string;
 
-const options = {
+let options = {
+  logAll: false,
   logErrorUnknown: true,
   logErrorSequelize: false,
   logErrorApp: false,
 }
 
 function displayLog(error, type) {
-  if (options[type]) {
+  if (options.logAll || options[type]) {
     console.error(error);
   }
 }
@@ -45,4 +46,10 @@ async function handleError(ctx, next) {
   }
 }
 
-export default handleError;
+export default (opt = {}) => {
+  options = {
+    ...options,
+    ...opt,
+  }
+  return handleError;
+};

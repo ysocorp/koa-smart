@@ -37,4 +37,4 @@ async function logger(ctx, next) {
   }
 }
 
-export default logger;
+export default () => logger;

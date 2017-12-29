@@ -5,4 +5,4 @@ async function notFound(ctx) {
   };
 }
 
-export default notFound;
+export default () => notFound;
