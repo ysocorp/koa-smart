@@ -95,15 +95,33 @@ var App = function () {
   }, {
     key: 'addMiddlewares',
     value: function addMiddlewares(middlewares) {
+      var _this2 = this;
+
+      middlewares.forEach(function (e) {
+        return _this2.addMiddleware(e);
+      });
+    }
+  }, {
+    key: 'addMiddleware',
+    value: function addMiddleware(middleware) {
+      this.app.use(middleware);
+    }
+  }, {
+    key: 'mountFolder',
+    value: function mountFolder(pathFolder) {
+      var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '/';
+
+      var routes = this._getAllRoutes(pathFolder, prefix);
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
 
       try {
-        for (var _iterator = (0, _getIterator3.default)(middlewares), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var elem = _step.value;
+        for (var _iterator = (0, _getIterator3.default)(routes), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var route = _step.value;
 
-          this.app.use(elem);
+          route.mount();
+          this.app.use(route.koaRouter.middleware());
         }
       } catch (err) {
         _didIteratorError = true;
@@ -121,38 +139,6 @@ var App = function () {
       }
     }
   }, {
-    key: 'mountFolder',
-    value: function mountFolder(pathFolder) {
-      var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '/';
-
-      var routes = this._getAllRoutes(pathFolder, prefix);
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
-
-      try {
-        for (var _iterator2 = (0, _getIterator3.default)(routes), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var route = _step2.value;
-
-          route.mount();
-          this.app.use(route.koaRouter.middleware());
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
-      }
-    }
-  }, {
     key: 'start',
     value: function () {
       var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
@@ -160,7 +146,7 @@ var App = function () {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                this.app.use(_notFound2.default);
+                this.app.use((0, _notFound2.default)());
                 return _context.abrupt('return', this.app.listen(this.port));
 
               case 2:

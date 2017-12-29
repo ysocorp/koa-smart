@@ -12,15 +12,13 @@ var _asyncToGenerator2 = require("babel-runtime/helpers/asyncToGenerator");
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = function () {
+var addDefaultBody = function () {
   var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(ctx, next) {
     return _regenerator2.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            ctx.body = ctx.body ? ctx.body : {};
+            ctx.body = ctx.body || options.body;
             _context.next = 3;
             return next();
 
@@ -29,10 +27,23 @@ exports.default = function () {
             return _context.stop();
         }
       }
-    }, _callee, undefined);
+    }, _callee, this);
   }));
 
-  return function (_x, _x2) {
+  return function addDefaultBody(_x, _x2) {
     return _ref.apply(this, arguments);
   };
 }();
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var options = {
+  body: {}
+};
+
+exports.default = function () {
+  var body = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+  options.body = body;
+  return addDefaultBody;
+};

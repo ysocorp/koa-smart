@@ -27,7 +27,7 @@ var logger = function () {
             return next();
 
           case 5:
-            _context.next = 14;
+            _context.next = 15;
             break;
 
           case 7:
@@ -36,27 +36,28 @@ var logger = function () {
             msg = _context.t0;
             arraySequelize = ['SequelizeValidationError', 'SequelizeUniqueConstraintError'];
 
-            if (_context.t0 instanceof _ErrorApp2.default) {
+            if (_context.t0.constructor.name === 'ErrorApp') {
               msg = _context.t0.status + ': ' + _context.t0.message;
             }if (arraySequelize.includes(_context.t0.name)) {
               msg = _context.t0.name + ': ' + _context.t0.message;
             }
             console.error(_chalk2.default.red('[ERROR]'), _chalk2.default.red.bold(ctx.method) + ' ' + ctx.url, msg);
+            throw _context.t0;
 
-          case 14:
-            _context.prev = 14;
+          case 15:
+            _context.prev = 15;
             ms = new Date() - start;
             fColor = _chalk2.default[getColor(ctx.status)];
 
             console.log(fColor(dateFormat(new Date())) + ' - ' + fColor.bold(ctx.status) + ' ' + _chalk2.default.bold(ctx.method) + ' ' + ctx.url + ' - ' + fColor(ms + ' ms'));
-            return _context.finish(14);
+            return _context.finish(15);
 
-          case 19:
+          case 20:
           case 'end':
             return _context.stop();
         }
       }
-    }, _callee, this, [[1, 7, 14, 19]]);
+    }, _callee, this, [[1, 7, 15, 20]]);
   }));
 
   return function logger(_x, _x2) {
@@ -71,10 +72,6 @@ var _chalk2 = _interopRequireDefault(_chalk);
 var _moment = require('moment');
 
 var _moment2 = _interopRequireDefault(_moment);
-
-var _ErrorApp = require('../utils/ErrorApp');
-
-var _ErrorApp2 = _interopRequireDefault(_ErrorApp);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -91,4 +88,6 @@ function getColor(status) {
   return 'red';
 }
 
-exports.default = logger;
+exports.default = function () {
+  return logger;
+};

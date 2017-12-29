@@ -38,4 +38,6 @@ var notFound = function () {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = notFound;
+exports.default = function () {
+  return notFound;
+};

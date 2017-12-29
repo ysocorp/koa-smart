@@ -80,6 +80,7 @@ var Route = (_temp = _class = function () {
     this.allRoutesInstance = routes;
     this.models = models;
     this.disable = disable != null ? disable : this.disable;
+    this.middlewares = this.middlewares || [];
     if (this.models && model) {
       this.model = this.models[model];
     }
@@ -156,19 +157,17 @@ var Route = (_temp = _class = function () {
     value: function _use(infos) {
       var _infos$options = infos.options,
           options = _infos$options === undefined ? {} : _infos$options;
-      var _options$before = options.before,
-          before = _options$before === undefined ? [] : _options$before,
-          _options$after = options.after,
-          after = _options$after === undefined ? [] : _options$after;
+      var _options$middlewares = options.middlewares,
+          middlewares = _options$middlewares === undefined ? [] : _options$middlewares;
 
 
-      var middlewares = [this._beforeRoute(infos)];
-      middlewares.push.apply(middlewares, (0, _toConsumableArray3.default)(before));
-      this.addRateLimit(middlewares, infos);
-      middlewares.push(infos.call.bind(this));
-      middlewares.push.apply(middlewares, (0, _toConsumableArray3.default)(after));
+      var middlewaresToAdd = [this._beforeRoute(infos)];
+      middlewaresToAdd.push.apply(middlewaresToAdd, (0, _toConsumableArray3.default)(this.middlewares)); // add middlewares of the class
+      middlewaresToAdd.push.apply(middlewaresToAdd, (0, _toConsumableArray3.default)(middlewares)); // add middlewares of the specific route
+      this.addRateLimit(middlewaresToAdd, infos);
+      middlewaresToAdd.push(infos.call.bind(this));
 
-      return middlewares;
+      return middlewaresToAdd;
     }
 
     // RateLimit

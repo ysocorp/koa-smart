@@ -57,7 +57,9 @@ var RouteDecorators = function () {
     value: function Route(_ref) {
       var routeBase = _ref.routeBase,
           _ref$disable = _ref.disable,
-          disable = _ref$disable === undefined ? false : _ref$disable;
+          disable = _ref$disable === undefined ? false : _ref$disable,
+          _ref$middlewares = _ref.middlewares,
+          middlewares = _ref$middlewares === undefined ? null : _ref$middlewares;
 
       return function (target, key, descriptor) {
         // eslint-disable-line no-unused-vars
@@ -67,6 +69,9 @@ var RouteDecorators = function () {
         }
         if (disable != null) {
           target.prototype.disable = disable;
+        }
+        if (Array.isArray(middlewares)) {
+          target.prototype.middlewares = middlewares;
         }
         RouteDecorators._initData(target);
       };

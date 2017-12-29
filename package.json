@@ -1,6 +1,6 @@
 {
   "name": "koa-smart",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "people": {
     "name": "YSO CORP",
     "email": "contact@ysocorp.com",
@@ -17,7 +17,7 @@
     "url": "https://github.com/ysocorp/koa-smart"
   },
   "scripts": {
-    "test": "cross-env NODE_ENV=test mocha --opts mocha.opts",
+    "test": "npm run build-prod && cross-env NODE_ENV=test mocha --opts mocha.opts",
     "build-prod": "rimraf dist && cross-env NODE_ENV=production babel src --out-dir dist",
     "lint": "eslint src test"
   },
