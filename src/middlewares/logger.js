@@ -1,6 +1,5 @@
 import chalk from 'chalk';
 import moment from 'moment';
-import ErrorApp from '../utils/ErrorApp';
 
 function dateFormat(date) {
   return moment(date).format('YYYY/MM/DD, h:mm:ss a')
@@ -24,12 +23,13 @@ async function logger(ctx, next) {
     let msg = err;
 
     const arraySequelize = ['SequelizeValidationError', 'SequelizeUniqueConstraintError'];
-    if (err instanceof ErrorApp) {
+    if (err.constructor.name === 'ErrorApp') {
       msg = `${err.status}: ${err.message}`;
     } if (arraySequelize.includes(err.name)) {
       msg = `${err.name}: ${err.message}`;
     }
     console.error(chalk.red('[ERROR]'), `${chalk.red.bold(ctx.method)} ${ctx.url}`, msg);
+    throw err;
   } finally {
     const ms = new Date() - start;
     const fColor = chalk[getColor(ctx.status)];

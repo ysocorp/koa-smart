@@ -1,12 +1,24 @@
-import ErrorApp from '../utils/ErrorApp';
-
 const __ = string => string;
 
-function getMessageTranslate(ctx, msg) {
-  if (ctx.i18n.__) {
-    return ctx.i18n.__(msg);
-  } else if (ctx.state.__) {
-    return ctx.state.__(msg);
+const options = {
+  logErrorUnknown: true,
+  logErrorSequelize: false,
+  logErrorApp: false,
+}
+
+function displayLog(error, type) {
+  if (options[type]) {
+    console.error(error);
+  }
+}
+
+function getMessageTranslate(ctx, msg, toTranslate) {
+  if (toTranslate) {
+    if (ctx.i18n && ctx.i18n.__) {
+      return ctx.i18n.__(msg);
+    } else if (ctx.state && ctx.state.__) {
+      return ctx.state.__(msg);
+    }
   }
   return msg;
 }
@@ -15,19 +27,21 @@ async function handleError(ctx, next) {
   try {
     await next();
   } catch (err) {
-    ctx.status = err.status || 500;
-    ctx.status = ctx.status !== 500 ? ctx.status : 400;
-    ctx.body = { message: err.message };
-    if (!(err instanceof ErrorApp)) {
-      let msg = __('Please contact the support');
-      ctx.body = { message: getMessageTranslate(ctx, msg)};
-    }
     const arraySequelize = ['SequelizeValidationError', 'SequelizeUniqueConstraintError'];
-    if (arraySequelize.includes(err.name) || err.toTranslate) {
-      const message = err.message.split(':').pop();
-      ctx.body.message = getMessageTranslate(ctx, message);
+
+    if (err.constructor.name === 'ErrorApp') { // expected error
+      ctx.status = err.status;
+      ctx.body = { message: getMessageTranslate(ctx, err.message, err.toTranslate) };
+      displayLog(err, 'logErrorApp');
+    } else if (arraySequelize.includes(err.name)) { // sequilize expected error by validattor or other
+      ctx.status = 400;
+      ctx.body = { message: getMessageTranslate(ctx, err.message.split(':').pop(), true) };
+      displayLog(err, 'logErrorSequelize');
+    } else { // unexpected error
+      ctx.status = 500;
+      ctx.body = { message: getMessageTranslate(ctx, __('Please contact the support'), true) };
+      displayLog(err, 'logErrorUnknown');
     }
-    throw err;
   }
 }
 
