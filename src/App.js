@@ -46,9 +46,11 @@ export default class App {
   }
 
   addMiddlewares(middlewares) {
-    for (const elem of middlewares) {
-      this.app.use(elem);
-    }
+    middlewares.forEach(e => this.addMiddleware(e));
+  }
+
+  addMiddleware(middleware) {
+    this.app.use(middleware);
   }
 
   mountFolder(pathFolder, prefix = '/') {
