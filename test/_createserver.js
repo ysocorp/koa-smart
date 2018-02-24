@@ -22,7 +22,7 @@ export default async function create(options = {}) {
     cors({ credentials: true }),
     helmet(),
     bodyParser(),
-    handleError({ logAll: true }),
+    handleError({ }),
     // logger(),
     addDefaultBody(),
     compress({}),

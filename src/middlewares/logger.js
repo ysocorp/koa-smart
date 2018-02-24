@@ -16,24 +16,28 @@ function getColor(status) {
 
 async function logger(ctx, next) {
   const start = new Date();
+  let status = 500;
   try {
     console.log(`${chalk.blue(dateFormat(start))} - ${chalk.bold(ctx.method)} ${chalk.blue.bold(ctx.url)} START`);
     await next();
+    status = ctx.status;
   } catch (err) {
     let msg = err;
 
     const arraySequelize = ['SequelizeValidationError', 'SequelizeUniqueConstraintError'];
     if (err.constructor.name === 'ErrorApp') {
       msg = `${err.status}: ${err.message}`;
+      status = err.status;
     } if (arraySequelize.includes(err.name)) {
       msg = `${err.name}: ${err.message}`;
+      status = 400;
     }
-    console.error(chalk.red('[ERROR]'), `${chalk.red.bold(ctx.method)} ${ctx.url}`, msg);
+    console.log(chalk.red('[ERROR]'), `${chalk.red.bold(ctx.method)} ${ctx.url}`, msg);
     throw err;
   } finally {
     const ms = new Date() - start;
-    const fColor = chalk[getColor(ctx.status)];
-    console.log(`${fColor(dateFormat(new Date()))} - ${fColor.bold(ctx.status)} ${chalk.bold(ctx.method)} ${ctx.url} - ${fColor(ms + ' ms')}`);
+    const fColor = chalk[getColor(status)];
+    console.log(`${fColor(dateFormat(new Date()))} - ${fColor.bold(status)} ${chalk.bold(ctx.method)} ${ctx.url} - ${fColor(ms + ' ms')}`);
   }
 }
 
