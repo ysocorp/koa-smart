@@ -2,7 +2,7 @@ const __ = string => string;
 
 let options = {
   logAll: false,
-  logErrorUnknown: true,
+  logErrorUnknown: false,
   logErrorSequelize: false,
   logErrorApp: false,
 }
