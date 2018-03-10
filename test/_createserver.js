@@ -8,7 +8,7 @@ import {
   helmet,
   addDefaultBody,
   handleError,
-  logger,
+  // logger,
 } from '../dist/middlewares';
 
 
@@ -22,7 +22,7 @@ export default async function create(options = {}) {
     cors({ credentials: true }),
     helmet(),
     bodyParser(),
-    handleError({ }),
+    handleError({}),
     // logger(),
     addDefaultBody(),
     compress({}),
