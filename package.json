@@ -22,6 +22,7 @@
     "lint": "eslint src test"
   },
   "dependencies": {
+    "babel-runtime": "^6.26.0",
     "chalk": "^2.3.0",
     "jsonwebtoken": "^8.1.0",
     "kcors": "^2.2.0",
