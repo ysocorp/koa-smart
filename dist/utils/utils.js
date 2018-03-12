@@ -81,17 +81,32 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var lodash = exports.lodash = _lodash2.default;
 
+/**
+ * @desc generates a random number configurable range and floating precision
+ */
 function random(from, to, fixed) {
   return (Math.random() * (to - from) + from).toFixed(fixed) * 1;
 }
 
+/**
+ * @access private
+ */
 function ucFirst(str) {
   return str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
 }
+
+/**
+ * @desc turns the first letter of every words into capital letters
+ */
 function capitalize(str) {
   return ucFirst(str);
 }
 
+/**
+ * @desc converts a javascript date to the YYYY-MM-DD format
+ * @param {Date} date the date to convert
+ * @return {string} the formated date
+ */
 function dateYYYYMMDD(date) {
   if (!date) {
     return undefined;
@@ -99,10 +114,20 @@ function dateYYYYMMDD(date) {
   return (0, _moment2.default)(date).format('YYYY-MM-DD');
 }
 
+/**
+ * @desc checks if the given param is an array
+ * @param {*} array the element to check
+ * @return {boolean}
+ */
 function isArray(array) {
   return Array.isArray(array);
 }
 
+/**
+ * @desc trim the given element if possible
+ * @param {string | any} elem the element to trim
+ * @return {string | null} the trimmed element
+ */
 function trim(elem) {
   if (elem.trim) {
     return elem.trim();
@@ -112,6 +137,12 @@ function trim(elem) {
 
 var wait = exports.wait = timeout;
 
+/**
+ * @desc checks whether the given element is an objects
+ * @param {*} obj the element to check
+ * @param {boolean} [force = true] if set to true, will first check that obj is not an array.
+ * @return {boolean}
+ */
 function isObject(obj) {
   var force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
@@ -125,6 +156,11 @@ function toLowerCase(str) {
   return str.toLowerCase();
 }
 
+/**
+ * @desc checks whether the given element is empty
+ * @param {*} data the element to check
+ * @return {boolean}
+ */
 function isEmpty(data) {
   if (data === null || data === undefined) {
     return true;
@@ -144,35 +180,70 @@ function isEmpty(data) {
   return null;
 }
 
+/**
+ * @desc checks whether the given element is NOT empty
+ * @param {*} elem the element to check
+ * @return {boolean}
+ */
 function notEmpty(elem) {
   return !isEmpty(elem);
 }
 
+/**
+ * @desc checks whether the given element is empty, and return null if it is.
+ * @param {*} elem the element to check
+ * @return {* | null}
+ */
 function nullIfEmpty(elem) {
   //TODO test if object, string or array
   return isEmpty(elem) ? null : elem;
 }
 
+/**
+ * @desc transforms a JSON element intro a string
+ * @param {Object} json the element to encode
+ * @return {string}
+ */
 function jsonEncode(json) {
   return (0, _stringify2.default)(json).catch(function () {
     return null;
   });
 }
 
+/**
+ * @desc transforms JSON string into a JSON element
+ * @param {string} string the element to decode
+ * @return {Object}
+ */
 function jsonDecode(string) {
   return JSON.parse(string).catch(function () {
     return null;
   });
 }
 
+/**
+ * @desc converts the given element to a number
+ * @param {*} elem the element to convert
+ * @return {number}
+ */
 function toNumber(elem) {
   return Number(elem);
 }
 
+/**
+ * @desc copy an object recursively
+ * @param {Object} obj the object to clone
+ * @return {Object} a deep copy of the supplied object
+ */
 function deepCopy(obj) {
   return _lodash2.default.cloneDeep(obj);
 }
 
+/**
+ * @desc transforms an Object into an array of key-value pairs
+ * @param {Object} obj the object to transform
+ * @return {[string, *][]}
+ */
 function objValToArray(obj) {
   return (0, _keys2.default)(obj).map(function (k) {
     return obj[k];

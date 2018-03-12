@@ -35,6 +35,13 @@ var addDefaultBody = function () {
   };
 }();
 
+/**
+ * @desc middleware setting a default starting body
+ * @param {Object} body The default body to persist through the app
+ * @return {KoaMiddleware}
+ */
+
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var options = {

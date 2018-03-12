@@ -14,6 +14,13 @@ var _StatusCode2 = _interopRequireDefault(_StatusCode);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/**
+ * @desc allows the user to enforce a test on an object, and throws an error should the check fail.
+ * @param {function} func the predicate to check the object
+ * @param {string} errMsg the error message to be returned in case the check fails.
+ * @return {ParamMiddlewareFunction} a function that can be supplied to a route's param checks
+ * @throws {ErrorApp} thrown if the test predicate returns false
+ */
 function test(func, errMsg) {
   return function (elem, route, _ref) {
     var ctx = _ref.ctx,

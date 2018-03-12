@@ -54,6 +54,10 @@ var _utils = require('./utils/utils');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var App = function () {
+
+  /**
+   * @access private
+   */
   function App(opt) {
     (0, _classCallCheck3.default)(this, App);
     this.routeParam = null;
@@ -64,11 +68,21 @@ var App = function () {
         port = _opt$port === undefined ? process.env.PORT || 3000 : _opt$port;
 
     this.routeParam = routeParam;
+    /**
+     * @access private
+     */
     this.port = port;
+    /**
+     * @access private
+     */
     this.app = new _koa2.default();
 
     (0, _koaLocale2.default)(this.app);
   }
+  /**
+   * @access private
+   */
+
 
   (0, _createClass3.default)(App, [{
     key: '_getAllRoutes',
@@ -92,6 +106,13 @@ var App = function () {
       });
       return (0, _utils.objValToArray)(this.routes[prefix]);
     }
+
+    /**
+     * @access public
+     * @desc adds the provided functions to the list of Koa middlewares to be executed for all routes.
+     * @param {function} middlewares an array of Koa-compliant middlewares
+     */
+
   }, {
     key: 'addMiddlewares',
     value: function addMiddlewares(middlewares) {
@@ -101,11 +122,27 @@ var App = function () {
         return _this2.addMiddleware(e);
       });
     }
+
+    /**
+     * @access public
+     * @desc adds the provided function to the list of Koa middlewares to be executed for all routes.
+     * @param {function[]} middleware an array of middlewares
+     */
+
   }, {
     key: 'addMiddleware',
     value: function addMiddleware(middleware) {
       this.app.use(middleware);
     }
+
+    /**
+     * @access public
+     * @desc "mounts" a folder, scanning it for route files, then adding the discovered routes to the app.
+     *       a route is a class which extends {@link Route}
+     * @param {string} pathFolder the path of the folder to mount
+     * @param {string} [prefix='/'] an optional prefix to prepend to all of the folder's routes
+     */
+
   }, {
     key: 'mountFolder',
     value: function mountFolder(pathFolder) {
@@ -138,6 +175,12 @@ var App = function () {
         }
       }
     }
+
+    /**
+     * @access public
+     * @desc Launches the app and starts listening on the configured port.
+     */
+
   }, {
     key: 'start',
     value: function () {

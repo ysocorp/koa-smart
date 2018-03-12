@@ -1,6 +1,13 @@
 
 import StatusCode from './StatusCode';
 
+/**
+ * @desc allows the user to enforce a test on an object, and throws an error should the check fail.
+ * @param {function} func the predicate to check the object
+ * @param {string} errMsg the error message to be returned in case the check fails.
+ * @return {ParamMiddlewareFunction} a function that can be supplied to a route's param checks
+ * @throws {ErrorApp} thrown if the test predicate returns false
+ */
 export function test(func, errMsg) {
   return (elem, route, { ctx, keyBody }) => {
     if (!func(elem)) {
