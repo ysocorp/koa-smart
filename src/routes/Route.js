@@ -22,6 +22,7 @@ export default class Route {
    * @property {string} routeBase a prefix which will be preppended to the route's path
    * @property {boolean} disabled if set to true, the route will be ignored
    * @property {function[]} middlewares an array of Koa Middlewares, which will be mounted for the given route
+   * @property {Object} rateLimit a rateLimit object, which lets the user describe the max rate at which a user can access the route
    */
 
   /**
@@ -192,6 +193,13 @@ export default class Route {
   _beforeRoute(infos) {
     return async (ctx, next) => await this.beforeRoute(ctx, infos, next);
   }
+
+  /**
+   * @desc a member that can be overriden, which will always be executed before the route is accessed
+   * @param {KoaContext} ctx Koa's context object
+   * @param {Params} params an object containing all route parameters
+   * @param {function} next the next middleware in the chain
+   */
   async beforeRoute(ctx, { options }, next) {
     this._mlParams(ctx, options);
     if (next) {
