@@ -11,26 +11,24 @@ import RouteDecorators from './RouteDecorators';
 export default class Route {
   /**
    * @type {boolean}
+   * @desc if true it will log which route are mount and which are not
    */
-  static displayLog = true;
+  static displayLog = true;  
+  /**
+  * @type {StatusCode}
+  */
   static StatusCode = StatusCode;
 
   /**
-   * @typedef {Object} Params
-   * @property {Object.<string, boolean | PostParamsFilter>} params the params describing the route's middlewares,
-   *                                                                with the key being the param's name,
-   *                                                                and the value describes the way it should be handled.
-   *                                                                (only applicable for requests containing a body)
+   * @typedef {Object} BeforeRouteParams
    * @property {string} path the path at which the route will be available.
-   * @property {string} routeBase a prefix which will be preppended to the route's path
-   * @property {boolean} disabled if set to true, the route will be ignored
-   * @property {function[]} middlewares an array of Koa Middlewares, which will be mounted for the given route
-   * @property {Object} rateLimit a rateLimit object, which lets the user describe the max rate at which a user can access the route
+   * @property {ParamsMethodDecorator} options 
+   * @property {function} call the fonction to call when route match, this is automaticaly add by route decorator
    */
 
   /**
    * @typedef {Object} PostParamsFilter
-   * @property {ParamMiddlewareFunction[]} __func an array of functions which provides "middleware" functions that will be applied to the corresponding parameter one by one.
+   * @property {ParamMiddlewareFunction[]} __func an array of functions which provides "middleware" functions that will be applied to the corresponding parameter one by one, in order to validate or transform it
    * @property {boolean} __force whether the parameter is required or not.
    */
 
@@ -126,7 +124,7 @@ export default class Route {
  /**
   * @access public
   * @desc mounts the tagged function as a GET route.
-  * @param {Params} params the route's parameters
+  * @param {ParamsMethodDecorator} params the route's parameters
   * @return {Decorator}
   */
   static Get = RouteDecorators.Get;
@@ -134,7 +132,7 @@ export default class Route {
  /**
   * @access public
   * @desc mounts the tagged function as a POST route.
-  * @param {Params} params the route's parameters
+  * @param {ParamsMethodDecorator} params the route's parameters
   * @return {Decorator}
   */
   static Post = RouteDecorators.Post;
@@ -142,7 +140,7 @@ export default class Route {
  /**
   * @access public
   * @desc mounts the tagged function as a PUT route.
-  * @param {Params} params the route's parameters
+  * @param {ParamsMethodDecorator} params the route's parameters
   * @return {Decorator}
   */
   static Put = RouteDecorators.Put;
@@ -150,7 +148,7 @@ export default class Route {
  /**
   * @access public
   * @desc mounts the tagged function as a PATCH route.
-  * @param {Params} params the route's parameters
+  * @param {ParamsMethodDecorator} params the route's parameters
   * @return {Decorator}
   */
   static Patch = RouteDecorators.Patch;
@@ -158,7 +156,7 @@ export default class Route {
  /**
   * @access public
   * @desc mounts the tagged function as a DELETE route.
-  * @param {Params} params the route's parameters
+  * @param {ParamsMethodDecorator} params the route's parameters
   * @return {Decorator}
   */
   static Delete = RouteDecorators.Delete;
@@ -167,7 +165,7 @@ export default class Route {
   * @access public
   * @desc used to set some parameters on an entire class.The supported parameters are middlewares, disable, and routeBase.
   * @return {Decorator}
-  * @param {Params} params the route's parameters
+  * @param {ParamsClassDecorator} params the route's parameters
   */
   static Route = RouteDecorators.Route;
 
@@ -270,7 +268,7 @@ export default class Route {
   /**
    * @desc a member which can be overriden, which will always be executed before the route is accessed
    * @param {KoaContext} ctx Koa's context object
-   * @param {Params} params an object containing all route parameters
+   * @param {BeforeRouteParams} params an object containing all route parameters
    * @param {function} next the next middleware in the chain
    */
   async beforeRoute(ctx, { options }, next) {
