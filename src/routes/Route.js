@@ -9,6 +9,9 @@ import RouteDecorators from './RouteDecorators';
 
 
 export default class Route {
+  /**
+   * @type {boolean}
+   */
   static displayLog = true;
   static StatusCode = StatusCode;
 
@@ -50,28 +53,69 @@ export default class Route {
    *
    */
 
+   /**
+    * @typedef {function} Decorator
+    * @return { }
+    */
+
   /**
    * @external {KoaContext} http://koajs.com/#api
    */
 
    /**
-    *@external {Koa} http://koajs.com/#application
+    * @external {Koa} http://koajs.com/#application
     */
 
    /**
     * @param {RouteParams} params the route's parameters
     */
   constructor({ app, prefix, routes, models, model, disable }) {
+    /**
+     * @type {Koa}
+     * @desc the main Koa application
+     */
     this.app = app;
+    /**
+     * @type {string}
+     * @desc the route's prefix
+     */
     this.prefix = prefix;
+    /**
+     * @type {Route[]}
+     * @desc an array composed of all the availble routes in the application
+     */
     this.allRoutesInstance = routes;
+    /**
+     * @type {Model[]}
+     * @desc an array of all the models available in the application
+     */
     this.models = models;
+    /**
+     * @type {boolean}
+     * @desc whether the route should be disabled. disabled routes cannot be called.
+     */
     this.disable = disable != null ? disable : this.disable;
+    /**
+     * @type {function[]}
+     * @desc the route's registered middlewares
+     */
     this.middlewares = this.middlewares || [];
     if (this.models && model) {
+      /**
+       * @type {Model|undefined}
+       * @desc the route's own model
+       */
       this.model = this.models[model];
     }
+    /**
+     * @type {KoaRouter}
+     * @desc the underlying koa router for this particular route
+     */
+
     this.koaRouter = new KoaRouter();
+    /**
+     * @ignore
+     */
     this.privateKeyInParamsRoute = ['__force', '__func'];
     // This Variable are set by RouteDecorators
     this.routes;
@@ -83,6 +127,7 @@ export default class Route {
   * @access public
   * @desc mounts the tagged function as a GET route.
   * @param {Params} params the route's parameters
+  * @return {Decorator}
   */
   static Get = RouteDecorators.Get;
 
@@ -90,6 +135,7 @@ export default class Route {
   * @access public
   * @desc mounts the tagged function as a POST route.
   * @param {Params} params the route's parameters
+  * @return {Decorator}
   */
   static Post = RouteDecorators.Post;
 
@@ -97,6 +143,7 @@ export default class Route {
   * @access public
   * @desc mounts the tagged function as a PUT route.
   * @param {Params} params the route's parameters
+  * @return {Decorator}
   */
   static Put = RouteDecorators.Put;
 
@@ -104,6 +151,7 @@ export default class Route {
   * @access public
   * @desc mounts the tagged function as a PATCH route.
   * @param {Params} params the route's parameters
+  * @return {Decorator}
   */
   static Patch = RouteDecorators.Patch;
 
@@ -111,16 +159,23 @@ export default class Route {
   * @access public
   * @desc mounts the tagged function as a DELETE route.
   * @param {Params} params the route's parameters
+  * @return {Decorator}
   */
   static Delete = RouteDecorators.Delete;
 
  /**
   * @access public
   * @desc used to set some parameters on an entire class.The supported parameters are middlewares, disable, and routeBase.
+  * @return {Decorator}
   * @param {Params} params the route's parameters
   */
   static Route = RouteDecorators.Route;
 
+  /**
+   * logs a message, but only if the route's logs are set to be displayed.
+   *
+   * accepts several parameters
+   */
   log(str, ...args) {
     if (Route.displayLog) {
       console.log(str, ...args);
@@ -129,7 +184,9 @@ export default class Route {
 
   /**
    * @access public
-   * @desc Register the route and makes it callable once the API is launched.
+   * @desc Registers the route and makes it callable once the API is launched.
+   *       the route will be called along with the middlewares that were registered in the decorator.
+   *
    *       you will usually not need to call this method yourself.
    */
   mount() {
@@ -153,7 +210,10 @@ export default class Route {
   }
 
   // ************************************ MIDDLEWARE *********************************
-  _use(infos) {
+  /**
+   *@ignore
+   */
+   _use(infos) {
     const { options = {} } = infos;
     const { middlewares = [] } = options;
 
@@ -166,7 +226,9 @@ export default class Route {
     return middlewaresToAdd;
   }
 
-  // RateLimit
+  /**
+   *@ignore
+   */
   getRateLimit(option, routePath, type) {
     option.interval = RateLimit.RateLimit.timeToMs(option.interval);
     return RateLimit.middleware({
@@ -175,6 +237,14 @@ export default class Route {
     });
   }
 
+  /**
+   * if a decorator has a rateLimit property, it will add the rate limiting mechanism to the route,
+   * with a unique ID for each route in order to differentiate the various routes.
+   *
+   * You should not need to call this method directly.
+   * @param {function[]} middlewares the array of currently registered middlewares for the given route
+   * @param {{options:{rateLimit:Object,routePath:string,type:string}}} params the route's parameters
+   */
   addRateLimit(middlewares, { options }) {
     const { rateLimit, routePath, type } = options;
 
@@ -190,12 +260,15 @@ export default class Route {
   }
 
   // beforeRoute
+  /**
+   *@ignore
+   */
   _beforeRoute(infos) {
     return async (ctx, next) => await this.beforeRoute(ctx, infos, next);
   }
 
   /**
-   * @desc a member that can be overriden, which will always be executed before the route is accessed
+   * @desc a member which can be overriden, which will always be executed before the route is accessed
    * @param {KoaContext} ctx Koa's context object
    * @param {Params} params an object containing all route parameters
    * @param {function} next the next middleware in the chain
@@ -208,11 +281,17 @@ export default class Route {
   }
 
   // test params
+  /**
+   *@ignore
+   */
   _mlParams(ctx, { params }) {
     ctx.request.bodyOrig = deepCopy(ctx.request.body);
     ctx.request.body = this._mlTestParams(ctx, ctx.request.body, params);
   }
 
+  /**
+   *@ignore
+   */
   _mlParamsExecFunc(ctx, body, keyBody, param) {
     if (body && body[keyBody]) {
       const { __func } = param;
@@ -224,6 +303,9 @@ export default class Route {
     }
   }
 
+  /**
+   *@ignore
+   */
   _mlTestParams(ctx, body, paramsTest) {
     const bodyVerif = {};
     const paramsConvert = this._paramsNormalize(paramsTest);
@@ -257,6 +339,9 @@ export default class Route {
     return bodyVerif;
   }
 
+  /**
+   *@ignore
+   */
   _paramsNormalize(paramsTest) {
     let paramsConvert = {};
     // convert array to object
@@ -286,6 +371,9 @@ export default class Route {
     return paramsConvert;
   }
 
+  /**
+   *@ignore
+   */
   _paramsHasSubElement(paramsTest) {
     for (const key in paramsTest) {
       if (!this.privateKeyInParamsRoute.includes(key)) {
@@ -297,12 +385,21 @@ export default class Route {
 
   // ************************************ !MIDDLEWARE *********************************
 
+  /**
+   *@desc retrieves the context's body, if the request has one.
+   *@param {KoaContext} ctx koa's context object
+   *@param {boolean} [original=false] if set to true, the function will return the body before it is filtered by the param decorator.
+   *                                  otherwise, it will return the filtered and transformed body.
+   */
   body(ctx, original = false) {
     return original ? ctx.request.bodyOrig : ctx.request.body;
   }
 
   /**
-   * @access private
+   * @access public
+   * @desc retrieves the query params in a GET request
+   * @param {KoaContext} ctx koa's context object
+   * @return {Object.<string, *>}
    */
   bodyGet(ctx) {
     return ctx.request.query || {};
@@ -310,18 +407,20 @@ export default class Route {
 
   /**
    * @access public
-   * @desc retrieves the query params in a GET request
+   * @desc alias of {@link bodyGet}
    * @param {KoaContext} ctx koa's context object
+   * @return {Object.<string, *>}
    */
   paramsGet(ctx) { return this.bodyGet(ctx); }
 
   /**
    * @access public
-   * @desc sets the response's body (with a message + data field) and status .
+   * @desc sets the response's body (with a message + data field) and status.
    * @param {KoaContext} ctx koa's context object
    * @param {number} [status] the HTTP status code to end the request with
    * @param {*} [data] the data to be yielded by the requests
    * @param {string} [message] the message to be yielded by the request
+   * @return { }
    */
   send(ctx, status = 200, data, message) {
     ctx.body = ctx.body || {}; // add default body
@@ -346,6 +445,7 @@ export default class Route {
    * @param {KoaContext} ctx koa's context object
    * @param {*} [data] the data to be yielded by the requests
    * @param {string} [message] the message to be yielded by the request
+   * @return { }
    */
   sendOk(ctx, data, message) {
     return this.send(ctx, Route.StatusCode.ok, data, message);
@@ -357,6 +457,7 @@ export default class Route {
    * @param {KoaContext} ctx koa's context object
    * @param {*} [data] the data to be yielded by the requests
    * @param {string} [message] the message to be yielded by the request
+   * @return { }
    */
   sendCreated(ctx, data, message) {
     return this.send(ctx, Route.StatusCode.created, data, message);
@@ -366,6 +467,7 @@ export default class Route {
    * @access public
    * @desc replies with an empty body, yielding 204 NO CONTENT as the status
    * @param {KoaContext} ctx koa's context object
+   * @return { }
    */
   sendNoContent(ctx) {
     return this.send(ctx, Route.StatusCode.noContent);
@@ -377,6 +479,7 @@ export default class Route {
    * @param {KoaContext} ctx koa's context object
    * @param {*} [data] the data to be yielded by the requests
    * @param {string} [message] the message to be yielded by the request
+   * @return { }
    */
   sendBadRequest(ctx, data, message) {
     return this.send(ctx, Route.StatusCode.badRequest, data, message);
@@ -388,6 +491,7 @@ export default class Route {
    * @param {KoaContext} ctx koa's context object
    * @param {*} [data] the data to be yielded by the requests
    * @param {string} [message] the message to be yielded by the request
+   * @return { }
    */
   sendUnauthorized(ctx, data, message) {
     return this.send(ctx, Route.StatusCode.unauthorized, data, message);
@@ -399,6 +503,7 @@ export default class Route {
    * @param {KoaContext} ctx koa's context object
    * @param {*} [data] the data to be yielded by the requests
    * @param {string} [message] the message to be yielded by the request
+   * @return { }
    */
   sendForbidden(ctx, data, message) {
     return this.send(ctx, Route.StatusCode.forbidden, data, message);
@@ -410,6 +515,7 @@ export default class Route {
    * @param {KoaContext} ctx koa's context object
    * @param {*} [data] the data to be yielded by the requests
    * @param {string} [message] the message to be yielded by the request
+   * @return { }
    */
   sendNotFound(ctx, data, message) {
     return this.send(ctx, Route.StatusCode.notFound, data, message);
@@ -421,6 +527,7 @@ export default class Route {
    * @param {KoaContext} ctx koa's context object
    * @param {*} [data] the data to be yielded by the requests
    * @param {string} [message] the message to be yielded by the request
+   * @return { }
    */
   sendInternalServerError(ctx, data, message) {
     return this.send(ctx, Route.StatusCode.internalServerError, data, message);
@@ -433,6 +540,7 @@ export default class Route {
    * @param {string} message  a message describing the error
    * @param {boolean} translate indicates whether the message should be translated or not
    * @throws {ErrorApp} thrown error.
+   * @return { }
    */
   throw(status, message, translate = false) {
     throw new ErrorApp(status, message, translate);
@@ -446,6 +554,7 @@ export default class Route {
    * @param {string} message  a message describing the error
    * @param {boolean} translate indicates whether the message should be translated or not
    * @throws {ErrorApp} thrown error, should the assert fail.
+   * @return { }
    */
   assert(condition, status, message, translate = false) {
     if (!condition) {

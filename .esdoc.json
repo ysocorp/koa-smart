@@ -1,6 +1,7 @@
 {
   "source": "./src",
   "destination": "./docs",
+  "includes": ["Route.js", "App.js", "ErrorApp.js","handleError.js"],
   "plugins": [
     {"name": "esdoc-ecmascript-proposal-plugin", "option": {"all": true}},
     {"name": "esdoc-standard-plugin"}
