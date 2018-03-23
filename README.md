@@ -219,7 +219,7 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
     }
     ```
 
-* **middlewares of an Class**
+* **middlewares of a Class**
 
   ```sh
   @Route.Route({
@@ -319,7 +319,7 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
 
 ## Get Started ([quick-start boilerplate](https://github.com/ysocorp/koa-smart-light-example))
 
-in order to get started quickly, look at [this boilerplate](https://github.com/ysocorp/koa-smart-light-example), or follow the following instructions:
+in order to get started quickly, look at [this boilerplate](https://github.com/ysocorp/koa-smart-light-example), or follow the instructions below:
 
   * import the app and your middlewares
 
@@ -518,7 +518,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
 
   ```
 
-  2. Create an route with access 
+  2. Create a route with access 
 
   ```sh
   export default class RouteMyApi extends MyRoute {
