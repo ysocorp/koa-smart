@@ -64,45 +64,45 @@ export class TypeNumber extends TypeAny {
   }
 
   // Function when test and transform param
-  _isInterger = () => !!`${this.value}`.match(/^-{0,1}\d+$/);
+  _isTypeNum = () => typeof this.value === 'number';
+  _isInteger = () => !!`${this.value}`.match(/^-{0,1}\d+$/);
   _isFloat = () => !!`${this.value}`.match(/^-?\d+\.\d+$/);
-  _isNumber = () => this._isInterger() || this._isFloat();
+  _isNumber = () => this._isInteger() || this._isFloat();
 
   _testType() {
-    if ((this._integer && !this._isInterger()) || this._isNumber()) {
+    if (!this._isNumber()) {
       this.error = `Invalid type to param`;
-      return;
+      return false;
     }
-
-    if (this._integer) {
-      this.value = parseInt(this.value);
-    } else {
-      this.value = parseFloat(this.value);
-    }
+    return true;
   }
 
   _generateError() {
-    this.error = `Invalide field ${this.key} should be a valide number`;
+    this.error = `Invalid field ${this.key} should be a valide number`;
   }
 
   _test() {
-    if (this.error) return;
-
     if (this._min != null && this.value < this._min) this._generateError();
     if (this._max != null && this.value > this._max) this._generateError();
     if (this._multiple != null && this.value % this._multiple !== 0)
       this._generateError();
     if (this._positive && this.value < 0) this._generateError();
-    if (this._negative && this.value > 0) this._generateError();
+    if (this._negative && this.value >= 0) this._generateError();
     if (this._port != null && (this.value < 0 || this.value > 65535))
       this._generateError();
+
+    return !!this.error;
   }
 
   _precisionTo = (nb, nbDigit, type) =>
     Math[type](nb * 10 ** nbDigit) / 10 ** nbDigit;
 
   _transform() {
-    if (this.error) return;
+    if (this._integer) {
+      this.value = parseInt(this.value);
+    } else {
+      this.value = parseFloat(this.value);
+    }
 
     if (this._tPrecision >= 0)
       this.value = this._precisionTo(
