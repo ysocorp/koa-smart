@@ -35,7 +35,7 @@ export class TypeObject extends TypeAny {
   }
 
   _testType() {
-    if (typeof this.value !== this._type) {
+    if (typeof this._value !== this._type) {
       this.error = `Invalid type to ${this.key}`;
       return false;
     }
@@ -43,8 +43,8 @@ export class TypeObject extends TypeAny {
   }
 
   _test() {
-    const oldValue = { ...this.value };
-    this.value = {};
+    const oldValue = { ...this._value };
+    this._value = {};
 
     for (const key in this._shema) {
       const param = this._shema[key];
@@ -52,7 +52,7 @@ export class TypeObject extends TypeAny {
       if (param.error) {
         this._errors[key] = param.error;
       } else {
-        this.value[key] = param.value;
+        this._value[key] = param.value;
       }
     }
 

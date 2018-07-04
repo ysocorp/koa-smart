@@ -83,4 +83,28 @@ describe('TypeAny', () => {
       });
     });
   });
+
+  describe('Option default', () => {
+    it('Should return the default value if value = null', async () => {
+      const shema = Param.any().default('default');
+      shema.test(null);
+      expect(shema.value).toBe('default');
+      expect(shema.error).toBeFalsy();
+    });
+    it('Should not return default if the value is not null', async () => {
+      const shema = Param.any().default('default');
+      shema.test('not null');
+      expect(shema.value).toBe('not null');
+      expect(shema.error).toBeFalsy();
+    });
+    it('Should return default if has error', async () => {
+      const shema = Param.any()
+        .default('default')
+        .required();
+      shema.test(null);
+      expect(shema.value).toBe('default');
+      expect(shema._hasError).toBe(true);
+      expect(shema.error).toBeFalsy();
+    });
+  });
 });

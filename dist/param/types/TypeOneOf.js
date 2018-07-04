@@ -83,10 +83,10 @@ var TypeOneOf = exports.TypeOneOf = function (_TypeAny) {
           var t = _step.value;
 
           t.required(this._required);
-          t.test(this.value);
+          t.test(this._value);
           if (!isOneOk && !t.error) {
             isOneOk = true;
-            this.value = t.value;
+            this._value = t.value;
           }
           if (t.error) {
             this._errors.push(t.error);

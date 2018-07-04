@@ -80,7 +80,7 @@ var TypeObject = exports.TypeObject = function (_TypeAny) {
   }, {
     key: '_testType',
     value: function _testType() {
-      if ((0, _typeof3.default)(this.value) !== this._type) {
+      if ((0, _typeof3.default)(this._value) !== this._type) {
         this.error = 'Invalid type to ' + this.key;
         return false;
       }
@@ -89,8 +89,8 @@ var TypeObject = exports.TypeObject = function (_TypeAny) {
   }, {
     key: '_test',
     value: function _test() {
-      var oldValue = (0, _extends3.default)({}, this.value);
-      this.value = {};
+      var oldValue = (0, _extends3.default)({}, this._value);
+      this._value = {};
 
       for (var key in this._shema) {
         var param = this._shema[key];
@@ -98,7 +98,7 @@ var TypeObject = exports.TypeObject = function (_TypeAny) {
         if (param.error) {
           this._errors[key] = param.error;
         } else {
-          this.value[key] = param.value;
+          this._value[key] = param.value;
         }
       }
 

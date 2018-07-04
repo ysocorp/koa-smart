@@ -49,15 +49,15 @@ var TypeNumber = exports.TypeNumber = function (_TypeAny) {
     var _this = (0, _possibleConstructorReturn3.default)(this, (TypeNumber.__proto__ || (0, _getPrototypeOf2.default)(TypeNumber)).call(this, 'number'));
 
     _this._isTypeNum = function () {
-      return typeof _this.value === 'number';
+      return typeof _this._value === 'number';
     };
 
     _this._isInteger = function () {
-      return !!('' + _this.value).match(/^-{0,1}\d+$/);
+      return !!('' + _this._value).match(/^-{0,1}\d+$/);
     };
 
     _this._isFloat = function () {
-      return !!('' + _this.value).match(/^-?\d+\.\d+$/);
+      return !!('' + _this._value).match(/^-?\d+\.\d+$/);
     };
 
     _this._isNumber = function () {
@@ -165,25 +165,25 @@ var TypeNumber = exports.TypeNumber = function (_TypeAny) {
   }, {
     key: '_test',
     value: function _test() {
-      if (this._min != null && this.value < this._min) this._generateError();
-      if (this._max != null && this.value > this._max) this._generateError();
-      if (this._multiple != null && this.value % this._multiple !== 0) this._generateError();
-      if (this._positive && this.value < 0) this._generateError();
-      if (this._negative && this.value >= 0) this._generateError();
-      if (this._port != null && (this.value < 0 || this.value > 65535)) this._generateError();
+      if (this._min != null && this._value < this._min) this._generateError();
+      if (this._max != null && this._value > this._max) this._generateError();
+      if (this._multiple != null && this._value % this._multiple !== 0) this._generateError();
+      if (this._positive && this._value < 0) this._generateError();
+      if (this._negative && this._value >= 0) this._generateError();
+      if (this._port != null && (this._value < 0 || this._value > 65535)) this._generateError();
 
-      return !!this.error;
+      return this._hasError;
     }
   }, {
     key: '_transform',
     value: function _transform() {
       if (this._integer) {
-        this.value = parseInt(this.value);
+        this._value = parseInt(this._value);
       } else {
-        this.value = parseFloat(this.value);
+        this._value = parseFloat(this._value);
       }
 
-      if (this._tPrecision >= 0) this.value = this._precisionTo(this.value, this._tPrecision, this._tPrecisionType);
+      if (this._tPrecision >= 0) this._value = this._precisionTo(this._value, this._tPrecision, this._tPrecisionType);
     }
   }]);
   return TypeNumber;

@@ -64,9 +64,9 @@ export class TypeNumber extends TypeAny {
   }
 
   // Function when test and transform param
-  _isTypeNum = () => typeof this.value === 'number';
-  _isInteger = () => !!`${this.value}`.match(/^-{0,1}\d+$/);
-  _isFloat = () => !!`${this.value}`.match(/^-?\d+\.\d+$/);
+  _isTypeNum = () => typeof this._value === 'number';
+  _isInteger = () => !!`${this._value}`.match(/^-{0,1}\d+$/);
+  _isFloat = () => !!`${this._value}`.match(/^-?\d+\.\d+$/);
   _isNumber = () => this._isInteger() || this._isFloat();
 
   _testType() {
@@ -82,16 +82,16 @@ export class TypeNumber extends TypeAny {
   }
 
   _test() {
-    if (this._min != null && this.value < this._min) this._generateError();
-    if (this._max != null && this.value > this._max) this._generateError();
-    if (this._multiple != null && this.value % this._multiple !== 0)
+    if (this._min != null && this._value < this._min) this._generateError();
+    if (this._max != null && this._value > this._max) this._generateError();
+    if (this._multiple != null && this._value % this._multiple !== 0)
       this._generateError();
-    if (this._positive && this.value < 0) this._generateError();
-    if (this._negative && this.value >= 0) this._generateError();
-    if (this._port != null && (this.value < 0 || this.value > 65535))
+    if (this._positive && this._value < 0) this._generateError();
+    if (this._negative && this._value >= 0) this._generateError();
+    if (this._port != null && (this._value < 0 || this._value > 65535))
       this._generateError();
 
-    return !!this.error;
+    return this._hasError;
   }
 
   _precisionTo = (nb, nbDigit, type) =>
@@ -99,14 +99,14 @@ export class TypeNumber extends TypeAny {
 
   _transform() {
     if (this._integer) {
-      this.value = parseInt(this.value);
+      this._value = parseInt(this._value);
     } else {
-      this.value = parseFloat(this.value);
+      this._value = parseFloat(this._value);
     }
 
     if (this._tPrecision >= 0)
-      this.value = this._precisionTo(
-        this.value,
+      this._value = this._precisionTo(
+        this._value,
         this._tPrecision,
         this._tPrecisionType,
       );

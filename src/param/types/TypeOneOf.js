@@ -28,10 +28,10 @@ export class TypeOneOf extends TypeAny {
     let isOneOk = false;
     for (const t of this._types) {
       t.required(this._required);
-      t.test(this.value);
+      t.test(this._value);
       if (!isOneOk && !t.error) {
         isOneOk = true;
-        this.value = t.value;
+        this._value = t.value;
       }
       if (t.error) {
         this._errors.push(t.error);

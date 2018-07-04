@@ -62,23 +62,23 @@ export class TypeString extends TypeAny {
   }
 
   _test() {
-    if (this._length && this.value.length !== this._length)
+    if (this._length && this._value.length !== this._length)
       this._generateError();
-    if (this._min && this.value.length < this._min) this._generateError();
-    if (this._max && this.value.length > this._max) this._generateError();
+    if (this._min && this._value.length < this._min) this._generateError();
+    if (this._max && this._value.length > this._max) this._generateError();
 
-    return !!this.error;
+    return this._hasError;
   }
 
   _transform() {
     if (this.error) return;
 
-    if (this._tTrim) this.value = this.value.trim();
+    if (this._tTrim) this._value = this._value.trim();
     if (this._tTruncate && this._max)
-      this.value = this.value.substring(0, this._max);
+      this._value = this._value.substring(0, this._max);
     if (this._tTruncate && this._length)
-      this.value = this.value.substring(0, this._length);
-    if (this._tUppercase) this.value = this.value.toUpperCase();
-    if (this._tLowercase) this.value = this.value.toLowerCase();
+      this._value = this._value.substring(0, this._length);
+    if (this._tUppercase) this._value = this._value.toUpperCase();
+    if (this._tLowercase) this._value = this._value.toLowerCase();
   }
 }
