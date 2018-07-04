@@ -1,6 +1,6 @@
 import expect from 'expect';
 
-import { Param } from '../../src/param/Param';
+import { Param } from '../../dist/param/Param';
 
 describe('TypeObject', () => {
   before(async () => {});
