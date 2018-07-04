@@ -13,30 +13,49 @@ export class TypeObject extends TypeAny {
     return this;
   }
 
+  get error() {
+    const errorsStr = Object.keys(this._errors).map(
+      k => `${k}: ${this._errors[k]}`,
+    );
+    return errorsStr.join('; ') || this._error;
+  }
+
+  set error(elem) {
+    super.error = elem;
+  }
+
+  errors() {
+    return this._errors;
+  }
+
   // Function when test and transform param
 
   _generateError() {
-    this.error = `Invalide field ${this.key} should be a valide object`;
+    this.error = `Invalid field ${this.key} should be a valide object`;
+  }
+
+  _testType() {
+    if (typeof this.value !== this._type) {
+      this.error = `Invalid type to ${this.key}`;
+      return false;
+    }
+    return true;
   }
 
   _test() {
     const oldValue = { ...this.value };
     this.value = {};
-    if (this.error) return;
 
     for (const key in this._shema) {
       const param = this._shema[key];
-      console.log('key', oldValue, key);
-      param.test({ object: oldValue, key });
+      param.test(oldValue[key]);
       if (param.error) {
         this._errors[key] = param.error;
       } else {
         this.value[key] = param.value;
       }
     }
-  }
 
-  _transform() {
-    if (this.error) return;
+    return true;
   }
 }
