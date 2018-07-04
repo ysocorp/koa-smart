@@ -58,16 +58,16 @@ export class TypeString extends TypeAny {
   // Function when test and transform param
 
   _generateError() {
-    this.error = `Invalide field ${this.key}`;
+    this.error = `Invalid field ${this.key}`;
   }
 
   _test() {
-    if (this.error) return;
-
     if (this._length && this.value.length !== this._length)
       this._generateError();
     if (this._min && this.value.length < this._min) this._generateError();
     if (this._max && this.value.length > this._max) this._generateError();
+
+    return !!this.error;
   }
 
   _transform() {
