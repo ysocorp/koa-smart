@@ -7,6 +7,8 @@ exports.Param = undefined;
 
 var _TypeAny = require('./types/TypeAny');
 
+var _TypeBinary = require('./types/TypeBinary');
+
 var _TypeBoolean = require('./types/TypeBoolean');
 
 var _TypeNumber = require('./types/TypeNumber');
@@ -20,6 +22,9 @@ var _TypeString = require('./types/TypeString');
 var Param = exports.Param = {
   any: function any() {
     return new _TypeAny.TypeAny();
+  },
+  binary: function binary() {
+    return new _TypeBinary.TypeBinary();
   },
   boolean: function boolean() {
     return new _TypeBoolean.TypeBoolean();
