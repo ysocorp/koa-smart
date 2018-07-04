@@ -1,25 +1,34 @@
 export class TypeAny {
   _type = null;
-  _isRequired = false;
   _error = null;
-  _exist = false;
+  _isValueNull = false;
+  // options
+  _isRequired = false;
+  _notNull = false;
 
-  object = null;
-  key = null;
   value = null;
 
   constructor(type) {
     this._type = type;
   }
 
-  required() {
-    this._isRequired = true;
+  required(val = true) {
+    this._isRequired = val;
+    this.allowNull(false);
+    return this;
+  }
+
+  allowNull(val = true) {
+    this._notNull = !val;
     return this;
   }
 
   // Function when test and transform param
-  test({ object, key, value }) {
-    this._initValue({ object, key, value });
+  test(value) {
+    this._initValues(value);
+    if (!this._testExist() || this.error) return;
+    if (!this._testNull() || this.error || this._isValueNull) return;
+    if (!this._testType() || this.error) return;
     this._transform();
     this._test();
   }
@@ -31,35 +40,42 @@ export class TypeAny {
     return this._error;
   }
 
-  _initValue({ object, key, value }) {
-    this.object = object;
-    this.key = key;
-    this.value = value || object[key];
-
-    this._testExist();
-    this._testType();
+  _initValues(value) {
+    this.value = value;
   }
 
   _testExist() {
-    this._exist = this.value !== 'undefined';
-    if (!this._exist && this._isRequired) {
-      this.error = `The param ${this.key} is required`;
+    const exist = this.value !== 'undefined';
+    if (!exist && this._isRequired) {
+      this.error = `Param is required`;
+      return false;
     }
+    return true;
+  }
+
+  _testNull() {
+    if (this.value == null && this._notNull) {
+      this.error = `Can not be null`;
+      return false;
+    }
+    this._isValueNull = this.value == null;
+    return true;
   }
 
   _testType() {
-    console.log(
-      'this.value',
-      this.value,
-      typeof this.value,
-      typeof this.value === this._type,
-    );
-    if (typeof this.value !== this._type) {
-      this.error = `Invalide type to param`;
+    if (!this._type) {
+      return true;
     }
+    if (typeof this.value !== this._type) {
+      this.error = `Invalid type, expect type ${this._type}`;
+      return false;
+    }
+    return true;
   }
 
-  _test() {}
+  _test() {
+    return true;
+  }
 
   _transform() {}
 }
