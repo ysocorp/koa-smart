@@ -13,15 +13,13 @@ export class TypeObject extends TypeAny {
     return this;
   }
 
-  get error() {
-    const errorsStr = Object.keys(this._errors).map(
-      k => `${k}: ${this._errors[k]}`,
-    );
-    return errorsStr.join('; ') || this._error;
-  }
-
-  set error(elem) {
-    super.error = elem;
+  _setError(key, value) {
+    this._errors[key] = value;
+    const keys = Object.keys(this._errors);
+    const errorsStr = keys.map(k => `${k}: ${this._errors[k]}`);
+    if (errorsStr && keys.length) {
+      this.error = errorsStr;
+    }
   }
 
   errors() {
@@ -50,7 +48,7 @@ export class TypeObject extends TypeAny {
       const param = this._shema[key];
       param.test(oldValue[key]);
       if (param.error) {
-        this._errors[key] = param.error;
+        this._setError(key, param.error);
       } else {
         this._value[key] = param.value;
       }

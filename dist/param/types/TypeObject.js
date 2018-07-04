@@ -5,13 +5,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.TypeObject = undefined;
 
-var _keys = require('babel-runtime/core-js/object/keys');
-
-var _keys2 = _interopRequireDefault(_keys);
-
 var _typeof2 = require('babel-runtime/helpers/typeof');
 
 var _typeof3 = _interopRequireDefault(_typeof2);
+
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
 
 var _extends2 = require('babel-runtime/helpers/extends');
 
@@ -32,10 +32,6 @@ var _createClass3 = _interopRequireDefault(_createClass2);
 var _possibleConstructorReturn2 = require('babel-runtime/helpers/possibleConstructorReturn');
 
 var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-var _set2 = require('babel-runtime/helpers/set');
-
-var _set3 = _interopRequireDefault(_set2);
 
 var _inherits2 = require('babel-runtime/helpers/inherits');
 
@@ -63,6 +59,20 @@ var TypeObject = exports.TypeObject = function (_TypeAny) {
     value: function keys(object) {
       this._shema = (0, _extends3.default)({}, this._shema, object);
       return this;
+    }
+  }, {
+    key: '_setError',
+    value: function _setError(key, value) {
+      var _this2 = this;
+
+      this._errors[key] = value;
+      var keys = (0, _keys2.default)(this._errors);
+      var errorsStr = keys.map(function (k) {
+        return k + ': ' + _this2._errors[k];
+      });
+      if (errorsStr && keys.length) {
+        this.error = errorsStr;
+      }
     }
   }, {
     key: 'errors',
@@ -96,26 +106,13 @@ var TypeObject = exports.TypeObject = function (_TypeAny) {
         var param = this._shema[key];
         param.test(oldValue[key]);
         if (param.error) {
-          this._errors[key] = param.error;
+          this._setError(key, param.error);
         } else {
           this._value[key] = param.value;
         }
       }
 
       return true;
-    }
-  }, {
-    key: 'error',
-    get: function get() {
-      var _this2 = this;
-
-      var errorsStr = (0, _keys2.default)(this._errors).map(function (k) {
-        return k + ': ' + _this2._errors[k];
-      });
-      return errorsStr.join('; ') || this._error;
-    },
-    set: function set(elem) {
-      (0, _set3.default)(TypeObject.prototype.__proto__ || (0, _getPrototypeOf2.default)(TypeObject.prototype), 'error', elem, this);
     }
   }]);
   return TypeObject;
