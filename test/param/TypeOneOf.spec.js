@@ -8,9 +8,9 @@ describe('TypeOneOf', () => {
   after(async () => {});
 
   describe('Option types', () => {
-    let shema;
+    let schema;
     beforeEach(async () => {
-      shema = Param.oneOf().types(
+      schema = Param.oneOf().types(
         Param.number(),
         Param.string(),
         Param.object().keys({
@@ -20,18 +20,21 @@ describe('TypeOneOf', () => {
     });
 
     it('should not alow unknow type', async () => {
-      shema.test(true);
-      expect(shema.error).toBeTruthy();
+      schema.test(true);
+      expect(schema.value).toBe(true);
+      expect(schema.error).toBeTruthy();
     });
 
     it('should not have errors if param receive as unknow params', async () => {
-      shema.test('myStr');
-      expect(shema.error).toBeNull();
+      schema.test('myStr');
+      expect(schema.value).toBe('myStr');
+      expect(schema.error).toBeNull();
     });
 
     it('should not have errors if param receive as unknow params', async () => {
-      shema.test(12);
-      expect(shema.error).toBeNull();
+      schema.test(12);
+      expect(schema.value).toBe(12);
+      expect(schema.error).toBeNull();
     });
   });
 });

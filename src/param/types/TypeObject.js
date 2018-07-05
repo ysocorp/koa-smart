@@ -1,7 +1,7 @@
 import { TypeAny } from './TypeAny';
 
 export class TypeObject extends TypeAny {
-  _shema = {};
+  _schema = {};
   _errors = {};
 
   constructor() {
@@ -9,7 +9,7 @@ export class TypeObject extends TypeAny {
   }
 
   keys(object) {
-    this._shema = { ...this._shema, ...object };
+    this._schema = { ...this._schema, ...object };
     return this;
   }
 
@@ -44,8 +44,8 @@ export class TypeObject extends TypeAny {
     const oldValue = { ...this._value };
     this._value = {};
 
-    for (const key in this._shema) {
-      const param = this._shema[key];
+    for (const key in this._schema) {
+      const param = this._schema[key];
       param.test(oldValue[key]);
       if (param.error) {
         this._setError(key, param.error);

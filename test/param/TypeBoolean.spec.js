@@ -12,21 +12,25 @@ describe('TypeBoolean', () => {
     it('Should validate a false boolean', async () => {
       schema.test(false);
       expect(schema.value).toEqual(false);
+      expect(schema.error).toBeNull();
     });
 
     it('Should validate a true boolean', async () => {
       schema.test(true);
       expect(schema.value).toEqual(true);
+      expect(schema.error).toBeNull();
     });
 
     it('Should validate a "true" string and convert it to a boolean', async () => {
       schema.test('true');
       expect(schema.value).toEqual(true);
+      expect(schema.error).toBeNull();
     });
 
     it('Should validate a "false" string and convert it to a boolean', async () => {
       schema.test('false');
       expect(schema.value).toEqual(false);
+      expect(schema.error).toBeNull();
     });
 
     it('Should reject a number', async () => {
@@ -49,11 +53,13 @@ describe('TypeBoolean', () => {
     it('should validate a value specified in the "truthy" parameter', async () => {
       schema.test('Y');
       expect(schema.value).toEqual(true);
+      expect(schema.error).toBeNull();
     });
 
     it('should validate a value specified in the "truthy" parameter#2', async () => {
       schema.test(1);
       expect(schema.value).toEqual(true);
+      expect(schema.error).toBeNull();
     });
 
     it('should reject a value not specified in the "truthy" parameter', async () => {
@@ -71,11 +77,13 @@ describe('TypeBoolean', () => {
     it('should validate a value specified in the "falsy" parameter', async () => {
       schema.test('N');
       expect(schema.value).toEqual(false);
+      expect(schema.error).toBeNull();
     });
 
     it('should validate a value specified in the "falsy" parameter#2', async () => {
       schema.test(0);
       expect(schema.value).toEqual(false);
+      expect(schema.error).toBeNull();
     });
 
     it('should reject a value not specified in the "falsy" parameter', async () => {
@@ -95,21 +103,25 @@ describe('TypeBoolean', () => {
     it('should validate a value specified in the "falsy" parameter, even with different casing', async () => {
       schema.test('n');
       expect(schema.value).toEqual(false);
+      expect(schema.error).toBeNull();
     });
 
     it('should validate a value specified in the "falsy" parameter, even with different casing#2', async () => {
       schema.test('NoN');
       expect(schema.value).toEqual(false);
+      expect(schema.error).toBeNull();
     });
 
     it('should validate a "true" string, even with different casing', async () => {
       schema.test('TrUe');
       expect(schema.value).toEqual(true);
+      expect(schema.error).toBeNull();
     });
 
     it('should validate a "false" string, even with different casing', async () => {
       schema.test('FALSE');
       expect(schema.value).toEqual(false);
+      expect(schema.error).toBeNull();
     });
   });
 

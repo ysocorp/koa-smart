@@ -8,9 +8,9 @@ describe('TypeObject', () => {
   after(async () => {});
 
   describe('Parse Object', () => {
-    let shema;
+    let schema;
     beforeEach(async () => {
-      shema = Param.object().keys({
+      schema = Param.object().keys({
         a: Param.string(),
         b: Param.string(),
         subObj: Param.object().keys({
@@ -26,9 +26,9 @@ describe('TypeObject', () => {
         b: '     myStr2    ',
         subObj: { subA: ' myStrSubA ', subB: ' myStrSubB ' },
       };
-      shema.test(value);
+      schema.test(value);
 
-      expect(shema.value).toEqual({
+      expect(schema.value).toEqual({
         a: 'myStr',
         b: 'myStr2',
         subObj: { subA: ' myStrSubA ', subB: 'myStrSubB' },
@@ -43,9 +43,9 @@ describe('TypeObject', () => {
         subObj: { subA: 'myStrSubA', subB: 'myStrSubB', subC: 'myStrSubC' },
       };
 
-      shema.test(value);
+      schema.test(value);
 
-      expect(shema.value).toEqual({
+      expect(schema.value).toEqual({
         a: 'myStr',
         b: 'myStr2',
         subObj: { subA: 'myStrSubA', subB: 'myStrSubB' },
@@ -54,9 +54,9 @@ describe('TypeObject', () => {
   });
 
   describe('Error', () => {
-    let shema;
+    let schema;
     beforeEach(async () => {
-      shema = Param.object().keys({
+      schema = Param.object().keys({
         a: Param.string().required(),
         b: Param.string(),
       });
@@ -68,27 +68,27 @@ describe('TypeObject', () => {
         b: '     myStr2    ',
         subObj: { subA: ' myStrSubA ', subB: ' myStrSubB ' },
       };
-      shema.test(value);
-      expect(shema.errors()).toEqual({});
+      schema.test(value);
+      expect(schema.errors()).toEqual({});
     });
 
     it('should not have errors if param not required is missing', async () => {
       const value = { a: 'myStr' };
-      shema.test(value);
-      expect(shema.errors()).toEqual({});
+      schema.test(value);
+      expect(schema.errors()).toEqual({});
     });
 
     it('should have errors if param required is missing', async () => {
       const value = { b: 'myStr2' };
-      shema.test(value);
-      expect(shema.errors().a).toBeTruthy();
+      schema.test(value);
+      expect(schema.errors().a).toBeTruthy();
     });
 
     it('should have errors if param is invalid', async () => {
-      shema = Param.object().keys({ a: Param.string().min(3) });
+      schema = Param.object().keys({ a: Param.string().min(3) });
       const value = { a: 'my' };
-      shema.test(value);
-      expect(shema.errors().a).toBeTruthy();
+      schema.test(value);
+      expect(schema.errors().a).toBeTruthy();
     });
   });
 });

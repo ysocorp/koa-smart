@@ -49,7 +49,7 @@ var TypeObject = exports.TypeObject = function (_TypeAny) {
 
     var _this = (0, _possibleConstructorReturn3.default)(this, (TypeObject.__proto__ || (0, _getPrototypeOf2.default)(TypeObject)).call(this, 'object'));
 
-    _this._shema = {};
+    _this._schema = {};
     _this._errors = {};
     return _this;
   }
@@ -57,7 +57,7 @@ var TypeObject = exports.TypeObject = function (_TypeAny) {
   (0, _createClass3.default)(TypeObject, [{
     key: 'keys',
     value: function keys(object) {
-      this._shema = (0, _extends3.default)({}, this._shema, object);
+      this._schema = (0, _extends3.default)({}, this._schema, object);
       return this;
     }
   }, {
@@ -102,8 +102,8 @@ var TypeObject = exports.TypeObject = function (_TypeAny) {
       var oldValue = (0, _extends3.default)({}, this._value);
       this._value = {};
 
-      for (var key in this._shema) {
-        var param = this._shema[key];
+      for (var key in this._schema) {
+        var param = this._schema[key];
         param.test(oldValue[key]);
         if (param.error) {
           this._setError(key, param.error);

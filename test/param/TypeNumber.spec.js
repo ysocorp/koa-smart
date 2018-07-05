@@ -9,7 +9,7 @@ describe('TypeNumber', () => {
 
   describe('General', () => {
     it('Should test type integer', async () => {
-      const shema = Param.object().keys({
+      const schema = Param.object().keys({
         ok1: Param.number().integer(),
         ok2: Param.number().integer(),
         ok3: Param.number().integer(),
@@ -34,20 +34,20 @@ describe('TypeNumber', () => {
       const ko = { ko1: 'a20', ko2: '20a', ko3: '20,10' };
       const value = { ...ok, ...ko };
 
-      shema.test(value);
+      schema.test(value);
 
-      expect(shema.value).toEqual({
+      expect(schema.value).toEqual({
         ...ok,
         ok4: 20,
         ok5: 0,
         ok6: -20,
         ok7: 20,
       });
-      expect(Object.keys(ko)).toEqual(Object.keys(shema._errors));
+      expect(Object.keys(ko)).toEqual(Object.keys(schema._errors));
     });
 
     it('Should test type number', async () => {
-      const shema = Param.object().keys({
+      const schema = Param.object().keys({
         ok1: Param.number(),
         ok2: Param.number(),
         ok3: Param.number(),
@@ -70,249 +70,278 @@ describe('TypeNumber', () => {
       const ko = { ko1: 'a20', ko2: '20a', ko3: '20,10' };
       const value = { ...ok, ...ko };
 
-      shema.test(value);
+      schema.test(value);
 
-      expect(shema.value).toEqual({ ...ok, ok4: 20.3, ok5: 0.3, ok6: -20.3 });
-      expect(Object.keys(ko)).toEqual(Object.keys(shema._errors));
+      expect(schema.value).toEqual({ ...ok, ok4: 20.3, ok5: 0.3, ok6: -20.3 });
+      expect(Object.keys(ko)).toEqual(Object.keys(schema._errors));
     });
   });
 
   describe('Option max', () => {
-    let shema;
+    let schema;
     beforeEach(async () => {
-      shema = Param.number().max(10);
+      schema = Param.number().max(10);
     });
 
     it('Should test if 10 >= -10', async () => {
       let value = -10;
-      shema.test(value);
-      expect(shema.value).toEqual(value);
+      schema.test(value);
+      expect(schema.value).toEqual(value);
+      expect(schema.error).toBeNull();
     });
     it('Should test if 10 >= 10', async () => {
       let value = 10;
-      shema.test(value);
-      expect(shema.value).toEqual(value);
+      schema.test(value);
+      expect(schema.value).toEqual(value);
+      expect(schema.error).toBeNull();
     });
     it('Should test if 10 >= 10.00', async () => {
       let value = 10.0;
-      shema.test(value);
-      expect(shema.value).toEqual(value);
+      schema.test(value);
+      expect(schema.value).toEqual(value);
+      expect(schema.error).toBeNull();
     });
     it('Should test if 10 >= "9.99"', async () => {
       let value = 9.99;
-      shema.test(value);
-      expect(shema.value).toEqual(value);
+      schema.test(value);
+      expect(schema.value).toEqual(value);
+      expect(schema.error).toBeNull();
     });
     it('Should test if 10 < 10.0001', async () => {
       let value = 10.0001;
-      shema.test(value);
-      expect(shema.error).toBeTruthy();
+      schema.test(value);
+      expect(schema.error).toBeTruthy();
     });
   });
 
   describe('Option min', () => {
-    let shema;
+    let schema;
     beforeEach(async () => {
-      shema = Param.number().min(9);
+      schema = Param.number().min(9);
     });
 
     it('Should test if 9 <= 9', async () => {
       let value = 9;
-      shema.test(value);
-      expect(shema.value).toEqual(value);
+      schema.test(value);
+      expect(schema.value).toEqual(value);
+      expect(schema.error).toBeNull();
     });
     it('Should test if 9 <= 10', async () => {
       let value = 10;
-      shema.test(value);
-      expect(shema.value).toEqual(value);
+      schema.test(value);
+      expect(schema.value).toEqual(value);
+      expect(schema.error).toBeNull();
     });
     it('Should test if 9 <= 9.00', async () => {
       let value = 9.0;
-      shema.test(value);
-      expect(shema.value).toEqual(value);
+      schema.test(value);
+      expect(schema.value).toEqual(value);
+      expect(schema.error).toBeNull();
     });
     it('Should test if 9 >= 8.99', async () => {
       let value = 8.99;
-      shema.test(value);
-      expect(shema.error).toBeTruthy();
+      schema.test(value);
+      expect(schema.error).toBeTruthy();
     });
   });
 
   describe('Option positive', () => {
-    let shema;
+    let schema;
     beforeEach(async () => {
-      shema = Param.number().positive();
+      schema = Param.number().positive();
     });
 
     it('Should test if 0 is positive', async () => {
       let value = 0;
-      shema.test(value);
-      expect(shema.value).toEqual(value);
+      schema.test(value);
+      expect(schema.value).toEqual(value);
+      expect(schema.error).toBeNull();
     });
     it('Should test if -0 is positive', async () => {
       let value = -0;
-      shema.test(value);
-      expect(shema.value).toEqual(0);
+      schema.test(value);
+      expect(schema.value).toEqual(0);
+      expect(schema.error).toBeNull();
     });
     it('Should test if -0.01 is not positive', async () => {
       let value = -0.01;
-      shema.test(value);
-      expect(shema.error).toBeTruthy();
+      schema.test(value);
+      expect(schema.error).toBeTruthy();
     });
     it('Should test if -1 is not positive', async () => {
       let value = -1;
-      shema.test(value);
-      expect(shema.error).toBeTruthy();
+      schema.test(value);
+      expect(schema.error).toBeTruthy();
     });
   });
 
   describe('Option negative', () => {
-    let shema;
+    let schema;
     beforeEach(async () => {
-      shema = Param.number().negative();
+      schema = Param.number().negative();
     });
 
     it('Should test if -1 is negative', async () => {
       let value = -1;
-      shema.test(value);
-      expect(shema.value).toEqual(value);
+      schema.test(value);
+      expect(schema.value).toEqual(value);
+      expect(schema.error).toBeNull();
     });
     it('Should test if -0.1 is negative', async () => {
       let value = -0.1;
-      shema.test(value);
-      expect(shema.value).toEqual(value);
+      schema.test(value);
+      expect(schema.value).toEqual(value);
+      expect(schema.error).toBeNull();
     });
     it('Should test if 1 is not negative', async () => {
       let value = 1;
-      shema.test(value);
-      expect(shema.error).toBeTruthy();
+      schema.test(value);
+      expect(schema.error).toBeTruthy();
     });
     it('Should test if 0 is not negative', async () => {
       let value = 0;
-      shema.test(value);
-      expect(shema.error).toBeTruthy();
+      schema.test(value);
+      expect(schema.error).toBeTruthy();
     });
   });
 
   describe('Option multiple', () => {
-    let shema;
+    let schema;
     beforeEach(async () => {
-      shema = Param.number().multiple(2);
+      schema = Param.number().multiple(2);
     });
 
     it('Should test if 0 is a multiple of 2', async () => {
       let value = 0;
-      shema.test(value);
-      expect(shema.value).toEqual(value);
+      schema.test(value);
+      expect(schema.value).toEqual(value);
+      expect(schema.error).toBeNull();
     });
 
     it('Should test if 2 is a multiple of 2', async () => {
       let value = 2;
-      shema.test(2);
-      expect(shema.value).toEqual(value);
+      schema.test(2);
+      expect(schema.value).toEqual(value);
+      expect(schema.error).toBeNull();
     });
 
     it('Should test if 1 is not a multiple of 2', async () => {
-      shema.test(1);
-      expect(shema.error).toBeTruthy();
+      schema.test(1);
+      expect(schema.error).toBeTruthy();
     });
   });
 
   describe('Option precision', () => {
     describe('trunc', () => {
-      let shema;
+      let schema;
       beforeEach(async () => {
-        shema = Param.number().precision(2, 'trunc');
+        schema = Param.number().precision(2, 'trunc');
       });
 
       it('Should trunc 1.1235 to 1.12', async () => {
-        shema.test(1.1235);
-        expect(shema.value).toEqual(1.12);
+        schema.test(1.1235);
+        expect(schema.value).toEqual(1.12);
+        expect(schema.error).toBeNull();
       });
       it('Should trunc 1.129 to 1.12', async () => {
-        shema.test(1.129);
-        expect(shema.value).toEqual(1.12);
+        schema.test(1.129);
+        expect(schema.value).toEqual(1.12);
+        expect(schema.error).toBeNull();
       });
       it('Should trunc -1.129 to -1.12', async () => {
-        shema.test(-1.129);
-        expect(shema.value).toEqual(-1.12);
+        schema.test(-1.129);
+        expect(schema.value).toEqual(-1.12);
+        expect(schema.error).toBeNull();
       });
       it('Should trunc -1.123 to -1.12', async () => {
-        shema.test(-1.123);
-        expect(shema.value).toEqual(-1.12);
+        schema.test(-1.123);
+        expect(schema.value).toEqual(-1.12);
+        expect(schema.error).toBeNull();
       });
     });
 
     describe('floor', () => {
-      let shema;
+      let schema;
       beforeEach(async () => {
-        shema = Param.number().precision(2, 'floor');
+        schema = Param.number().precision(2, 'floor');
       });
 
       it('Should floor 1.1235 to 1.12', async () => {
-        shema.test(1.1235);
-        expect(shema.value).toEqual(1.12);
+        schema.test(1.1235);
+        expect(schema.value).toEqual(1.12);
+        expect(schema.error).toBeNull();
       });
       it('Should floor 1.129 to 1.12', async () => {
-        shema.test(1.129);
-        expect(shema.value).toEqual(1.12);
+        schema.test(1.129);
+        expect(schema.value).toEqual(1.12);
+        expect(schema.error).toBeNull();
       });
       it('Should floor -1.129 to -1.13', async () => {
-        shema.test(-1.129);
-        expect(shema.value).toEqual(-1.13);
+        schema.test(-1.129);
+        expect(schema.value).toEqual(-1.13);
+        expect(schema.error).toBeNull();
       });
       it('Should floor -1.123 to -1.13', async () => {
         let value = -1.123;
-        shema.test(value);
-        expect(shema.value).toEqual(-1.13);
+        schema.test(value);
+        expect(schema.value).toEqual(-1.13);
+        expect(schema.error).toBeNull();
       });
     });
 
     describe('ceil', () => {
-      let shema;
+      let schema;
       beforeEach(async () => {
-        shema = Param.number().precision(2, 'ceil');
+        schema = Param.number().precision(2, 'ceil');
       });
 
       it('Should ceil 1.1235 to 1.13', async () => {
-        shema.test(1.1235);
-        expect(shema.value).toEqual(1.13);
+        schema.test(1.1235);
+        expect(schema.value).toEqual(1.13);
+        expect(schema.error).toBeNull();
       });
       it('Should ceil 1.129 to 1.13', async () => {
-        shema.test(1.129);
-        expect(shema.value).toEqual(1.13);
+        schema.test(1.129);
+        expect(schema.value).toEqual(1.13);
+        expect(schema.error).toBeNull();
       });
       it('Should ceil -1.129 to -1.12', async () => {
-        shema.test(-1.129);
-        expect(shema.value).toEqual(-1.12);
+        schema.test(-1.129);
+        expect(schema.value).toEqual(-1.12);
+        expect(schema.error).toBeNull();
       });
       it('Should ceil -1.123 to -1.12', async () => {
-        shema.test(-1.123);
-        expect(shema.value).toEqual(-1.12);
+        schema.test(-1.123);
+        expect(schema.value).toEqual(-1.12);
+        expect(schema.error).toBeNull();
       });
     });
 
     describe('round', () => {
-      let shema;
+      let schema;
       beforeEach(async () => {
-        shema = Param.number().precision(2, 'round');
+        schema = Param.number().precision(2, 'round');
       });
 
       it('Should round 1.1235 to 1.12', async () => {
-        shema.test(1.1235);
-        expect(shema.value).toEqual(1.12);
+        schema.test(1.1235);
+        expect(schema.value).toEqual(1.12);
+        expect(schema.error).toBeNull();
       });
       it('Should round 1.129 to 1.13', async () => {
-        shema.test(1.129);
-        expect(shema.value).toEqual(1.13);
+        schema.test(1.129);
+        expect(schema.value).toEqual(1.13);
+        expect(schema.error).toBeNull();
       });
       it('Should round -1.129 to -1.13', async () => {
-        shema.test(-1.129);
-        expect(shema.value).toEqual(-1.13);
+        schema.test(-1.129);
+        expect(schema.value).toEqual(-1.13);
+        expect(schema.error).toBeNull();
       });
       it('Should round -1.123 to -1.12', async () => {
-        shema.test(-1.123);
-        expect(shema.value).toEqual(-1.12);
+        schema.test(-1.123);
+        expect(schema.value).toEqual(-1.12);
+        expect(schema.error).toBeNull();
       });
     });
   });
