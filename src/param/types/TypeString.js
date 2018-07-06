@@ -12,7 +12,13 @@ export class TypeString extends TypeAny {
 
   constructor() {
     super('string');
+    this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
   }
+
+  _getDescription = () => {
+    //TODO
+    return `It should be a string`;
+  };
 
   trim(needTrim = true) {
     this._tTrim = needTrim;
@@ -55,24 +61,15 @@ export class TypeString extends TypeAny {
     return this;
   }
 
-  // Function when test and transform param
-
-  _generateError() {
-    this.error = `Invalid field ${this.key}`;
-  }
-
   _test() {
+    const t = this._TypeError.INVALIDE_VALUE;
     if (this._length && this._value.length !== this._length)
-      this._generateError();
-    if (this._min && this._value.length < this._min) this._generateError();
-    if (this._max && this._value.length > this._max) this._generateError();
-
-    return this._hasError;
+      return this._setError(t);
+    if (this._min && this._value.length < this._min) return this._setError(t);
+    if (this._max && this._value.length > this._max) return this._setError(t);
   }
 
   _transform() {
-    if (this.error) return;
-
     if (this._tTrim) this._value = this._value.trim();
     if (this._tTruncate && this._max)
       this._value = this._value.substring(0, this._max);

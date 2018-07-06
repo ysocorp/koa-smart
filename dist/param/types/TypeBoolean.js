@@ -9,6 +9,10 @@ var _typeof2 = require('babel-runtime/helpers/typeof');
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
+var _toConsumableArray2 = require('babel-runtime/helpers/toConsumableArray');
+
+var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
+
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -44,19 +48,21 @@ var TypeBoolean = exports.TypeBoolean = function (_TypeAny) {
 
     var _this = (0, _possibleConstructorReturn3.default)(this, (TypeBoolean.__proto__ || (0, _getPrototypeOf2.default)(TypeBoolean)).call(this, 'boolean'));
 
-    _this._truthyValues = [];
-    _this._falsyValues = [];
+    _this._truthyValues = ['true'];
+    _this._falsyValues = ['false'];
     _this._insensitive = true;
+
+    _this._getDescription = function () {
+      var valideValue = [].concat((0, _toConsumableArray3.default)(_this._truthyValues), (0, _toConsumableArray3.default)(_this._falsyValues));
+      return 'It sould be a boolean or one of (' + valideValue.join(',') + ').';
+    };
+
+    _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;
     return _this;
   } // Specifies additional values to be considered as 'falsy'
 
 
   (0, _createClass3.default)(TypeBoolean, [{
-    key: '_generateError',
-    value: function _generateError() {
-      this.error = 'Invalid field ' + this.key;
-    }
-  }, {
     key: '_insensitiveArray',
     value: function _insensitiveArray(array) {
       return array.map(function (value) {
@@ -71,7 +77,7 @@ var TypeBoolean = exports.TypeBoolean = function (_TypeAny) {
     value: function truthy() {
       var vals = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
-      this._truthyValues = (0, _lodash.castArray)(vals);
+      this._truthyValues = (0, _lodash.uniq)([].concat((0, _toConsumableArray3.default)(this._truthyValues), (0, _toConsumableArray3.default)((0, _lodash.castArray)(vals))));
       return this;
     }
   }, {
@@ -79,7 +85,7 @@ var TypeBoolean = exports.TypeBoolean = function (_TypeAny) {
     value: function falsy() {
       var vals = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
-      this._falsyValues = (0, _lodash.castArray)(vals);
+      this._falsyValues = (0, _lodash.uniq)([].concat((0, _toConsumableArray3.default)(this._falsyValues), (0, _toConsumableArray3.default)((0, _lodash.castArray)(vals))));
       return this;
     }
   }, {
@@ -93,21 +99,20 @@ var TypeBoolean = exports.TypeBoolean = function (_TypeAny) {
   }, {
     key: '_testType',
     value: function _testType() {
-      return ['boolean', 'string', 'number'].includes((0, _typeof3.default)(this._value));
+      if (!['boolean', 'string', 'number'].includes((0, _typeof3.default)(this._value))) {
+        this._setError(this._TypeError.INVALIDE_TYPE);
+      }
     }
   }, {
     key: '_test',
     value: function _test() {
       if (typeof this._value !== 'boolean') {
-        this._generateError();
-        return false;
+        this._setError(this._TypeError.INVALIDE_VALUE);
       }
-      return true;
     }
   }, {
     key: '_transform',
     value: function _transform() {
-      if (this.error) return;
       if (this._insensitive) {
         this._falsyValues = this._insensitiveArray(this._falsyValues);
         this._truthyValues = this._insensitiveArray(this._truthyValues);
@@ -115,13 +120,11 @@ var TypeBoolean = exports.TypeBoolean = function (_TypeAny) {
           this._value = this._value.toLocaleLowerCase();
         }
       }
-      if (this._truthyValues.includes(this._value) || this._value === 'true') {
+
+      if (this._truthyValues.includes(this._value)) {
         this._value = true;
-        return;
-      }
-      if (this._falsyValues.includes(this._value) || this._value === 'false') {
+      } else if (this._falsyValues.includes(this._value)) {
         this._value = false;
-        return;
       }
     }
   }]);

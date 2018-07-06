@@ -1,19 +1,21 @@
-import { castArray } from 'lodash';
+import { castArray, uniq } from 'lodash';
 
 import { TypeAny } from './TypeAny';
 
 export class TypeBoolean extends TypeAny {
-  _truthyValues = []; // Specifies additional values to be considered as 'truthy'
-  _falsyValues = []; // Specifies additional values to be considered as 'falsy'
+  _truthyValues = ['true']; // Specifies additional values to be considered as 'truthy'
+  _falsyValues = ['false']; // Specifies additional values to be considered as 'falsy'
   _insensitive = true;
 
   constructor() {
     super('boolean');
+    this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
   }
 
-  _generateError() {
-    this.error = `Invalid field ${this.key}`;
-  }
+  _getDescription = () => {
+    const valideValue = [...this._truthyValues, ...this._falsyValues];
+    return `It sould be a boolean or one of (${valideValue.join(',')}).`;
+  };
 
   _insensitiveArray(array) {
     return array.map(value => {
@@ -25,12 +27,12 @@ export class TypeBoolean extends TypeAny {
   }
 
   truthy(vals = []) {
-    this._truthyValues = castArray(vals);
+    this._truthyValues = uniq([...this._truthyValues, ...castArray(vals)]);
     return this;
   }
 
   falsy(vals = []) {
-    this._falsyValues = castArray(vals);
+    this._falsyValues = uniq([...this._falsyValues, ...castArray(vals)]);
     return this;
   }
 
@@ -40,19 +42,18 @@ export class TypeBoolean extends TypeAny {
   }
 
   _testType() {
-    return ['boolean', 'string', 'number'].includes(typeof this._value);
+    if (!['boolean', 'string', 'number'].includes(typeof this._value)) {
+      this._setError(this._TypeError.INVALIDE_TYPE);
+    }
   }
 
   _test() {
     if (typeof this._value !== 'boolean') {
-      this._generateError();
-      return false;
+      this._setError(this._TypeError.INVALIDE_VALUE);
     }
-    return true;
   }
 
   _transform() {
-    if (this.error) return;
     if (this._insensitive) {
       this._falsyValues = this._insensitiveArray(this._falsyValues);
       this._truthyValues = this._insensitiveArray(this._truthyValues);
@@ -60,13 +61,11 @@ export class TypeBoolean extends TypeAny {
         this._value = this._value.toLocaleLowerCase();
       }
     }
-    if (this._truthyValues.includes(this._value) || this._value === 'true') {
+
+    if (this._truthyValues.includes(this._value)) {
       this._value = true;
-      return;
-    }
-    if (this._falsyValues.includes(this._value) || this._value === 'false') {
+    } else if (this._falsyValues.includes(this._value)) {
       this._value = false;
-      return;
     }
   }
 }

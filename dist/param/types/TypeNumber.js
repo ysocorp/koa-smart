@@ -48,6 +48,37 @@ var TypeNumber = exports.TypeNumber = function (_TypeAny) {
 
     var _this = (0, _possibleConstructorReturn3.default)(this, (TypeNumber.__proto__ || (0, _getPrototypeOf2.default)(TypeNumber)).call(this, 'number'));
 
+    _this._positive = false;
+    _this._negative = false;
+
+    _this._getDescription = function () {
+      var pN = ' ';
+      pN = _this._positive ? ' positive ' : pN;
+      pN = !_this._positive && _this._negative ? 'negative' : pN;
+      var msgError = 'It should be a' + pN + 'number';
+
+      var and = false;
+      if (_this._min != null && _this._max != null) {
+        msgError += ' ' + (and ? 'and' : '') + ' between ' + _this._min + ' and ' + _this._max;
+        and = true;
+      } else if (_this._min != null) {
+        msgError += ' ' + (and ? 'and' : '') + ' greater or equal to ' + _this._min;
+        and = true;
+      } else if (_this._max != null) {
+        msgError += ' ' + (and ? 'and' : '') + ' smaller or equal to ' + _this._max;
+        and = true;
+      }
+      if (_this._multiple != null) {
+        msgError += ' ' + (and ? 'and' : '') + ' multiple of ' + _this._multiple;
+        and = true;
+      }
+      if (_this._port != null) {
+        msgError += ' ' + (and ? 'and' : '') + ' between ' + 0 + ' and ' + 65535;
+        and = true;
+      }
+      return msgError + '.';
+    };
+
     _this._isTypeNum = function () {
       return typeof _this._value === 'number';
     };
@@ -68,6 +99,7 @@ var TypeNumber = exports.TypeNumber = function (_TypeAny) {
       return Math[type](nb * Math.pow(10, nbDigit)) / Math.pow(10, nbDigit);
     };
 
+    _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;
     return _this;
   } // Specifies the maximum number of decimal places where:
   // Requires the number to be negative.
@@ -152,27 +184,19 @@ var TypeNumber = exports.TypeNumber = function (_TypeAny) {
     key: '_testType',
     value: function _testType() {
       if (!this._isNumber()) {
-        this.error = 'Invalid type to param';
-        return false;
+        this._setError(this._TypeError.INVALIDE_TYPE);
       }
-      return true;
-    }
-  }, {
-    key: '_generateError',
-    value: function _generateError() {
-      this.error = 'Invalid field ' + this.key + ' should be a valide number';
     }
   }, {
     key: '_test',
     value: function _test() {
-      if (this._min != null && this._value < this._min) this._generateError();
-      if (this._max != null && this._value > this._max) this._generateError();
-      if (this._multiple != null && this._value % this._multiple !== 0) this._generateError();
-      if (this._positive && this._value < 0) this._generateError();
-      if (this._negative && this._value >= 0) this._generateError();
-      if (this._port != null && (this._value < 0 || this._value > 65535)) this._generateError();
-
-      return this._hasError;
+      var t = this._TypeError.INVALIDE_VALUE;
+      if (this._min != null && this._value < this._min) return this._setError(t);
+      if (this._max != null && this._value > this._max) return this._setError(t);
+      if (this._multiple != null && this._value % this._multiple !== 0) return this._setError(t);
+      if (this._positive && this._value < 0) return this._setError(t);
+      if (this._negative && this._value >= 0) return this._setError(t);
+      if (this._port != null && (this._value < 0 || this._value > 65535)) return this._setError(t);
     }
   }, {
     key: '_transform',

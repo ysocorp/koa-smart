@@ -8,12 +8,14 @@ export class TypeBinary extends TypeAny {
 
   constructor() {
     super('binary');
+    this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
   }
 
-  _generateError() {
-    this.error = `Invalid field ${this.key}`;
-    return false;
-  }
+  _getDescription = () => {
+    // TODO return custom error message
+    let msgError = `It should be à binary`;
+    return `${msgError}.`;
+  };
 
   encoding(encodingName) {
     this._encoding = encodingName;
@@ -37,29 +39,24 @@ export class TypeBinary extends TypeAny {
 
   _testType() {
     if (this._encoding && !Buffer.isEncoding(this._encoding)) {
-      return this._generateError();
+      super._setError(this._TypeError.INVALIDE_TYPE);
     }
-    return true;
   }
 
   _test() {
-    if (this._min && this._value.length < this._min) {
-      return this._generateError();
-    }
-    if (this._max && this._value.length > this._max) {
-      return this._generateError();
-    }
-    if (this._length && this._value.length !== this._length) {
-      return this._generateError();
-    }
-    return true;
+    const t = this._TypeError.INVALIDE_VALUE;
+    if (this._min != null && this._value < this._min) return this._setError(t);
+    if (this._min && this._value.length < this._min) return this._setError(t);
+    if (this._max && this._value.length > this._max) return this._setError(t);
+    if (this._length && this._value.length !== this._length)
+      return this._setError(t);
   }
 
   _transform() {
     try {
       this._value = Buffer.from(this._value, this._encoding);
     } catch (e) {
-      this._generateError();
+      return this._setError(this._TypeError.INVALIDE_VALUE);
     }
   }
 }

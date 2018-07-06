@@ -36,11 +36,13 @@ describe('TypeBoolean', () => {
     it('Should reject a number', async () => {
       schema.test(1);
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
 
     it('Should reject a string different from "true" and "false"', async () => {
       schema.test('test');
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
   });
 
@@ -65,6 +67,7 @@ describe('TypeBoolean', () => {
     it('should reject a value not specified in the "truthy" parameter', async () => {
       schema.test('ja');
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
   });
 
@@ -89,6 +92,7 @@ describe('TypeBoolean', () => {
     it('should reject a value not specified in the "falsy" parameter', async () => {
       schema.test('nein');
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
   });
 
@@ -138,21 +142,25 @@ describe('TypeBoolean', () => {
     it('should reject a value specified in the "falsy" parameter, even with different casing', async () => {
       schema.test('n');
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
 
     it('should validate a value specified in the "falsy" parameter, even with different casing#2', async () => {
       schema.test('NoN');
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
 
     it('should reject a "true" string with different casing', async () => {
       schema.test('TrUe');
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
 
     it('should reject a "false" string with different casing', async () => {
       schema.test('FALSE');
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
   });
 });

@@ -5,10 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.TypeObject = undefined;
 
-var _typeof2 = require('babel-runtime/helpers/typeof');
-
-var _typeof3 = _interopRequireDefault(_typeof2);
-
 var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
@@ -33,6 +29,10 @@ var _possibleConstructorReturn2 = require('babel-runtime/helpers/possibleConstru
 
 var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
 
+var _get2 = require('babel-runtime/helpers/get');
+
+var _get3 = _interopRequireDefault(_get2);
+
 var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
@@ -51,6 +51,13 @@ var TypeObject = exports.TypeObject = function (_TypeAny) {
 
     _this._schema = {};
     _this._errors = {};
+
+    _this._getDescription = function () {
+      // TODO
+      return 'It should be an object';
+    };
+
+    _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;
     return _this;
   }
 
@@ -59,6 +66,11 @@ var TypeObject = exports.TypeObject = function (_TypeAny) {
     value: function keys(object) {
       this._schema = (0, _extends3.default)({}, this._schema, object);
       return this;
+    }
+  }, {
+    key: 'errors',
+    value: function errors() {
+      return this._errors;
     }
   }, {
     key: '_setError',
@@ -71,30 +83,10 @@ var TypeObject = exports.TypeObject = function (_TypeAny) {
         return k + ': ' + _this2._errors[k];
       });
       if (errorsStr && keys.length) {
-        this.error = errorsStr;
+        (0, _get3.default)(TypeObject.prototype.__proto__ || (0, _getPrototypeOf2.default)(TypeObject.prototype), '_setError', this).call(this, this._TypeError.INVALIDE_VALUE);
       }
-    }
-  }, {
-    key: 'errors',
-    value: function errors() {
-      return this._errors;
-    }
-
-    // Function when test and transform param
-
-  }, {
-    key: '_generateError',
-    value: function _generateError() {
-      this.error = 'Invalid field ' + this.key + ' should be a valide object';
-    }
-  }, {
-    key: '_testType',
-    value: function _testType() {
-      if ((0, _typeof3.default)(this._value) !== this._type) {
-        this.error = 'Invalid type to ' + this.key;
-        return false;
-      }
-      return true;
+      this._hasError = true;
+      return this._hasError;
     }
   }, {
     key: '_test',

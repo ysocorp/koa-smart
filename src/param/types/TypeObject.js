@@ -6,11 +6,22 @@ export class TypeObject extends TypeAny {
 
   constructor() {
     super('object');
+
+    this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
   }
+
+  _getDescription = () => {
+    // TODO
+    return `It should be an object`;
+  };
 
   keys(object) {
     this._schema = { ...this._schema, ...object };
     return this;
+  }
+
+  errors() {
+    return this._errors;
   }
 
   _setError(key, value) {
@@ -18,26 +29,10 @@ export class TypeObject extends TypeAny {
     const keys = Object.keys(this._errors);
     const errorsStr = keys.map(k => `${k}: ${this._errors[k]}`);
     if (errorsStr && keys.length) {
-      this.error = errorsStr;
+      super._setError(this._TypeError.INVALIDE_VALUE);
     }
-  }
-
-  errors() {
-    return this._errors;
-  }
-
-  // Function when test and transform param
-
-  _generateError() {
-    this.error = `Invalid field ${this.key} should be a valide object`;
-  }
-
-  _testType() {
-    if (typeof this._value !== this._type) {
-      this.error = `Invalid type to ${this.key}`;
-      return false;
-    }
-    return true;
+    this._hasError = true;
+    return this._hasError;
   }
 
   _test() {

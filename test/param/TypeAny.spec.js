@@ -54,10 +54,12 @@ describe('TypeAny', () => {
     it('Should not allow undefined', async () => {
       schema.test();
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.REQUIRED);
     });
     it('Should not allow null', async () => {
-      schema.test();
+      schema.test(null);
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.IS_NULL);
     });
     describe('with option allowNull', () => {
       it('Should allow null', async () => {
@@ -73,6 +75,7 @@ describe('TypeAny', () => {
         const schema = Param.any().allowNull(false);
         schema.test(null);
         expect(schema.error).toBeTruthy();
+        expect(schema.error.code).toBe(schema._errorCodes.IS_NULL);
       });
     });
     describe('With param = true', () => {

@@ -6,22 +6,27 @@ export class TypeOneOf extends TypeAny {
 
   constructor() {
     super('object');
+    this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
   }
+
+  _getDescription = () => {
+    const msgs = [];
+    for (const t of this._types) {
+      const fnMessage =
+        t._errorMessages[this._TypeError.ALL] ||
+        t._errorMessages[this._TypeError.INVALIDE_VALUE];
+      msgs.push(fnMessage());
+    }
+    return msgs.join(' OR ');
+  };
 
   types(...rest) {
     this._types = [...rest];
     return this;
   }
 
-  // Function when test and transform param
-
-  _generateError() {
-    this.error = `Invalid field ${this.key} should be a valide object`;
-  }
-
   _testType() {
     /* overload */
-    return true;
   }
 
   _test() {
@@ -38,9 +43,7 @@ export class TypeOneOf extends TypeAny {
       }
     }
     if (!isOneOk) {
-      this.error = this._errors.join('.');
+      this._setError(this._TypeError.INVALIDE_VALUE);
     }
-
-    return isOneOk;
   }
 }

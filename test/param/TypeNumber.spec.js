@@ -111,6 +111,7 @@ describe('TypeNumber', () => {
       let value = 10.0001;
       schema.test(value);
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
   });
 
@@ -142,6 +143,7 @@ describe('TypeNumber', () => {
       let value = 8.99;
       schema.test(value);
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
   });
 
@@ -167,11 +169,13 @@ describe('TypeNumber', () => {
       let value = -0.01;
       schema.test(value);
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
     it('Should test if -1 is not positive', async () => {
       let value = -1;
       schema.test(value);
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
   });
 
@@ -197,11 +201,13 @@ describe('TypeNumber', () => {
       let value = 1;
       schema.test(value);
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
     it('Should test if 0 is not negative', async () => {
       let value = 0;
       schema.test(value);
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
   });
 
@@ -228,6 +234,7 @@ describe('TypeNumber', () => {
     it('Should test if 1 is not a multiple of 2', async () => {
       schema.test(1);
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
   });
 

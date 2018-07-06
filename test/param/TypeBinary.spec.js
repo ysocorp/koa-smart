@@ -34,6 +34,7 @@ describe('TypeBinary', () => {
       let value = 42;
       schema.test(value);
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_TYPE);
     });
   });
 
@@ -53,6 +54,7 @@ describe('TypeBinary', () => {
       let value = '7468697320697320612074c3a97374';
       schema.test(value);
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_TYPE);
     });
   });
 
@@ -73,6 +75,7 @@ describe('TypeBinary', () => {
       let value = 'abcde';
       schema.test(value);
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
 
     it('Should validate a buffer with the correct length (numbers)', async () => {
@@ -86,6 +89,7 @@ describe('TypeBinary', () => {
       let value = [1, 2, 3];
       schema.test(value);
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
 
     it('Should validate a raw buffer with the correct length', async () => {
@@ -99,6 +103,7 @@ describe('TypeBinary', () => {
       let value = Buffer.alloc(6);
       schema.test(value);
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
   });
 
@@ -126,6 +131,7 @@ describe('TypeBinary', () => {
       let value = Buffer.alloc(3);
       schema.test(value);
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
   });
 
@@ -153,6 +159,7 @@ describe('TypeBinary', () => {
       let value = Buffer.alloc(7);
       schema.test(value);
       expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
     });
   });
 });

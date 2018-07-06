@@ -45,6 +45,13 @@ var TypeString = exports.TypeString = function (_TypeAny) {
     _this._tTruncate = false;
     _this._tUppercase = false;
     _this._tLowercase = false;
+
+    _this._getDescription = function () {
+      //TODO
+      return 'It should be a string';
+    };
+
+    _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;
     return _this;
   }
 
@@ -109,28 +116,17 @@ var TypeString = exports.TypeString = function (_TypeAny) {
       this._tTruncate = val;
       return this;
     }
-
-    // Function when test and transform param
-
-  }, {
-    key: '_generateError',
-    value: function _generateError() {
-      this.error = 'Invalid field ' + this.key;
-    }
   }, {
     key: '_test',
     value: function _test() {
-      if (this._length && this._value.length !== this._length) this._generateError();
-      if (this._min && this._value.length < this._min) this._generateError();
-      if (this._max && this._value.length > this._max) this._generateError();
-
-      return this._hasError;
+      var t = this._TypeError.INVALIDE_VALUE;
+      if (this._length && this._value.length !== this._length) return this._setError(t);
+      if (this._min && this._value.length < this._min) return this._setError(t);
+      if (this._max && this._value.length > this._max) return this._setError(t);
     }
   }, {
     key: '_transform',
     value: function _transform() {
-      if (this.error) return;
-
       if (this._tTrim) this._value = this._value.trim();
       if (this._tTruncate && this._max) this._value = this._value.substring(0, this._max);
       if (this._tTruncate && this._length) this._value = this._value.substring(0, this._length);

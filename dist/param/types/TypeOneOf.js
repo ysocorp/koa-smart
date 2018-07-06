@@ -43,54 +43,19 @@ var TypeOneOf = exports.TypeOneOf = function (_TypeAny) {
 
     _this._types = [];
     _this._errors = [];
-    return _this;
-  }
 
-  (0, _createClass3.default)(TypeOneOf, [{
-    key: 'types',
-    value: function types() {
-      for (var _len = arguments.length, rest = Array(_len), _key = 0; _key < _len; _key++) {
-        rest[_key] = arguments[_key];
-      }
-
-      this._types = [].concat(rest);
-      return this;
-    }
-
-    // Function when test and transform param
-
-  }, {
-    key: '_generateError',
-    value: function _generateError() {
-      this.error = 'Invalid field ' + this.key + ' should be a valide object';
-    }
-  }, {
-    key: '_testType',
-    value: function _testType() {
-      /* overload */
-      return true;
-    }
-  }, {
-    key: '_test',
-    value: function _test() {
-      var isOneOk = false;
+    _this._getDescription = function () {
+      var msgs = [];
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
 
       try {
-        for (var _iterator = (0, _getIterator3.default)(this._types), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        for (var _iterator = (0, _getIterator3.default)(_this._types), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var t = _step.value;
 
-          t.required(this._required);
-          t.test(this._value);
-          if (!isOneOk && !t.error) {
-            isOneOk = true;
-            this._value = t.value;
-          }
-          if (t.error) {
-            this._errors.push(t.error);
-          }
+          var fnMessage = t._errorMessages[_this._TypeError.ALL] || t._errorMessages[_this._TypeError.INVALIDE_VALUE];
+          msgs.push(fnMessage());
         }
       } catch (err) {
         _didIteratorError = true;
@@ -107,11 +72,68 @@ var TypeOneOf = exports.TypeOneOf = function (_TypeAny) {
         }
       }
 
-      if (!isOneOk) {
-        this.error = this._errors.join('.');
+      return msgs.join(' OR ');
+    };
+
+    _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;
+    return _this;
+  }
+
+  (0, _createClass3.default)(TypeOneOf, [{
+    key: 'types',
+    value: function types() {
+      for (var _len = arguments.length, rest = Array(_len), _key = 0; _key < _len; _key++) {
+        rest[_key] = arguments[_key];
       }
 
-      return isOneOk;
+      this._types = [].concat(rest);
+      return this;
+    }
+  }, {
+    key: '_testType',
+    value: function _testType() {
+      /* overload */
+    }
+  }, {
+    key: '_test',
+    value: function _test() {
+      var isOneOk = false;
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
+
+      try {
+        for (var _iterator2 = (0, _getIterator3.default)(this._types), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var t = _step2.value;
+
+          t.required(this._required);
+          t.test(this._value);
+          if (!isOneOk && !t.error) {
+            isOneOk = true;
+            this._value = t.value;
+          }
+          if (t.error) {
+            this._errors.push(t.error);
+          }
+        }
+      } catch (err) {
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
+          }
+        } finally {
+          if (_didIteratorError2) {
+            throw _iteratorError2;
+          }
+        }
+      }
+
+      if (!isOneOk) {
+        this._setError(this._TypeError.INVALIDE_VALUE);
+      }
     }
   }]);
   return TypeOneOf;

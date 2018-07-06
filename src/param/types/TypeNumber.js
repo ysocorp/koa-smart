@@ -5,8 +5,8 @@ export class TypeNumber extends TypeAny {
   _max; // Specifies the maximum value where:
   _integer; // Requires the number to be an integer (no floating point).
   _multiple; // Specifies that the value must be a multiple of base:
-  _positive; // Requires the number to be positive.
-  _negative; // Requires the number to be negative.
+  _positive = false; // Requires the number to be positive.
+  _negative = false; // Requires the number to be negative.
   _port; // Requires the number to be a TCP port, so between 0 and 65535.
 
   _tPrecision; // Specifies the maximum number of decimal places where:
@@ -14,7 +14,37 @@ export class TypeNumber extends TypeAny {
 
   constructor() {
     super('number');
+
+    this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
   }
+
+  _getDescription = () => {
+    let pN = ' ';
+    pN = this._positive ? ' positive ' : pN;
+    pN = !this._positive && this._negative ? 'negative' : pN;
+    let msgError = `It should be a${pN}number`;
+
+    let and = false;
+    if (this._min != null && this._max != null) {
+      msgError += ` ${and ? 'and' : ''} between ${this._min} and ${this._max}`;
+      and = true;
+    } else if (this._min != null) {
+      msgError += ` ${and ? 'and' : ''} greater or equal to ${this._min}`;
+      and = true;
+    } else if (this._max != null) {
+      msgError += ` ${and ? 'and' : ''} smaller or equal to ${this._max}`;
+      and = true;
+    }
+    if (this._multiple != null) {
+      msgError += ` ${and ? 'and' : ''} multiple of ${this._multiple}`;
+      and = true;
+    }
+    if (this._port != null) {
+      msgError += ` ${and ? 'and' : ''} between ${0} and ${65535}`;
+      and = true;
+    }
+    return `${msgError}.`;
+  };
 
   min(nb = 0) {
     this._min = nb;
@@ -71,27 +101,20 @@ export class TypeNumber extends TypeAny {
 
   _testType() {
     if (!this._isNumber()) {
-      this.error = `Invalid type to param`;
-      return false;
+      this._setError(this._TypeError.INVALIDE_TYPE);
     }
-    return true;
-  }
-
-  _generateError() {
-    this.error = `Invalid field ${this.key} should be a valide number`;
   }
 
   _test() {
-    if (this._min != null && this._value < this._min) this._generateError();
-    if (this._max != null && this._value > this._max) this._generateError();
+    const t = this._TypeError.INVALIDE_VALUE;
+    if (this._min != null && this._value < this._min) return this._setError(t);
+    if (this._max != null && this._value > this._max) return this._setError(t);
     if (this._multiple != null && this._value % this._multiple !== 0)
-      this._generateError();
-    if (this._positive && this._value < 0) this._generateError();
-    if (this._negative && this._value >= 0) this._generateError();
+      return this._setError(t);
+    if (this._positive && this._value < 0) return this._setError(t);
+    if (this._negative && this._value >= 0) return this._setError(t);
     if (this._port != null && (this._value < 0 || this._value > 65535))
-      this._generateError();
-
-    return this._hasError;
+      return this._setError(t);
   }
 
   _precisionTo = (nb, nbDigit, type) =>

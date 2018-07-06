@@ -1,8 +1,32 @@
+export const TypeError = {
+  ALL: 'ALL',
+  REQUIRED: 'REQUIRED',
+  IS_NULL: 'IS_NULL',
+  INVALIDE_TYPE: 'INVALIDE_TYPE',
+  INVALIDE_VALUE: 'INVALIDE_VALUE',
+};
+
 export class TypeAny {
+  _TypeError = { ...TypeError };
   _type = null;
   _error = null;
   _hasError = false;
   _isValueNull = false;
+  _codeError = null;
+  _errorCodes = {
+    [this._TypeError.ALL]: 1,
+    [this._TypeError.REQUIRED]: 2,
+    [this._TypeError.IS_NULL]: 3,
+    [this._TypeError.INVALIDE_TYPE]: 4,
+    [this._TypeError.INVALIDE_VALUE]: 5,
+  };
+  _errorMessages = {
+    [this._TypeError.ALL]: null,
+    [this._TypeError.REQUIRED]: () => 'Is required',
+    [this._TypeError.IS_NULL]: () => 'Can not be null',
+    [this._TypeError.INVALIDE_TYPE]: () => `Expect type ${this._type}`,
+    [this._TypeError.INVALIDE_VALUE]: () => 'Invalid field',
+  };
   // options
   _isRequired = false;
   _notNull = false;
@@ -12,6 +36,10 @@ export class TypeAny {
   constructor(type) {
     this._type = type;
   }
+
+  _getDescription = () => {
+    return 'It should be any type';
+  };
 
   get value() {
     if (this._default != null && (this._value == null || this._hasError)) {
@@ -23,6 +51,19 @@ export class TypeAny {
     this._value = val;
   }
 
+  _setError(typeCode) {
+    // skip error if has a default value
+    if (this._default == null) {
+      const fnMessage =
+        this._errorMessages[this._TypeError.ALL] ||
+        this._errorMessages[typeCode];
+      this._error = fnMessage();
+      this._codeError = this._errorCodes[typeCode];
+    }
+    this._hasError = true;
+    return this._hasError;
+  }
+
   set error(string) {
     // skip error if has a default value
     if (this._default == null) {
@@ -31,6 +72,19 @@ export class TypeAny {
     this._hasError = true;
   }
   get error() {
+    if (!this._error) {
+      return null;
+    }
+    return {
+      msg: this._error,
+      code: this.codeError,
+    };
+  }
+
+  get codeError() {
+    return this._codeError;
+  }
+  get codeMsg() {
     return this._error;
   }
 
@@ -53,9 +107,9 @@ export class TypeAny {
   // Function when test and transform param
   test(value) {
     this._initValues(value);
-    if (!this._testExist() || this._hasError) return;
-    if (!this._testNull() || this._hasError || this._isValueNull) return;
-    if (!this._testType() || this._hasError) return;
+    if (this._testExist() || this._hasError) return;
+    if (this._testNull() || this._hasError || this._isValueNull) return;
+    if (this._testType() || this._hasError) return;
     this._transform();
     this._test();
   }
@@ -65,32 +119,24 @@ export class TypeAny {
   }
 
   _testExist() {
-    const exist = this._value !== 'undefined';
+    const exist = typeof this._value !== 'undefined';
     if (!exist && this._isRequired) {
-      this.error = `Param is required`;
-      return false;
+      this._setError(this._TypeError.REQUIRED);
     }
-    return true;
   }
 
   _testNull() {
     if (this._value == null && this._notNull) {
-      this.error = `Can not be null`;
-      return false;
+      this._setError(TypeError.IS_NULL);
     }
     this._isValueNull = this._value == null;
-    return true;
   }
 
   _testType() {
-    if (!this._type) {
-      return true;
-    }
-    if (typeof this._value !== this._type) {
-      this.error = `Invalid type, expect type ${this._type}`;
+    if (this._type != null && typeof this._value !== this._type) {
+      this._setError(TypeError.INVALIDE_TYPE);
       return false;
     }
-    return true;
   }
 
   _test() {
