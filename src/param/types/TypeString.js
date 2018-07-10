@@ -18,8 +18,34 @@ export class TypeString extends TypeAny {
   }
 
   _getDescription = () => {
-    //TODO
-    return `It should be a string`;
+    let msgError = `It should be a string`;
+
+    let and = false;
+    if (this._length != null) {
+      msgError += `${and ? ' and' : ''} with ${this._length} characters`;
+      and = true;
+    }
+    if (this._min != null && this._max != null) {
+      msgError += `${and ? ' and' : ''} with ${this._min} and ${
+        this._max
+      } characters`;
+      and = true;
+    } else if (this._min != null) {
+      msgError += `${and ? ' and' : ''} with at least ${this._min} characters`;
+      and = true;
+    } else if (this._max != null) {
+      msgError += `${and ? ' and' : ''} with a maximum of ${
+        this._max
+      } characters`;
+      and = true;
+    }
+    if (this._regex != null) {
+      msgError += `${
+        and ? ' and' : ''
+      } that match with ${this._regex.toString()}`;
+      and = true;
+    }
+    return `${msgError}.`;
   };
 
   trim(needTrim = true) {

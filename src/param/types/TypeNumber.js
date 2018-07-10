@@ -21,26 +21,26 @@ export class TypeNumber extends TypeAny {
   _getDescription = () => {
     let pN = ' ';
     pN = this._positive ? ' positive ' : pN;
-    pN = !this._positive && this._negative ? 'negative' : pN;
+    pN = !this._positive && this._negative ? ' negative ' : pN;
     let msgError = `It should be a${pN}number`;
 
     let and = false;
     if (this._min != null && this._max != null) {
-      msgError += ` ${and ? 'and' : ''} between ${this._min} and ${this._max}`;
+      msgError += `${and ? ' and' : ''} between ${this._min} and ${this._max}`;
       and = true;
     } else if (this._min != null) {
-      msgError += ` ${and ? 'and' : ''} greater or equal to ${this._min}`;
+      msgError += `${and ? ' and' : ''} greater or equal to ${this._min}`;
       and = true;
     } else if (this._max != null) {
-      msgError += ` ${and ? 'and' : ''} smaller or equal to ${this._max}`;
+      msgError += `${and ? ' and' : ''} smaller or equal to ${this._max}`;
       and = true;
     }
     if (this._multiple != null) {
-      msgError += ` ${and ? 'and' : ''} multiple of ${this._multiple}`;
+      msgError += `${and ? ' and' : ''} multiple of ${this._multiple}`;
       and = true;
     }
     if (this._port != null) {
-      msgError += ` ${and ? 'and' : ''} between ${0} and ${65535}`;
+      msgError += `${and ? ' and' : ''} between ${0} and ${65535}`;
       and = true;
     }
     return `${msgError}.`;
