@@ -33,7 +33,7 @@ var _TypeAny2 = require('./TypeAny');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var TypeString = exports.TypeString = function (_TypeAny) {
+var TypeString = function (_TypeAny) {
   (0, _inherits3.default)(TypeString, _TypeAny);
 
   function TypeString() {
@@ -47,8 +47,28 @@ var TypeString = exports.TypeString = function (_TypeAny) {
     _this._tLowercase = false;
 
     _this._getDescription = function () {
-      //TODO
-      return 'It should be a string';
+      var msgError = 'It should be a string';
+
+      var and = false;
+      if (_this._length != null) {
+        msgError += (and ? ' and' : '') + ' with ' + _this._length + ' characters';
+        and = true;
+      }
+      if (_this._min != null && _this._max != null) {
+        msgError += (and ? ' and' : '') + ' with ' + _this._min + ' and ' + _this._max + ' characters';
+        and = true;
+      } else if (_this._min != null) {
+        msgError += (and ? ' and' : '') + ' with at least ' + _this._min + ' characters';
+        and = true;
+      } else if (_this._max != null) {
+        msgError += (and ? ' and' : '') + ' with a maximum of ' + _this._max + ' characters';
+        and = true;
+      }
+      if (_this._regex != null) {
+        msgError += (and ? ' and' : '') + ' that match with ' + _this._regex.toString();
+        and = true;
+      }
+      return msgError + '.';
     };
 
     _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;
@@ -86,6 +106,12 @@ var TypeString = exports.TypeString = function (_TypeAny) {
       return this;
     }
   }, {
+    key: 'regex',
+    value: function regex(_regex) {
+      this._regex = _regex;
+      return this;
+    }
+  }, {
     key: 'between',
     value: function between(nbMin, nbMax) {
       this.min(nbMin);
@@ -117,12 +143,21 @@ var TypeString = exports.TypeString = function (_TypeAny) {
       return this;
     }
   }, {
+    key: 'replace',
+    value: function replace(pattern) {
+      var replaceWith = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+
+      this._tReplace = { pattern: pattern, replaceWith: replaceWith };
+      return this;
+    }
+  }, {
     key: '_test',
     value: function _test() {
       var t = this._TypeError.INVALIDE_VALUE;
       if (this._length && this._value.length !== this._length) return this._setError(t);
       if (this._min && this._value.length < this._min) return this._setError(t);
       if (this._max && this._value.length > this._max) return this._setError(t);
+      if (this._regex && !this._value.match(this._regex)) return this._setError(t);
     }
   }, {
     key: '_transform',
@@ -132,7 +167,10 @@ var TypeString = exports.TypeString = function (_TypeAny) {
       if (this._tTruncate && this._length) this._value = this._value.substring(0, this._length);
       if (this._tUppercase) this._value = this._value.toUpperCase();
       if (this._tLowercase) this._value = this._value.toLowerCase();
+      if (this._tReplace) this._value = this._value.replace(this._tReplace.pattern, this._tReplace.replaceWith);
     }
   }]);
   return TypeString;
 }(_TypeAny2.TypeAny);
+
+exports.TypeString = TypeString;

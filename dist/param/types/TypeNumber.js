@@ -54,26 +54,26 @@ var TypeNumber = exports.TypeNumber = function (_TypeAny) {
     _this._getDescription = function () {
       var pN = ' ';
       pN = _this._positive ? ' positive ' : pN;
-      pN = !_this._positive && _this._negative ? 'negative' : pN;
+      pN = !_this._positive && _this._negative ? ' negative ' : pN;
       var msgError = 'It should be a' + pN + 'number';
 
       var and = false;
       if (_this._min != null && _this._max != null) {
-        msgError += ' ' + (and ? 'and' : '') + ' between ' + _this._min + ' and ' + _this._max;
+        msgError += (and ? ' and' : '') + ' between ' + _this._min + ' and ' + _this._max;
         and = true;
       } else if (_this._min != null) {
-        msgError += ' ' + (and ? 'and' : '') + ' greater or equal to ' + _this._min;
+        msgError += (and ? ' and' : '') + ' greater or equal to ' + _this._min;
         and = true;
       } else if (_this._max != null) {
-        msgError += ' ' + (and ? 'and' : '') + ' smaller or equal to ' + _this._max;
+        msgError += (and ? ' and' : '') + ' smaller or equal to ' + _this._max;
         and = true;
       }
       if (_this._multiple != null) {
-        msgError += ' ' + (and ? 'and' : '') + ' multiple of ' + _this._multiple;
+        msgError += (and ? ' and' : '') + ' multiple of ' + _this._multiple;
         and = true;
       }
       if (_this._port != null) {
-        msgError += ' ' + (and ? 'and' : '') + ' between ' + 0 + ' and ' + 65535;
+        msgError += (and ? ' and' : '') + ' between ' + 0 + ' and ' + 65535;
         and = true;
       }
       return msgError + '.';
