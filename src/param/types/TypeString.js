@@ -10,6 +10,7 @@ export class TypeString extends TypeAny {
   _tTruncate = false;
   _tUppercase = false;
   _tLowercase = false;
+  _tReplace;
 
   constructor() {
     super('string');
@@ -67,6 +68,10 @@ export class TypeString extends TypeAny {
     return this;
   }
 
+  replace(pattern, replaceWith = '') {
+    this._tReplace = { pattern, replaceWith };
+    return this;
+  }
 
   _test() {
     const t = this._TypeError.INVALIDE_VALUE;
@@ -86,5 +91,10 @@ export class TypeString extends TypeAny {
       this._value = this._value.substring(0, this._length);
     if (this._tUppercase) this._value = this._value.toUpperCase();
     if (this._tLowercase) this._value = this._value.toLowerCase();
+    if (this._tReplace)
+      this._value = this._value.replace(
+        this._tReplace.pattern,
+        this._tReplace.replaceWith,
+      );
   }
 }
