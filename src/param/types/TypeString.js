@@ -4,6 +4,7 @@ export class TypeString extends TypeAny {
   _min;
   _max;
   _length;
+  _regex;
 
   _tTrim = true;
   _tTruncate = false;
@@ -40,6 +41,11 @@ export class TypeString extends TypeAny {
     return this;
   }
 
+  regex(regex) {
+    this._regex = regex;
+    return this;
+  }
+
   between(nbMin, nbMax) {
     this.min(nbMin);
     this.max(nbMax);
@@ -61,12 +67,15 @@ export class TypeString extends TypeAny {
     return this;
   }
 
+
   _test() {
     const t = this._TypeError.INVALIDE_VALUE;
     if (this._length && this._value.length !== this._length)
       return this._setError(t);
     if (this._min && this._value.length < this._min) return this._setError(t);
     if (this._max && this._value.length > this._max) return this._setError(t);
+    if (this._regex && !this._value.match(this._regex))
+      return this._setError(t);
   }
 
   _transform() {
