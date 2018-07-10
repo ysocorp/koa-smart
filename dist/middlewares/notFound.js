@@ -36,6 +36,11 @@ var notFound = function () {
   };
 }();
 
+/**
+ * @desc middleware preventingly setting the response's status to 404, in case no path is picked up
+ */
+
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = function () {

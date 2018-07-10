@@ -69,6 +69,11 @@ var logger = function () {
   };
 }();
 
+/**
+ * @desc middleware handling logging each time a request is made
+ */
+
+
 var _chalk = require('chalk');
 
 var _chalk2 = _interopRequireDefault(_chalk);

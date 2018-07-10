@@ -66,6 +66,55 @@ var _RouteDecorators2 = _interopRequireDefault(_RouteDecorators);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Route = (_temp = _class = function () {
+
+  /**
+   * @typedef {Object} Params
+   * @property {Object.<string, boolean | PostParamsFilter>} params the params describing the route's middlewares,
+   *                                                                with the key being the param's name,
+   *                                                                and the value describes the way it should be handled.
+   *                                                                (only applicable for requests containing a body)
+   * @property {string} path the path at which the route will be available.
+   * @property {string} routeBase a prefix which will be preppended to the route's path
+   * @property {boolean} disabled if set to true, the route will be ignored
+   * @property {function[]} middlewares an array of Koa Middlewares, which will be mounted for the given route
+   */
+
+  /**
+   * @typedef {Object} PostParamsFilter
+   * @property {ParamMiddlewareFunction[]} __func an array of functions which provides "middleware" functions that will be applied to the corresponding parameter one by one.
+   * @property {boolean} __force whether the parameter is required or not.
+   */
+
+  /**
+   * @typedef {function} ParamMiddlewareFunction
+   * @param {*} elem the element the function will act upon
+   * @param {Route} [route] the element's current route
+   * @param {{ctx: KoaContext, body:Object, keyBody:string}} [context] the element's context
+   * @return {*} transformedParam the parameter, after being manipulated by the function
+   */
+
+  /**
+   * @typedef {Object} RouteParams
+   * @property {Koa} app the Koa application
+   * @property {string} prefix a prefix which will be preppended before every route's paths
+   * @property {Route[]} routes an array containing all the mounted Routes
+   * @property {Model[]} [models] an array containing all of the app's models
+   * @property {string} [model] the name of the route's own model
+   * @property {disable} [boolean] whether the route should be disabled
+   *
+   */
+
+  /**
+   * @external {KoaContext} http://koajs.com/#api
+   */
+
+  /**
+   *@external {Koa} http://koajs.com/#application
+   */
+
+  /**
+   * @param {RouteParams} params the route's parameters
+   */
   function Route(_ref) {
     var app = _ref.app,
         prefix = _ref.prefix,
@@ -91,6 +140,48 @@ var Route = (_temp = _class = function () {
     this.routeBase;
   }
 
+  /**
+   * @access public
+   * @desc mounts the tagged function as a GET route.
+   * @param {Params} params the route's parameters
+   */
+
+
+  /**
+   * @access public
+   * @desc mounts the tagged function as a POST route.
+   * @param {Params} params the route's parameters
+   */
+
+
+  /**
+   * @access public
+   * @desc mounts the tagged function as a PUT route.
+   * @param {Params} params the route's parameters
+   */
+
+
+  /**
+   * @access public
+   * @desc mounts the tagged function as a PATCH route.
+   * @param {Params} params the route's parameters
+   */
+
+
+  /**
+   * @access public
+   * @desc mounts the tagged function as a DELETE route.
+   * @param {Params} params the route's parameters
+   */
+
+
+  /**
+   * @access public
+   * @desc used to set some parameters on an entire class.The supported parameters are middlewares, disable, and routeBase.
+   * @param {Params} params the route's parameters
+   */
+
+
   (0, _createClass3.default)(Route, [{
     key: 'log',
     value: function log(str) {
@@ -104,6 +195,13 @@ var Route = (_temp = _class = function () {
         (_console = console).log.apply(_console, [str].concat(args));
       }
     }
+
+    /**
+     * @access public
+     * @desc Register the route and makes it callable once the API is launched.
+     *       you will usually not need to call this method yourself.
+     */
+
   }, {
     key: 'mount',
     value: function mount() {
@@ -435,16 +533,38 @@ var Route = (_temp = _class = function () {
 
       return original ? ctx.request.bodyOrig : ctx.request.body;
     }
+
+    /**
+     * @access private
+     */
+
   }, {
     key: 'bodyGet',
     value: function bodyGet(ctx) {
       return ctx.request.query || {};
     }
+
+    /**
+     * @access public
+     * @desc retrieves the query params in a GET request
+     * @param {KoaContext} ctx koa's context object
+     */
+
   }, {
     key: 'paramsGet',
     value: function paramsGet(ctx) {
       return this.bodyGet(ctx);
     }
+
+    /**
+     * @access public
+     * @desc sets the response's body (with a message + data field) and status .
+     * @param {KoaContext} ctx koa's context object
+     * @param {number} [status] the HTTP status code to end the request with
+     * @param {*} [data] the data to be yielded by the requests
+     * @param {string} [message] the message to be yielded by the request
+     */
+
   }, {
     key: 'send',
     value: function send(ctx) {
@@ -467,46 +587,126 @@ var Route = (_temp = _class = function () {
         ctx.body.date = Date.now();
       }
     }
+
+    /**
+     * @access public
+     * @desc same as {@link send}, but automatically sets the status to 200 OK
+     * @param {KoaContext} ctx koa's context object
+     * @param {*} [data] the data to be yielded by the requests
+     * @param {string} [message] the message to be yielded by the request
+     */
+
   }, {
     key: 'sendOk',
     value: function sendOk(ctx, data, message) {
       return this.send(ctx, Route.StatusCode.ok, data, message);
     }
+
+    /**
+     * @access public
+     * @desc same as {@link send}, but automatically sets the status to 201 CREATED
+     * @param {KoaContext} ctx koa's context object
+     * @param {*} [data] the data to be yielded by the requests
+     * @param {string} [message] the message to be yielded by the request
+     */
+
   }, {
     key: 'sendCreated',
     value: function sendCreated(ctx, data, message) {
       return this.send(ctx, Route.StatusCode.created, data, message);
     }
+
+    /**
+     * @access public
+     * @desc replies with an empty body, yielding 204 NO CONTENT as the status
+     * @param {KoaContext} ctx koa's context object
+     */
+
   }, {
     key: 'sendNoContent',
     value: function sendNoContent(ctx) {
       return this.send(ctx, Route.StatusCode.noContent);
     }
+
+    /**
+     * @access public
+     * @desc same as {@link send}, but automatically sets the status to 400 BAD REQUEST
+     * @param {KoaContext} ctx koa's context object
+     * @param {*} [data] the data to be yielded by the requests
+     * @param {string} [message] the message to be yielded by the request
+     */
+
   }, {
     key: 'sendBadRequest',
     value: function sendBadRequest(ctx, data, message) {
       return this.send(ctx, Route.StatusCode.badRequest, data, message);
     }
+
+    /**
+     * @access public
+     * @desc same as {@link send}, but automatically sets the status to 401 UNAUTHORIZED
+     * @param {KoaContext} ctx koa's context object
+     * @param {*} [data] the data to be yielded by the requests
+     * @param {string} [message] the message to be yielded by the request
+     */
+
   }, {
     key: 'sendUnauthorized',
     value: function sendUnauthorized(ctx, data, message) {
       return this.send(ctx, Route.StatusCode.unauthorized, data, message);
     }
+
+    /**
+     * @access public
+     * @desc same as {@link send}, but automatically sets the status to 403 FORBIDDEN
+     * @param {KoaContext} ctx koa's context object
+     * @param {*} [data] the data to be yielded by the requests
+     * @param {string} [message] the message to be yielded by the request
+     */
+
   }, {
     key: 'sendForbidden',
     value: function sendForbidden(ctx, data, message) {
       return this.send(ctx, Route.StatusCode.forbidden, data, message);
     }
+
+    /**
+     * @access public
+     * @desc same as {@link send}, but automatically sets the status to 404 NOT FOUND
+     * @param {KoaContext} ctx koa's context object
+     * @param {*} [data] the data to be yielded by the requests
+     * @param {string} [message] the message to be yielded by the request
+     */
+
   }, {
     key: 'sendNotFound',
     value: function sendNotFound(ctx, data, message) {
       return this.send(ctx, Route.StatusCode.notFound, data, message);
     }
+
+    /**
+     * @access public
+     * @desc same as {@link send}, but automatically sets the status to 500 INTERNAL SERVER ERROR
+     * @param {KoaContext} ctx koa's context object
+     * @param {*} [data] the data to be yielded by the requests
+     * @param {string} [message] the message to be yielded by the request
+     */
+
   }, {
     key: 'sendInternalServerError',
     value: function sendInternalServerError(ctx, data, message) {
       return this.send(ctx, Route.StatusCode.internalServerError, data, message);
     }
+
+    /**
+     * @access public
+     * @desc throws a formated error to be caught.
+     * @param {number} status the error's HTTP status StatusCode
+     * @param {string} message  a message describing the error
+     * @param {boolean} translate indicates whether the message should be translated or not
+     * @throws {ErrorApp} thrown error.
+     */
+
   }, {
     key: 'throw',
     value: function _throw(status, message) {
@@ -514,6 +714,17 @@ var Route = (_temp = _class = function () {
 
       throw new _ErrorApp2.default(status, message, translate);
     }
+
+    /**
+     * @access public
+     * @desc checks a condition. If it evaluates to false, throws a formated error to be caught.
+     * @param {boolean} condition if set to false; assert will fail and throw.
+     * @param {number} status the error's HTTP status StatusCode
+     * @param {string} message  a message describing the error
+     * @param {boolean} translate indicates whether the message should be translated or not
+     * @throws {ErrorApp} thrown error, should the assert fail.
+     */
+
   }, {
     key: 'assert',
     value: function assert(condition, status, message) {

@@ -3,7 +3,7 @@
 [![Build Status](https://secure.travis-ci.org/ysocorp/koa-smart.png?branch=master "Test")](http://travis-ci.org/ysocorp/koa-smart)
 [![NPM version](http://badge.fury.io/js/koa-smart.png)](https://npmjs.org/package/koa-smart "View this project on NPM")
 
-A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, **Params checker** and a **base of modules** ([`cors`](https://www.npmjs.com/package/kcors), [`bodyparser`](https://github.com/koajs/bodyparser), [`compress`](https://github.com/koajs/compress), [`I18n`](https://github.com/koa-modules/i18n), etc... ) to allow you to develop a smart api easily 
+A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, **Params checker** and a **base of modules** ([`cors`](https://www.npmjs.com/package/kcors), [`bodyparser`](https://github.com/koajs/bodyparser), [`compress`](https://github.com/koajs/compress), [`I18n`](https://github.com/koa-modules/i18n), etc... ) to allow you to develop a smart api easily
 ```sh
   export default class RouteUsers extends Route {
 
@@ -61,6 +61,7 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
 * [`lodash`](https://github.com/lodash/lodash) A modern JavaScript utility library delivering modularity, performance, & extras
 * [`jsonwebtoken`](https://github.com/auth0/node-jsonwebtoken) an implementation of [JSON Web Tokens JWT](https://tools.ietf.org/html/rfc7519)
 
+the full documentation for this module can be found [here](https://ysocorp.github.io/koa-smart/)
 
 ## Install
 `npm install koa-smart`
@@ -143,7 +144,7 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
     * **Disable all routes in a class**
 
     to disable all routes in a class you should add `disable` in the content of your decorator class
-    
+
     ```sh
     @Route.Route({
         disable: true,
@@ -152,11 +153,11 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
         // All routes in this class will not be mounted
     }
     ```
-  
+
     * **Disable a specific route**
 
     to disable a specific route you can add `disable` in the content of your decorator
-    
+
     ```sh
     @Route.Get({
         disable: true, // this route will not be mounted
@@ -183,10 +184,10 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
         store: store, // By default it will create MemoryStore
     });
 
-    // limit 100 accesses per min on your API 
+    // limit 100 accesses per min on your API
     app.addMiddlewares([
       // ...
-      RateLimit.middleware({ interval: { min: 1 }, max: 100 }), 
+      RateLimit.middleware({ interval: { min: 1 }, max: 100 }),
       // ...
     ]);
     ```
@@ -329,7 +330,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
     import { App } from 'koa-smart';
     // import middlewares koa-smart give you OR others
     import {
-      bodyParser, 
+      bodyParser,
       compress,
       cors,
       handleError,
@@ -345,7 +346,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
       port: 3000,
     });
     ```
-  
+
   * add your middlewares
 
     ```sh
@@ -358,7 +359,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
       ...
     ]);
     ```
-  
+
   * add your routes
     mount a folder with a prefix (all file who extends from `Route` will be added and mounted)
 
@@ -371,7 +372,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
     ```sh
     myApp.start();
     ```
-  
+
 ### Full example
 
   * Basic one
@@ -381,9 +382,9 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
     // import the app
     import { App } from 'koa-smart';
     // import middlewares koa-smart give you OR others
-    import { 
+    import {
       i18n,
-      bodyParser, 
+      bodyParser,
       compress,
       cors,
       helmet,
@@ -412,14 +413,14 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
       compress({}),
       RateLimit.middleware({ interval: { min: 1 }, max: 100 }),
     ]);
-        
+
     // mount a folder with an prefix (all file who extends from `Route` will be add and mount)
     myApp.mountFolder(join(__dirname, 'routes'), '/');
 
     // start the app
     myApp.start();
     ```
-  
+
   * Other example who Extends class App
 
     ```sh
@@ -427,9 +428,9 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
     // import the app
     import { App } from 'koa-smart';
     // import middlewares koa-smart give you OR others
-    import { 
+    import {
       i18n,
-      bodyParser, 
+      bodyParser,
       compress,
       cors,
       helmet,
@@ -479,7 +480,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
 
   In this example we will see how you can manage **accesses** to your route in 2 steps  
 
-  1. Extends `Route` Class and overload  `beforeRoute` methode 
+  1. Extends `Route` Class and overload  `beforeRoute` methode
 
   ```sh
   export default class MyRoute extends Route {
@@ -496,7 +497,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
       // infos.options content all the param give to the route
 
       if (this.mlCanAccessRoute(ctx, infos.options)) { // test if you can access
-        this.throw(StatusCode.forbidden, ctx.state.__('Forbidden access')); 
+        this.throw(StatusCode.forbidden, ctx.state.__('Forbidden access'));
       }
       // call the super methode
       await super.beforeRoute(ctx, infos, next);
@@ -519,6 +520,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
   ```
 
   2. Create a route with access 
+
 
   ```sh
   export default class RouteMyApi extends MyRoute {

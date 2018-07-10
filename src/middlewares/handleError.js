@@ -1,5 +1,12 @@
 const __ = string => string;
 
+/**
+ * @typedef OptionErrors
+ * @property {boolean} [logAll = false] if set to true, all logs will be displayed regardless of their individual settings
+ * @property {boolean} [logErrorUnknown = false] whether unknown errors should be displayed
+ * @property {boolean} [logErrorSequelize = false] whether errors pertaining to the models should be logged
+ * @property {boolean} [logErrorApp = false] whether errors coming from thrown {@link ErrorApp} should be logged
+ */
 let options = {
   logAll: false,
   logErrorUnknown: false,
@@ -24,6 +31,7 @@ function getMessageTranslate(ctx, msg, toTranslate) {
   return msg;
 }
 
+
 async function handleError(ctx, next) {
   try {
     await next();
@@ -46,6 +54,12 @@ async function handleError(ctx, next) {
   }
 }
 
+/**
+ * middleware in charge of handling errors thrown on purpose, either through manually throwing {@link ErrorApp}, either through calling {@link Route.throw}.
+ *
+ * It will also make sure errors pertaining to models as well as unexpected error are given a clearer message.
+ * @param {OptionErrors} [opt = {}] option object to set which events should be logged
+ */
 export default (opt = {}) => {
   options = {
     ...options,

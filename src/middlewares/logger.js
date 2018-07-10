@@ -41,4 +41,7 @@ async function logger(ctx, next) {
   }
 }
 
+/**
+ * @desc middleware handling logging each time a request is made
+ */
 export default () => logger;

@@ -30,10 +30,21 @@ var ErrorApp = function (_Error) {
     var toTranslate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
     (0, _classCallCheck3.default)(this, ErrorApp);
 
+    /**
+     * @type {number}
+     */
     var _this = (0, _possibleConstructorReturn3.default)(this, (ErrorApp.__proto__ || (0, _getPrototypeOf2.default)(ErrorApp)).call(this));
 
     _this.status = status;
+
+    /**
+     * @type {string}
+     */
     _this.message = message;
+
+    /**
+     * @type {boolean}
+     */
     _this.toTranslate = toTranslate;
 
     _this.constructor = ErrorApp;

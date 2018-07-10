@@ -1,3 +1,5 @@
+
+
 async function notFound(ctx) {
   ctx.status = 404;
   ctx.body = {
@@ -5,4 +7,7 @@ async function notFound(ctx) {
   };
 }
 
+/**
+ * @desc middleware preventingly setting the response's status to 404, in case no path is picked up
+ */
 export default () => notFound;

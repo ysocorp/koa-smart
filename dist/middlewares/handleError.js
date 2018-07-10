@@ -67,12 +67,25 @@ var handleError = function () {
   };
 }();
 
+/**
+ * @desc middleware handling various errors, turning them into readable messages
+ * @param {OptionErrors} [opt = {}] option object to set which events should be logged
+ */
+
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var __ = function __(string) {
   return string;
 };
 
+/**
+ * @typedef OptionErrors
+ * @property {boolean} [logAll = false] if set to true, all logs will be displayed regardless of their individual settings
+ * @property {boolean} [logErrorUnknown = false] whether unknown errors should be displayed
+ * @property {boolean} [logErrorSequelize = false] whether errors pertaining to the models should be logged
+ * @property {boolean} [logErrorApp = false] whether errors coming from thrown {@link ErrorApp} should be logged
+ */
 var options = {
   logAll: false,
   logErrorUnknown: false,

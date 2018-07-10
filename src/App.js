@@ -10,7 +10,14 @@ import { objValToArray } from './utils/utils';
 
 
 export default class App {
+
+  /**
+   * @ignore
+   */
   routeParam = null;
+  /**
+   * @ignore
+   */
   routes = {};
 
   constructor(opt) {
@@ -19,12 +26,23 @@ export default class App {
       port = process.env.PORT || 3000,
     } = opt;
     this.routeParam = routeParam;
+    /**
+     * @ignore
+     * @type {number}
+     */
     this.port = port;
+    /**
+     * @ignore
+     * @type {Koa}
+     */
     this.app = new Koa();
 
     locale(this.app)
   }
 
+  /**
+   * @ignore
+   */
   _getAllRoutes(path, prefix) {
     this.routes[prefix] = this.routes[prefix] || {};
 
@@ -45,14 +63,34 @@ export default class App {
     return objValToArray(this.routes[prefix]);
   }
 
+  /**
+   * @access public
+   * @desc adds the provided functions to the list of Koa middlewares to be executed for all routes.
+   * @param {function} middlewares an array of Koa-compliant middlewares
+   * @return { }
+   */
   addMiddlewares(middlewares) {
     middlewares.forEach(e => this.addMiddleware(e));
   }
 
+  /**
+   * @access public
+   * @desc adds the provided function to the list of Koa middlewares to be executed for all routes.
+   * @param {function[]} middleware an array of middlewares
+   * @return { }
+   */
   addMiddleware(middleware) {
     this.app.use(middleware);
   }
 
+  /**
+   * @access public
+   * @desc "mounts" a folder, scanning it for route files, then adding the discovered routes to the app.
+   *       a route is a class which extends {@link Route}
+   * @param {string} pathFolder the path of the folder to mount
+   * @param {string} [prefix='/'] an optional prefix to prepend to all of the folder's routes
+   * @return { }
+   */
   mountFolder(pathFolder, prefix = '/') {
     const routes = this._getAllRoutes(pathFolder, prefix);
     for (const route of routes) {
@@ -61,6 +99,11 @@ export default class App {
     }
   }
 
+  /**
+   * @access public
+   * @desc Launches the app and starts listening on the configured port.
+   * @return {Koa}
+   */
   async start() {
     this.app.use(notFound());
     return this.app.listen(this.port);
