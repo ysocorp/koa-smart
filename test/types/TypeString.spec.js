@@ -1,12 +1,12 @@
 import expect from 'expect';
 
-import { Param } from '../../dist/param/Param';
+import { Types } from '../../dist/types';
 
 describe('TypeString', () => {
   describe('type checking', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.string();
+      schema = Types.string();
     });
 
     it('Should validate a string', async () => {
@@ -24,7 +24,7 @@ describe('TypeString', () => {
   describe('Option min', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.string().min(5);
+      schema = Types.string().min(5);
     });
 
     it('should validate a value with length equale to the min', async () => {
@@ -42,7 +42,7 @@ describe('TypeString', () => {
   describe('Option max', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.string().max(5);
+      schema = Types.string().max(5);
     });
 
     it('should validate a value with length equale to the max', async () => {
@@ -60,7 +60,7 @@ describe('TypeString', () => {
   describe('Option length', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.string().length(5);
+      schema = Types.string().length(5);
     });
 
     it('should validate a value with length equale to the length', async () => {
@@ -80,7 +80,7 @@ describe('TypeString', () => {
   describe('Option regex', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.string().regex(/^\d+$/);
+      schema = Types.string().regex(/^\d+$/);
     });
 
     it('should validate a value that match the regex', async () => {
@@ -98,7 +98,7 @@ describe('TypeString', () => {
   describe('Option trim', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.string()
+      schema = Types.string()
         .min(5)
         .trim();
     });
@@ -119,7 +119,7 @@ describe('TypeString', () => {
   describe('Option truncate', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.string()
+      schema = Types.string()
         .trim()
         .truncate();
     });
@@ -143,7 +143,7 @@ describe('TypeString', () => {
 
   describe('Option uppercase', () => {
     it('should tranform value to Uppercase', async () => {
-      let schema = Param.string().uppercase();
+      let schema = Types.string().uppercase();
       schema.test('    1aBc289    ');
       expect(schema.value).toEqual('1ABC289');
       expect(schema.error).toBeNull();
@@ -152,7 +152,7 @@ describe('TypeString', () => {
 
   describe('Option lowercase', () => {
     it('should tranform value to Lowercase', async () => {
-      let schema = Param.string().lowercase();
+      let schema = Types.string().lowercase();
       schema.test('    1aBc289    ');
       expect(schema.value).toEqual('1abc289');
       expect(schema.error).toBeNull();
@@ -161,7 +161,7 @@ describe('TypeString', () => {
 
   describe('Option replace', () => {
     it('should replace all "a" to "B"', async () => {
-      let schema = Param.string().replace(/a/g, 'B');
+      let schema = Types.string().replace(/a/g, 'B');
       schema.test('I"am a');
       expect(schema.value).toEqual('I"Bm B');
       expect(schema.error).toBeNull();

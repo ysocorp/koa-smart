@@ -56,7 +56,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var App = function () {
 
   /**
-   * @access private
+   * @ignore
    */
   function App(opt) {
     (0, _classCallCheck3.default)(this, App);
@@ -69,18 +69,25 @@ var App = function () {
 
     this.routeParam = routeParam;
     /**
-     * @access private
+     * @ignore
+     * @type {number}
      */
     this.port = port;
     /**
-     * @access private
+     * @ignore
+     * @type {Koa}
      */
     this.app = new _koa2.default();
 
     (0, _koaLocale2.default)(this.app);
   }
+
   /**
-   * @access private
+   * @ignore
+   */
+
+  /**
+   * @ignore
    */
 
 
@@ -111,6 +118,7 @@ var App = function () {
      * @access public
      * @desc adds the provided functions to the list of Koa middlewares to be executed for all routes.
      * @param {function} middlewares an array of Koa-compliant middlewares
+     * @return { }
      */
 
   }, {
@@ -127,6 +135,7 @@ var App = function () {
      * @access public
      * @desc adds the provided function to the list of Koa middlewares to be executed for all routes.
      * @param {function[]} middleware an array of middlewares
+     * @return { }
      */
 
   }, {
@@ -141,6 +150,7 @@ var App = function () {
      *       a route is a class which extends {@link Route}
      * @param {string} pathFolder the path of the folder to mount
      * @param {string} [prefix='/'] an optional prefix to prepend to all of the folder's routes
+     * @return { }
      */
 
   }, {
@@ -179,6 +189,7 @@ var App = function () {
     /**
      * @access public
      * @desc Launches the app and starts listening on the configured port.
+     * @return {Koa}
      */
 
   }, {

@@ -3,23 +3,23 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Param = undefined;
+exports.Types = undefined;
 
-var _TypeAny = require('./types/TypeAny');
+var _TypeAny = require('./TypeAny');
 
-var _TypeBinary = require('./types/TypeBinary');
+var _TypeBinary = require('./TypeBinary');
 
-var _TypeBoolean = require('./types/TypeBoolean');
+var _TypeBoolean = require('./TypeBoolean');
 
-var _TypeNumber = require('./types/TypeNumber');
+var _TypeNumber = require('./TypeNumber');
 
-var _TypeObject = require('./types/TypeObject');
+var _TypeObject = require('./TypeObject');
 
-var _TypeOneOf = require('./types/TypeOneOf');
+var _TypeOneOf = require('./TypeOneOf');
 
-var _TypeString = require('./types/TypeString');
+var _TypeString = require('./TypeString');
 
-var Param = exports.Param = {
+var Types = exports.Types = {
   any: function any() {
     return new _TypeAny.TypeAny();
   },

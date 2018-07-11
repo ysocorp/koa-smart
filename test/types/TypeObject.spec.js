@@ -1,6 +1,6 @@
 import expect from 'expect';
 
-import { Param } from '../../dist/param/Param';
+import { Types } from '../../dist/types';
 
 describe('TypeObject', () => {
   before(async () => {});
@@ -10,12 +10,12 @@ describe('TypeObject', () => {
   describe('Parse Object', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.object().keys({
-        a: Param.string(),
-        b: Param.string(),
-        subObj: Param.object().keys({
-          subA: Param.string().trim(false),
-          subB: Param.string(),
+      schema = Types.object().keys({
+        a: Types.string(),
+        b: Types.string(),
+        subObj: Types.object().keys({
+          subA: Types.string().trim(false),
+          subB: Types.string(),
         }),
       });
     });
@@ -56,9 +56,9 @@ describe('TypeObject', () => {
   describe('Error', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.object().keys({
-        a: Param.string().required(),
-        b: Param.string(),
+      schema = Types.object().keys({
+        a: Types.string().required(),
+        b: Types.string(),
       });
     });
 
@@ -91,32 +91,32 @@ describe('TypeObject', () => {
     });
 
     it('should have errors if param is invalid', async () => {
-      schema = Param.object().keys({ a: Param.string().min(3) });
+      schema = Types.object().keys({ a: Types.string().min(3) });
       const value = { a: 'my' };
       schema.test(value);
       expect(schema.errors.a).toBeTruthy();
     });
 
     it('should manage deep errors', async () => {
-      schema = Param.object().keys({
-        a: Param.any().required(),
-        b: Param.any(),
-        subObj: Param.object()
+      schema = Types.object().keys({
+        a: Types.any().required(),
+        b: Types.any(),
+        subObj: Types.object()
           .keys({
-            subA: Param.any(),
-            subB: Param.string()
+            subA: Types.any(),
+            subB: Types.string()
               .max(3)
               .required(),
-            subC: Param.any().required(),
-            subD: Param.any().required(),
-            sub2: Param.object()
+            subC: Types.any().required(),
+            subD: Types.any().required(),
+            sub2: Types.object()
               .keys({
-                sub2A: Param.any(),
-                sub2B: Param.any().required(),
+                sub2A: Types.any(),
+                sub2B: Types.any().required(),
               })
               .required(),
-            sub3: Param.object()
-              .keys({ sub3A: Param.any().required() })
+            sub3: Types.object()
+              .keys({ sub3A: Types.any().required() })
               .required(),
           })
           .required(),

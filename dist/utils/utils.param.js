@@ -33,12 +33,22 @@ function test(func, errMsg) {
   };
 }
 
+/**
+ * @desc allows the user to apply an arbitrary function to an elem.
+ * @param {function} func the function to transform the object
+ * @return {function} a function that can be supplied
+ */
 function trasform(func) {
   return function (elem) {
     return func(elem);
   };
 }
 
+/**
+ * @desc allows the user to check whether an element matches the given regex.
+ * @param {RegExp} reg
+ * @return {function} a function taking a string, which will attempt to match it against the given regex, and returns true or false.
+ */
 function regex(reg) {
   return function (elem) {
     if (reg instanceof RegExp) {
@@ -48,6 +58,12 @@ function regex(reg) {
   };
 }
 
+/**
+ * @desc allows the user to check whether a given date is between a range of dates.
+ * @param {Date} d1 the starting date
+ * @param {Date} d2 the ending date
+ * @return {function} a function taking a date, which will return true if it is between the first two supplied, false otherwise.
+ */
 function isDateBetween(d1, d2) {
   return function (d) {
     if (d1.getTime() <= d.getTime() && d2.getTime() >= d.getTime()) {

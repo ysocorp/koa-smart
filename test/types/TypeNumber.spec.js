@@ -1,6 +1,6 @@
 import expect from 'expect';
 
-import { Param } from '../../dist/param/Param';
+import { Types } from '../../dist/types';
 
 describe('TypeNumber', () => {
   before(async () => {});
@@ -9,17 +9,17 @@ describe('TypeNumber', () => {
 
   describe('General', () => {
     it('Should test type integer', async () => {
-      const schema = Param.object().keys({
-        ok1: Param.number().integer(),
-        ok2: Param.number().integer(),
-        ok3: Param.number().integer(),
-        ok4: Param.number().integer(),
-        ok5: Param.number().integer(),
-        ok6: Param.number().integer(),
-        ok7: Param.number().integer(),
-        ko1: Param.number().integer(),
-        ko2: Param.number().integer(),
-        ko3: Param.number().integer(),
+      const schema = Types.object().keys({
+        ok1: Types.number().integer(),
+        ok2: Types.number().integer(),
+        ok3: Types.number().integer(),
+        ok4: Types.number().integer(),
+        ok5: Types.number().integer(),
+        ok6: Types.number().integer(),
+        ok7: Types.number().integer(),
+        ko1: Types.number().integer(),
+        ko2: Types.number().integer(),
+        ko3: Types.number().integer(),
       });
 
       const ok = {
@@ -47,16 +47,16 @@ describe('TypeNumber', () => {
     });
 
     it('Should test type number', async () => {
-      const schema = Param.object().keys({
-        ok1: Param.number(),
-        ok2: Param.number(),
-        ok3: Param.number(),
-        ok4: Param.number(),
-        ok5: Param.number(),
-        ok6: Param.number(),
-        ko1: Param.number(),
-        ko2: Param.number(),
-        ko3: Param.number(),
+      const schema = Types.object().keys({
+        ok1: Types.number(),
+        ok2: Types.number(),
+        ok3: Types.number(),
+        ok4: Types.number(),
+        ok5: Types.number(),
+        ok6: Types.number(),
+        ko1: Types.number(),
+        ko2: Types.number(),
+        ko3: Types.number(),
       });
 
       const ok = {
@@ -80,7 +80,7 @@ describe('TypeNumber', () => {
   describe('Option max', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.number().max(10);
+      schema = Types.number().max(10);
     });
 
     it('Should test if 10 >= -10', async () => {
@@ -118,7 +118,7 @@ describe('TypeNumber', () => {
   describe('Option min', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.number().min(9);
+      schema = Types.number().min(9);
     });
 
     it('Should test if 9 <= 9', async () => {
@@ -150,7 +150,7 @@ describe('TypeNumber', () => {
   describe('Option positive', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.number().positive();
+      schema = Types.number().positive();
     });
 
     it('Should test if 0 is positive', async () => {
@@ -182,7 +182,7 @@ describe('TypeNumber', () => {
   describe('Option negative', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.number().negative();
+      schema = Types.number().negative();
     });
 
     it('Should test if -1 is negative', async () => {
@@ -214,7 +214,7 @@ describe('TypeNumber', () => {
   describe('Option multiple', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.number().multiple(2);
+      schema = Types.number().multiple(2);
     });
 
     it('Should test if 0 is a multiple of 2', async () => {
@@ -242,7 +242,7 @@ describe('TypeNumber', () => {
     describe('trunc', () => {
       let schema;
       beforeEach(async () => {
-        schema = Param.number().precision(2, 'trunc');
+        schema = Types.number().precision(2, 'trunc');
       });
 
       it('Should trunc 1.1235 to 1.12', async () => {
@@ -270,7 +270,7 @@ describe('TypeNumber', () => {
     describe('floor', () => {
       let schema;
       beforeEach(async () => {
-        schema = Param.number().precision(2, 'floor');
+        schema = Types.number().precision(2, 'floor');
       });
 
       it('Should floor 1.1235 to 1.12', async () => {
@@ -299,7 +299,7 @@ describe('TypeNumber', () => {
     describe('ceil', () => {
       let schema;
       beforeEach(async () => {
-        schema = Param.number().precision(2, 'ceil');
+        schema = Types.number().precision(2, 'ceil');
       });
 
       it('Should ceil 1.1235 to 1.13', async () => {
@@ -327,7 +327,7 @@ describe('TypeNumber', () => {
     describe('round', () => {
       let schema;
       beforeEach(async () => {
-        schema = Param.number().precision(2, 'round');
+        schema = Types.number().precision(2, 'round');
       });
 
       it('Should round 1.1235 to 1.12', async () => {

@@ -62,22 +62,31 @@ var TypeObject = exports.TypeObject = function (_TypeAny) {
   }
 
   (0, _createClass3.default)(TypeObject, [{
+    key: '_initValues',
+    value: function _initValues(value) {
+      (0, _get3.default)(TypeObject.prototype.__proto__ || (0, _getPrototypeOf2.default)(TypeObject.prototype), '_initValues', this).call(this, value);
+      this._errors = {};
+    }
+  }, {
     key: 'keys',
     value: function keys(object) {
       this._schema = (0, _extends3.default)({}, this._schema, object);
       return this;
     }
   }, {
-    key: 'errors',
-    value: function errors() {
-      return this._errors;
-    }
-  }, {
-    key: '_setError',
-    value: function _setError(key, value) {
+    key: '_addError',
+    value: function _addError(key, param) {
       var _this2 = this;
 
-      this._errors[key] = value;
+      if (param.errors) {
+        var errors = param.errors;
+        for (var keyError in errors) {
+          this._errors[key + '.' + keyError] = errors[keyError];
+        }
+      } else {
+        this._errors[key] = param.error;
+      }
+
       var keys = (0, _keys2.default)(this._errors);
       var errorsStr = keys.map(function (k) {
         return k + ': ' + _this2._errors[k];
@@ -98,13 +107,18 @@ var TypeObject = exports.TypeObject = function (_TypeAny) {
         var param = this._schema[key];
         param.test(oldValue[key]);
         if (param.error) {
-          this._setError(key, param.error);
+          this._addError(key, param);
         } else {
           this._value[key] = param.value;
         }
       }
 
       return true;
+    }
+  }, {
+    key: 'errors',
+    get: function get() {
+      return (0, _keys2.default)(this._errors).length ? this._errors : null;
     }
   }]);
   return TypeObject;

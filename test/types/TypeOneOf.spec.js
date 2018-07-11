@@ -1,6 +1,6 @@
 import expect from 'expect';
 
-import { Param } from '../../dist/param/Param';
+import { Types } from '../../dist/types';
 
 describe('TypeOneOf', () => {
   before(async () => {});
@@ -10,11 +10,11 @@ describe('TypeOneOf', () => {
   describe('Option types', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.oneOf().types(
-        Param.number(),
-        Param.string(),
-        Param.object().keys({
-          b: Param.any().required(),
+      schema = Types.oneOf().types(
+        Types.number(),
+        Types.string(),
+        Types.object().keys({
+          b: Types.any().required(),
         }),
       );
     });

@@ -123,6 +123,9 @@ var TypeAny = exports.TypeAny = function () {
     key: '_initValues',
     value: function _initValues(value) {
       this._value = value;
+      this._error = null;
+      this._hasError = false;
+      this._isValueNull = false;
     }
   }, {
     key: '_testExist',

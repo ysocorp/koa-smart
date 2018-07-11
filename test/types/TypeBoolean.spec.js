@@ -1,12 +1,12 @@
 import expect from 'expect';
 
-import { Param } from '../../dist/param/Param';
+import { Types } from '../../dist/types';
 
 describe('TypeBoolean', () => {
   describe('type checking', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.boolean();
+      schema = Types.boolean();
     });
 
     it('Should validate a false boolean', async () => {
@@ -49,7 +49,7 @@ describe('TypeBoolean', () => {
   describe('Option truthy', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.boolean().truthy(['Y', 'oui', 'yes', 1]);
+      schema = Types.boolean().truthy(['Y', 'oui', 'yes', 1]);
     });
 
     it('should validate a value specified in the "truthy" parameter', async () => {
@@ -74,7 +74,7 @@ describe('TypeBoolean', () => {
   describe('Option falsy', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.boolean().falsy(['N', 'non', 'no', 0]);
+      schema = Types.boolean().falsy(['N', 'non', 'no', 0]);
     });
 
     it('should validate a value specified in the "falsy" parameter', async () => {
@@ -99,7 +99,7 @@ describe('TypeBoolean', () => {
   describe('Option insensitive true', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.boolean()
+      schema = Types.boolean()
         .insensitive(true)
         .falsy(['N', 'non']);
     });
@@ -132,7 +132,7 @@ describe('TypeBoolean', () => {
   describe('Option insensitive false', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.boolean()
+      schema = Types.boolean()
         .insensitive(false)
         .falsy(['N', 'non']);
     });

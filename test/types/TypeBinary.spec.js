@@ -1,12 +1,12 @@
 import expect from 'expect';
 
-import { Param } from '../../dist/param/Param';
+import { Types } from '../../dist/types';
 
 describe('TypeBinary', () => {
   describe('type checking', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.binary();
+      schema = Types.binary();
     });
 
     it('Should validate a string and turn it into a buffer object', async () => {
@@ -42,7 +42,7 @@ describe('TypeBinary', () => {
     let schema;
 
     it('Should decode a string into a hex buffer', async () => {
-      schema = Param.binary().encoding('hex');
+      schema = Types.binary().encoding('hex');
       let value = '7468697320697320612074c3a97374';
       schema.test(value);
       expect(schema.value.toString()).toEqual('this is a tést');
@@ -50,7 +50,7 @@ describe('TypeBinary', () => {
     });
 
     it('Should reject an input with an invalid encoding', async () => {
-      schema = Param.binary().encoding('notactuallyanencoding');
+      schema = Types.binary().encoding('notactuallyanencoding');
       let value = '7468697320697320612074c3a97374';
       schema.test(value);
       expect(schema.error).toBeTruthy();
@@ -61,7 +61,7 @@ describe('TypeBinary', () => {
   describe('Option length', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.binary().length(4);
+      schema = Types.binary().length(4);
     });
 
     it('Should validate a buffer with the correct length (string)', async () => {
@@ -110,7 +110,7 @@ describe('TypeBinary', () => {
   describe('Option min', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.binary().min(4);
+      schema = Types.binary().min(4);
     });
 
     it('Should validate a buffer with length 6 >= 4', async () => {
@@ -138,7 +138,7 @@ describe('TypeBinary', () => {
   describe('Option max', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.binary().max(6);
+      schema = Types.binary().max(6);
     });
 
     it('Should validate a buffer with length 4 <= 6', async () => {

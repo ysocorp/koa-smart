@@ -1,6 +1,6 @@
 import expect from 'expect';
 
-import { Param } from '../../dist/param/Param';
+import { Types } from '../../dist/types';
 
 describe('TypeAny', () => {
   before(async () => {});
@@ -10,7 +10,7 @@ describe('TypeAny', () => {
   describe('Allow types', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.any();
+      schema = Types.any();
     });
 
     it('Should allow type string', async () => {
@@ -48,7 +48,7 @@ describe('TypeAny', () => {
   describe('Option required', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.any().required();
+      schema = Types.any().required();
     });
 
     it('Should not allow undefined', async () => {
@@ -72,7 +72,7 @@ describe('TypeAny', () => {
   describe('Option allowNull', () => {
     describe('With param = false', () => {
       it('Should not allow null', async () => {
-        const schema = Param.any().allowNull(false);
+        const schema = Types.any().allowNull(false);
         schema.test(null);
         expect(schema.error).toBeTruthy();
         expect(schema.error.code).toBe(schema._errorCodes.IS_NULL);
@@ -80,7 +80,7 @@ describe('TypeAny', () => {
     });
     describe('With param = true', () => {
       it('Should allow null', async () => {
-        const schema = Param.any().allowNull(true);
+        const schema = Types.any().allowNull(true);
         schema.test(null);
         expect(schema.error).toBeFalsy();
       });
@@ -89,19 +89,19 @@ describe('TypeAny', () => {
 
   describe('Option default', () => {
     it('Should return the default value if value = null', async () => {
-      const schema = Param.any().default('default');
+      const schema = Types.any().default('default');
       schema.test(null);
       expect(schema.value).toBe('default');
       expect(schema.error).toBeFalsy();
     });
     it('Should not return default if the value is not null', async () => {
-      const schema = Param.any().default('default');
+      const schema = Types.any().default('default');
       schema.test('not null');
       expect(schema.value).toBe('not null');
       expect(schema.error).toBeFalsy();
     });
     it('Should return default if has error', async () => {
-      const schema = Param.any()
+      const schema = Types.any()
         .default('default')
         .required();
       schema.test(null);

@@ -68,20 +68,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Route = (_temp = _class = function () {
 
   /**
-   * @typedef {Object} Params
-   * @property {Object.<string, boolean | PostParamsFilter>} params the params describing the route's middlewares,
-   *                                                                with the key being the param's name,
-   *                                                                and the value describes the way it should be handled.
-   *                                                                (only applicable for requests containing a body)
+   * @typedef {Object} BeforeRouteParams
    * @property {string} path the path at which the route will be available.
-   * @property {string} routeBase a prefix which will be preppended to the route's path
-   * @property {boolean} disabled if set to true, the route will be ignored
-   * @property {function[]} middlewares an array of Koa Middlewares, which will be mounted for the given route
+   * @property {ParamsMethodDecorator} options 
+   * @property {function} call the fonction to call when route match, this is automaticaly add by route decorator
    */
 
   /**
    * @typedef {Object} PostParamsFilter
-   * @property {ParamMiddlewareFunction[]} __func an array of functions which provides "middleware" functions that will be applied to the corresponding parameter one by one.
+   * @property {ParamMiddlewareFunction[]} __func an array of functions which provides "middleware" functions that will be applied to the corresponding parameter one by one, in order to validate or transform it
    * @property {boolean} __force whether the parameter is required or not.
    */
 
@@ -105,15 +100,25 @@ var Route = (_temp = _class = function () {
    */
 
   /**
+   * @typedef {function} Decorator
+   * @return { }
+   */
+
+  /**
    * @external {KoaContext} http://koajs.com/#api
    */
 
   /**
-   *@external {Koa} http://koajs.com/#application
+   * @external {Koa} http://koajs.com/#application
    */
 
   /**
    * @param {RouteParams} params the route's parameters
+   */
+
+  /**
+   * @type {boolean}
+   * @desc if true it will log which route are mount and which are not
    */
   function Route(_ref) {
     var app = _ref.app,
@@ -124,16 +129,52 @@ var Route = (_temp = _class = function () {
         disable = _ref.disable;
     (0, _classCallCheck3.default)(this, Route);
 
+    /**
+     * @type {Koa}
+     * @desc the main Koa application
+     */
     this.app = app;
+    /**
+     * @type {string}
+     * @desc the route's prefix
+     */
     this.prefix = prefix;
+    /**
+     * @type {Route[]}
+     * @desc an array composed of all the availble routes in the application
+     */
     this.allRoutesInstance = routes;
+    /**
+     * @type {Model[]}
+     * @desc an array of all the models available in the application
+     */
     this.models = models;
+    /**
+     * @type {boolean}
+     * @desc whether the route should be disabled. disabled routes cannot be called.
+     */
     this.disable = disable != null ? disable : this.disable;
+    /**
+     * @type {function[]}
+     * @desc the route's registered middlewares
+     */
     this.middlewares = this.middlewares || [];
     if (this.models && model) {
+      /**
+       * @type {Model|undefined}
+       * @desc the route's own model
+       */
       this.model = this.models[model];
     }
+    /**
+     * @type {KoaRouter}
+     * @desc the underlying koa router for this particular route
+     */
+
     this.koaRouter = new _koaRouter3.default();
+    /**
+     * @ignore
+     */
     this.privateKeyInParamsRoute = ['__force', '__func'];
     // This Variable are set by RouteDecorators
     this.routes;
@@ -143,47 +184,64 @@ var Route = (_temp = _class = function () {
   /**
    * @access public
    * @desc mounts the tagged function as a GET route.
-   * @param {Params} params the route's parameters
+   * @param {ParamsMethodDecorator} params the route's parameters
+   * @return {Decorator}
    */
+
+  /**
+  * @type {StatusCode}
+  */
 
 
   /**
    * @access public
    * @desc mounts the tagged function as a POST route.
-   * @param {Params} params the route's parameters
+   * @param {ParamsMethodDecorator} params the route's parameters
+   * @return {Decorator}
    */
 
 
   /**
    * @access public
    * @desc mounts the tagged function as a PUT route.
-   * @param {Params} params the route's parameters
+   * @param {ParamsMethodDecorator} params the route's parameters
+   * @return {Decorator}
    */
 
 
   /**
    * @access public
    * @desc mounts the tagged function as a PATCH route.
-   * @param {Params} params the route's parameters
+   * @param {ParamsMethodDecorator} params the route's parameters
+   * @return {Decorator}
    */
 
 
   /**
    * @access public
    * @desc mounts the tagged function as a DELETE route.
-   * @param {Params} params the route's parameters
+   * @param {ParamsMethodDecorator} params the route's parameters
+   * @return {Decorator}
    */
 
 
   /**
    * @access public
    * @desc used to set some parameters on an entire class.The supported parameters are middlewares, disable, and routeBase.
-   * @param {Params} params the route's parameters
+   * @return {Decorator}
+   * @param {ParamsClassDecorator} params the route's parameters
    */
 
 
   (0, _createClass3.default)(Route, [{
     key: 'log',
+
+
+    /**
+     * logs a message, but only if the route's logs are set to be displayed.
+     *
+     * accepts several parameters
+     */
     value: function log(str) {
       if (Route.displayLog) {
         var _console;
@@ -198,7 +256,9 @@ var Route = (_temp = _class = function () {
 
     /**
      * @access public
-     * @desc Register the route and makes it callable once the API is launched.
+     * @desc Registers the route and makes it callable once the API is launched.
+     *       the route will be called along with the middlewares that were registered in the decorator.
+     *
      *       you will usually not need to call this method yourself.
      */
 
@@ -249,6 +309,9 @@ var Route = (_temp = _class = function () {
     }
 
     // ************************************ MIDDLEWARE *********************************
+    /**
+     *@ignore
+     */
 
   }, {
     key: '_use',
@@ -268,7 +331,9 @@ var Route = (_temp = _class = function () {
       return middlewaresToAdd;
     }
 
-    // RateLimit
+    /**
+     *@ignore
+     */
 
   }, {
     key: 'getRateLimit',
@@ -278,6 +343,16 @@ var Route = (_temp = _class = function () {
         prefixKey: type + '|' + routePath + '|' + option.interval
       }, option));
     }
+
+    /**
+     * if a decorator has a rateLimit property, it will add the rate limiting mechanism to the route,
+     * with a unique ID for each route in order to differentiate the various routes.
+     *
+     * You should not need to call this method directly.
+     * @param {function[]} middlewares the array of currently registered middlewares for the given route
+     * @param {{options:{rateLimit:Object,routePath:string,type:string}}} params the route's parameters
+     */
+
   }, {
     key: 'addRateLimit',
     value: function addRateLimit(middlewares, _ref2) {
@@ -320,6 +395,9 @@ var Route = (_temp = _class = function () {
     }
 
     // beforeRoute
+    /**
+     *@ignore
+     */
 
   }, {
     key: '_beforeRoute',
@@ -351,6 +429,14 @@ var Route = (_temp = _class = function () {
         };
       }();
     }
+
+    /**
+     * @desc a member which can be overriden, which will always be executed before the route is accessed
+     * @param {KoaContext} ctx Koa's context object
+     * @param {BeforeRouteParams} params an object containing all route parameters
+     * @param {function} next the next middleware in the chain
+     */
+
   }, {
     key: 'beforeRoute',
     value: function () {
@@ -386,6 +472,9 @@ var Route = (_temp = _class = function () {
     }()
 
     // test params
+    /**
+     *@ignore
+     */
 
   }, {
     key: '_mlParams',
@@ -395,6 +484,11 @@ var Route = (_temp = _class = function () {
       ctx.request.bodyOrig = (0, _utils.deepCopy)(ctx.request.body);
       ctx.request.body = this._mlTestParams(ctx, ctx.request.body, params);
     }
+
+    /**
+     *@ignore
+     */
+
   }, {
     key: '_mlParamsExecFunc',
     value: function _mlParamsExecFunc(ctx, body, keyBody, param) {
@@ -429,6 +523,11 @@ var Route = (_temp = _class = function () {
         }
       }
     }
+
+    /**
+     *@ignore
+     */
+
   }, {
     key: '_mlTestParams',
     value: function _mlTestParams(ctx, body, paramsTest) {
@@ -462,6 +561,11 @@ var Route = (_temp = _class = function () {
       }
       return bodyVerif;
     }
+
+    /**
+     *@ignore
+     */
+
   }, {
     key: '_paramsNormalize',
     value: function _paramsNormalize(paramsTest) {
@@ -513,6 +617,11 @@ var Route = (_temp = _class = function () {
       }
       return paramsConvert;
     }
+
+    /**
+     *@ignore
+     */
+
   }, {
     key: '_paramsHasSubElement',
     value: function _paramsHasSubElement(paramsTest) {
@@ -526,6 +635,13 @@ var Route = (_temp = _class = function () {
 
     // ************************************ !MIDDLEWARE *********************************
 
+    /**
+     *@desc retrieves the context's body, if the request has one.
+     *@param {KoaContext} ctx koa's context object
+     *@param {boolean} [original=false] if set to true, the function will return the body before it is filtered by the param decorator.
+     *                                  otherwise, it will return the filtered and transformed body.
+     */
+
   }, {
     key: 'body',
     value: function body(ctx) {
@@ -535,7 +651,10 @@ var Route = (_temp = _class = function () {
     }
 
     /**
-     * @access private
+     * @access public
+     * @desc retrieves the query params in a GET request
+     * @param {KoaContext} ctx koa's context object
+     * @return {Object.<string, *>}
      */
 
   }, {
@@ -546,8 +665,9 @@ var Route = (_temp = _class = function () {
 
     /**
      * @access public
-     * @desc retrieves the query params in a GET request
+     * @desc alias of {@link bodyGet}
      * @param {KoaContext} ctx koa's context object
+     * @return {Object.<string, *>}
      */
 
   }, {
@@ -558,11 +678,12 @@ var Route = (_temp = _class = function () {
 
     /**
      * @access public
-     * @desc sets the response's body (with a message + data field) and status .
+     * @desc sets the response's body (with a message + data field) and status.
      * @param {KoaContext} ctx koa's context object
      * @param {number} [status] the HTTP status code to end the request with
      * @param {*} [data] the data to be yielded by the requests
      * @param {string} [message] the message to be yielded by the request
+     * @return { }
      */
 
   }, {
@@ -594,6 +715,7 @@ var Route = (_temp = _class = function () {
      * @param {KoaContext} ctx koa's context object
      * @param {*} [data] the data to be yielded by the requests
      * @param {string} [message] the message to be yielded by the request
+     * @return { }
      */
 
   }, {
@@ -608,6 +730,7 @@ var Route = (_temp = _class = function () {
      * @param {KoaContext} ctx koa's context object
      * @param {*} [data] the data to be yielded by the requests
      * @param {string} [message] the message to be yielded by the request
+     * @return { }
      */
 
   }, {
@@ -620,6 +743,7 @@ var Route = (_temp = _class = function () {
      * @access public
      * @desc replies with an empty body, yielding 204 NO CONTENT as the status
      * @param {KoaContext} ctx koa's context object
+     * @return { }
      */
 
   }, {
@@ -634,6 +758,7 @@ var Route = (_temp = _class = function () {
      * @param {KoaContext} ctx koa's context object
      * @param {*} [data] the data to be yielded by the requests
      * @param {string} [message] the message to be yielded by the request
+     * @return { }
      */
 
   }, {
@@ -648,6 +773,7 @@ var Route = (_temp = _class = function () {
      * @param {KoaContext} ctx koa's context object
      * @param {*} [data] the data to be yielded by the requests
      * @param {string} [message] the message to be yielded by the request
+     * @return { }
      */
 
   }, {
@@ -662,6 +788,7 @@ var Route = (_temp = _class = function () {
      * @param {KoaContext} ctx koa's context object
      * @param {*} [data] the data to be yielded by the requests
      * @param {string} [message] the message to be yielded by the request
+     * @return { }
      */
 
   }, {
@@ -676,6 +803,7 @@ var Route = (_temp = _class = function () {
      * @param {KoaContext} ctx koa's context object
      * @param {*} [data] the data to be yielded by the requests
      * @param {string} [message] the message to be yielded by the request
+     * @return { }
      */
 
   }, {
@@ -690,6 +818,7 @@ var Route = (_temp = _class = function () {
      * @param {KoaContext} ctx koa's context object
      * @param {*} [data] the data to be yielded by the requests
      * @param {string} [message] the message to be yielded by the request
+     * @return { }
      */
 
   }, {
@@ -705,6 +834,7 @@ var Route = (_temp = _class = function () {
      * @param {string} message  a message describing the error
      * @param {boolean} translate indicates whether the message should be translated or not
      * @throws {ErrorApp} thrown error.
+     * @return { }
      */
 
   }, {
@@ -723,6 +853,7 @@ var Route = (_temp = _class = function () {
      * @param {string} message  a message describing the error
      * @param {boolean} translate indicates whether the message should be translated or not
      * @throws {ErrorApp} thrown error, should the assert fail.
+     * @return { }
      */
 
   }, {
