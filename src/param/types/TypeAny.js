@@ -116,6 +116,9 @@ export class TypeAny {
 
   _initValues(value) {
     this._value = value;
+    this._error = null;
+    this._hasError = false;
+    this._isValueNull = false;
   }
 
   _testExist() {
