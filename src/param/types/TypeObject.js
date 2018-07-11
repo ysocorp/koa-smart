@@ -15,17 +15,30 @@ export class TypeObject extends TypeAny {
     return `It should be an object`;
   };
 
+  _initValues(value) {
+    super._initValues(value);
+    this._errors = {};
+  }
+
   keys(object) {
     this._schema = { ...this._schema, ...object };
     return this;
   }
 
-  errors() {
-    return this._errors;
+  get errors() {
+    return Object.keys(this._errors).length ? this._errors : null;
   }
 
-  _setError(key, value) {
-    this._errors[key] = value;
+  _addError(key, param) {
+    if (param.errors) {
+      const errors = param.errors;
+      for (const keyError in errors) {
+        this._errors[`${key}.${keyError}`] = errors[keyError];
+      }
+    } else {
+      this._errors[key] = param.error;
+    }
+
     const keys = Object.keys(this._errors);
     const errorsStr = keys.map(k => `${k}: ${this._errors[k]}`);
     if (errorsStr && keys.length) {
@@ -43,7 +56,7 @@ export class TypeObject extends TypeAny {
       const param = this._schema[key];
       param.test(oldValue[key]);
       if (param.error) {
-        this._setError(key, param.error);
+        this._addError(key, param);
       } else {
         this._value[key] = param.value;
       }

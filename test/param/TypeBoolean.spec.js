@@ -132,11 +132,9 @@ describe('TypeBoolean', () => {
   describe('Option insensitive false', () => {
     let schema;
     beforeEach(async () => {
-      schema = Param.object().keys({
-        switch: Param.boolean()
-          .insensitive(false)
-          .falsy(['N', 'non']),
-      });
+      schema = Param.boolean()
+        .insensitive(false)
+        .falsy(['N', 'non']);
     });
 
     it('should reject a value specified in the "falsy" parameter, even with different casing', async () => {
