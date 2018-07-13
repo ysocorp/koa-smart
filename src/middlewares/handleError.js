@@ -12,7 +12,7 @@ let options = {
   logErrorUnknown: false,
   logErrorSequelize: false,
   logErrorApp: false,
-}
+};
 
 function displayLog(error, type) {
   if (options.logAll || options[type]) {
@@ -31,22 +31,29 @@ function getMessageTranslate(ctx, msg, toTranslate) {
   return msg;
 }
 
-
 async function handleError(ctx, next) {
   try {
     await next();
   } catch (err) {
     const arraySequelize = ['SequelizeValidationError', 'SequelizeUniqueConstraintError'];
 
-    if (err.constructor.name === 'ErrorApp') { // expected error
+    if (err.constructor.name === 'ErrorApp') {
+      // expected error
       ctx.status = err.status;
-      ctx.body = { message: getMessageTranslate(ctx, err.message, err.toTranslate) };
+      ctx.body = {};
+      if (err.messages) {
+        ctx.body.messages = err.messages;
+      } else {
+        ctx.body.message = getMessageTranslate(ctx, err.message, err.toTranslate);
+      }
       displayLog(err, 'logErrorApp');
-    } else if (arraySequelize.includes(err.name)) { // sequilize expected error by validattor or other
+    } else if (arraySequelize.includes(err.name)) {
+      // sequilize expected error by validattor or other
       ctx.status = 400;
       ctx.body = { message: getMessageTranslate(ctx, err.message.split(':').pop(), true) };
       displayLog(err, 'logErrorSequelize');
-    } else { // unexpected error
+    } else {
+      // unexpected error
       ctx.status = 500;
       ctx.body = { message: getMessageTranslate(ctx, __('Please contact the support'), true) };
       displayLog(err, 'logErrorUnknown');
@@ -64,6 +71,6 @@ export default (opt = {}) => {
   options = {
     ...options,
     ...opt,
-  }
+  };
   return handleError;
 };

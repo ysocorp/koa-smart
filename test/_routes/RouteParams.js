@@ -1,4 +1,5 @@
 import Route from '../../dist/routes/Route';
+import { Types } from '../../dist/types';
 
 export default class RouteParams extends Route {
   constructor(params) {
@@ -7,35 +8,55 @@ export default class RouteParams extends Route {
 
   @Route.Post({
     path: '',
-    params: {
-      email: true,
-      password: false,
-    },
+    bodyType: Types.object().keys({
+      email: Types.any().required(),
+      password: Types.any(),
+    }),
   })
   async params(ctx) {
     this.sendOk(ctx, {
-      checked: this.body(ctx),
-      original: this.body(ctx, true),
+      bodyChecked: this.body(ctx),
+      bodyOriginal: this.body(ctx, true),
     });
   }
 
-  @Route.Post({ 
+  @Route.Post({
     path: 'samepath',
-    params: {
-      post: true,
-    },
+    bodyType: Types.object().keys({
+      post: Types.any().required(),
+    }),
   })
   async samepathPost(ctx) {
     this.sendOk(ctx, this.body(ctx));
   }
 
-  @Route.Patch({ 
+  @Route.Patch({
     path: 'samepath',
-    params: {
-      patch: true,
-    },
+    bodyType: Types.object().keys({
+      patch: Types.any().required(),
+    }),
   })
   async samepathPatch(ctx) {
     this.sendOk(ctx, this.body(ctx));
+  }
+
+  @Route.Post({
+    path: 'queryType',
+    queryType: Types.object().keys({
+      email: Types.any().required(),
+      passwordQ: Types.any(),
+    }),
+    bodyType: Types.object().keys({
+      email: Types.any().required(),
+      passwordB: Types.any(),
+    }),
+  })
+  async postQueryType(ctx) {
+    this.sendOk(ctx, {
+      bodyChecked: this.body(ctx),
+      bodyOriginal: this.body(ctx, true),
+      queryChecked: this.queryParam(ctx),
+      queryOriginal: this.queryParam(ctx, true),
+    });
   }
 }

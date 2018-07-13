@@ -2,8 +2,7 @@ import expect from 'expect';
 
 import Route from '../../dist/routes/Route';
 import ErrorApp from '../../dist/utils/ErrorApp';
-import * as utils from '../../dist/utils/utils';
-import * as utilsParam from '../../dist/utils/utils.param';
+import { Types } from '../../dist/types';
 
 describe('Route', () => {
   let route;
@@ -26,40 +25,6 @@ describe('Route', () => {
       route = new Route({});
     });
 
-    describe('_paramsNormalize()', () => {
-      it('should normalize params ', () => {
-        const funcTest = () => { };
-        const params = ['name1', {
-          lulu: ['lulu2', { lulu3: true }],
-          popo: false,
-          popo3: {
-            __force: true,
-            __func: [funcTest],
-            popo2a: ['popo2a_1', 'popo2a_2'],
-          },
-        }];
-        const paramsExpect = {
-          name1: { __force: false },
-          lulu: {
-            lulu2: { __force: false },
-            lulu3: { __force: true },
-          },
-          popo: { __force: false },
-          popo3: {
-            __force: true,
-            __func: [funcTest],
-            popo2a: {
-              popo2a_1: { __force: false },
-              popo2a_2: { __force: false },
-            },
-          },
-        };
-
-        const ret = route._paramsNormalize(params);
-        expect(ret).toEqual(paramsExpect);
-      });
-    });
-
     describe('_mlTestParams()', () => {
       let body;
       let ctx;
@@ -68,23 +33,43 @@ describe('Route', () => {
         body = {
           name1: 'name1_val',
           name1_a: 'name1_a_val',
-          name2: { name2_a: 'name2_a_val', name2_b: 'name2_b_val', name2_c: 'name2_c_val' },
+          name2: {
+            name2_a: 'name2_a_val',
+            name2_b: 'name2_b_val',
+            name2_c: 'name2_c_val',
+          },
           not_in_param: { toto: 'toto_val', titi: 'titi_val' },
-          test: { not_in_param2: { not_in_param2_a: 'not_in_param2_a' }, toto: 'toto_val', titi: 'titi_val' },
+          test: {
+            not_in_param2: { not_in_param2_a: 'not_in_param2_a' },
+            toto: 'toto_val',
+            titi: 'titi_val',
+          },
         };
         ctx = {
           state: { __: str => str },
           request: { body },
         };
-        paramsTest = {
-          name1: false,
-          name2: { name2_a: false, name2_c: false, name2_d: false },
-          not_in_body: { lolo: { lulu: false }, lili: false },
-          test: { toto: false, titi: false },
-        };
       });
 
       it('should keep only elem in params', () => {
+        paramsTest = Types.object().keys({
+          name1: Types.any(),
+          name2: Types.object().keys({
+            name2_a: Types.any(),
+            name2_c: Types.any(),
+            name2_d: Types.any(),
+          }),
+          not_in_body: Types.object().keys({
+            lolo: Types.object().keys({
+              lulu: Types.any(),
+            }),
+            lili: Types.any(),
+          }),
+          test: Types.object().keys({
+            toto: Types.any(),
+            titi: Types.any(),
+          }),
+        });
         const ret = route._mlTestParams(ctx, body, paramsTest);
         expect(ret).toEqual({
           name1: 'name1_val',
@@ -92,53 +77,19 @@ describe('Route', () => {
           test: { toto: 'toto_val', titi: 'titi_val' },
         });
       });
-      it('should throw error if elem is force but it is not in body', (done) => {
-        paramsTest.not_in_body.lolo.lulu = true;
+      it('should throw error if elem is force but it is not in body', done => {
+        paramsTest = Types.object().keys({
+          not_in_body: Types.object()
+            .keys({ lolo: Types.any().required() })
+            .required(),
+        });
         try {
           route._mlTestParams(ctx, body, paramsTest);
-          done(new Error('should throw error if elem is force but it is not in body'));
-        } catch (err) {
-          done();
-        }
-      });
-      it('should execute fonction to tranforme params', () => {
-        paramsTest.name1 = {
-          __force: false,
-          __func: [
-            utils.capitalize,
-          ],
-        };
-        const ret = route._mlTestParams(ctx, body, paramsTest);
-        expect(ret).toEqual({
-          name1: 'Name1_val',
-          name2: { name2_a: 'name2_a_val', name2_c: 'name2_c_val' },
-          test: { toto: 'toto_val', titi: 'titi_val' },
-        });
-      });
-      it('should execute fonction to test params', () => {
-        paramsTest.name1 = {
-          __force: false,
-          __func: [
-            utilsParam.test(() => true),
-          ],
-        };
-        const ret = route._mlTestParams(ctx, body, paramsTest);
-        expect(ret).toEqual({
-          name1: 'name1_val',
-          name2: { name2_a: 'name2_a_val', name2_c: 'name2_c_val' },
-          test: { toto: 'toto_val', titi: 'titi_val' },
-        });
-      });
-      it('should throw error if test fonction return false', (done) => {
-        paramsTest.name1 = {
-          __force: false,
-          __func: [
-            utilsParam.test(() => false),
-          ],
-        };
-        try {
-          route._mlTestParams(ctx, body, paramsTest);
-          done(new Error('should throw error if test fonction return false'));
+          done(
+            new Error(
+              'should throw error if elem is force but it is not in body',
+            ),
+          );
         } catch (err) {
           done();
         }
@@ -200,45 +151,77 @@ describe('Route', () => {
           expect(ctx.status).toBe(Route.StatusCode.noContent);
         });
       });
-      describe('sendBadRequest(ctx, data, message)', () => {
-        it('should fill body with data, message and set statusCode = 400', () => {
-          route.sendBadRequest(ctx, data, message);
-          testCtx(Route.StatusCode.badRequest);
-        });
-      });
-      describe('sendUnauthorized(ctx, data, message)', () => {
-        it('should fill body with data, message and set statusCode = 401', () => {
-          route.sendUnauthorized(ctx, data, message);
-          testCtx(Route.StatusCode.unauthorized);
-        });
-      });
-      describe('sendForbidden(ctx, data, message)', () => {
-        it('should fill body with data, message and set statusCode = 403', () => {
-          route.sendForbidden(ctx, data, message);
-          testCtx(Route.StatusCode.forbidden);
-        });
-      });
-      describe('sendNotFound(ctx, data, message)', () => {
-        it('should fill body with data, message and set statusCode = 404', () => {
-          route.sendNotFound(ctx, data, message);
-          testCtx(Route.StatusCode.notFound);
-        });
-      });
-      describe('sendInternalServerError(ctx, data, message)', () => {
-        it('should fill body with data, message and set statusCode = 500', () => {
-          route.sendInternalServerError(ctx, data, message);
-          testCtx(Route.StatusCode.internalServerError);
-        });
-      });
     });
 
     describe('throw()', () => {
+      let message, messages;
+      beforeEach(() => {
+        message = 'message test';
+        messages = { email: { msg: 'message test', code: 1 } };
+      });
+
       it('should throw ErrorApp with correct message and status', () => {
         try {
           route.throw(404, 'message');
         } catch (error) {
           expect(error instanceof ErrorApp).toBeTruthy();
+          expect(error.status).toBe(404);
         }
+      });
+      describe('throwBadRequest', () => {
+        it('should fill body with message and set statusCode = 400', () => {
+          try {
+            route.throwBadRequest(message);
+          } catch (error) {
+            expect(error instanceof ErrorApp).toBeTruthy();
+            expect(error.status).toBe(Route.StatusCode.badRequest);
+            expect(error.message).toBe(message);
+          }
+        });
+      });
+      describe('throwUnauthorized', () => {
+        it('should fill body with messages and set statusCode = 401', () => {
+          try {
+            route.throwUnauthorized(messages);
+          } catch (error) {
+            expect(error instanceof ErrorApp).toBeTruthy();
+            expect(error.status).toBe(Route.StatusCode.unauthorized);
+            expect(error.messages).toBe(messages);
+          }
+        });
+      });
+      describe('throwForbidden', () => {
+        it('should fill body with message and set statusCode = 403', () => {
+          try {
+            route.throwForbidden(messages);
+          } catch (error) {
+            expect(error instanceof ErrorApp).toBeTruthy();
+            expect(error.status).toBe(Route.StatusCode.forbidden);
+            expect(error.messages).toBe(messages);
+          }
+        });
+      });
+      describe('throwNotFound', () => {
+        it('should fill body with message and set statusCode = 404', () => {
+          try {
+            route.throwNotFound(messages);
+          } catch (error) {
+            expect(error instanceof ErrorApp).toBeTruthy();
+            expect(error.status).toBe(Route.StatusCode.notFound);
+            expect(error.messages).toBe(messages);
+          }
+        });
+      });
+      describe('throwInternalServerError', () => {
+        it('should fill body with message and set statusCode = 500', () => {
+          try {
+            route.throwInternalServerError(messages);
+          } catch (error) {
+            expect(error instanceof ErrorApp).toBeTruthy();
+            expect(error.status).toBe(Route.StatusCode.internalServerError);
+            expect(error.messages).toBe(messages);
+          }
+        });
       });
     });
 

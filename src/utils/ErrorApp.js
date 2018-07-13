@@ -1,6 +1,8 @@
+import { isArray, isObject } from '../utils/utils';
+
 export default class ErrorApp extends Error {
   constructor(status, message, toTranslate = false) {
-    super ();
+    super();
 
     /**
      * @type {number}
@@ -10,7 +12,18 @@ export default class ErrorApp extends Error {
     /**
      * @type {string}
      */
-    this.message = message;
+    this.message = null;
+
+    /**
+     * @type {Object | Array}
+     */
+    this.messages = null;
+
+    if (isArray(message) || isObject(message)) {
+      this.messages = message;
+    } else {
+      this.message = message;
+    }
 
     /**
      * @type {boolean}

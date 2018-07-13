@@ -4,7 +4,7 @@ import { RateLimit } from 'koa2-ratelimit';
 
 import ErrorApp from '../utils/ErrorApp';
 import StatusCode from '../utils/StatusCode';
-import { isArray, isObject, deepCopy } from '../utils/utils';
+import { deepCopy } from '../utils/utils';
 import RouteDecorators from './RouteDecorators';
 
 
@@ -282,103 +282,26 @@ export default class Route {
   /**
    *@ignore
    */
-  _mlParams(ctx, { params }) {
-    ctx.request.bodyOrig = deepCopy(ctx.request.body);
-    ctx.request.body = this._mlTestParams(ctx, ctx.request.body, params);
-  }
-
-  /**
-   *@ignore
-   */
-  _mlParamsExecFunc(ctx, body, keyBody, param) {
-    if (body && body[keyBody]) {
-      const { __func } = param;
-      if (__func && Array.isArray(__func)) {
-        for (const func of __func) {
-          body[keyBody] = func(body[keyBody], this, { ctx, body, keyBody });
-        }
-      }
+  _mlParams(ctx, { bodyType, queryType }) {
+    if (bodyType) {
+      ctx.request.bodyOrigin = deepCopy(ctx.request.body);
+      ctx.request.body = this._mlTestParams(ctx, ctx.request.body, bodyType);
+    }
+    if (queryType) {
+      ctx.request.queryOrigin = deepCopy(ctx.request.query || {});
+      ctx.request.query = this._mlTestParams(ctx, ctx.request.query, queryType);
     }
   }
 
   /**
    *@ignore
    */
-  _mlTestParams(ctx, body, paramsTest) {
-    const bodyVerif = {};
-    const paramsConvert = this._paramsNormalize(paramsTest);
-    for (const key in paramsConvert) {
-      const param = paramsConvert[key];
-
-      const bodyElem = body ? body[key] : undefined;
-      // test param
-      if (param.__force && (bodyElem === undefined || bodyElem === null)) {
-        this.throw(400, `${ctx.state.__ ? ctx.state.__('param required:') : 'param required:'} ${key}`);
-      }
-      this._mlParamsExecFunc(ctx, body, key, param);
-
-
-      if (this._paramsHasSubElement(param)) {
-        if (body && isObject(body)) {
-          const tmp = this._mlTestParams(ctx, body[key], param);
-          if (body[key]) {
-            bodyVerif[key] = tmp;
-          }
-        } else {
-          const tmp = this._mlTestParams(ctx, undefined, param);
-          if (body && isObject(body) && body[key] !== undefined) {
-            bodyVerif[key] = tmp;
-          }
-        }
-      } else if (body && isObject(body) && body[key] !== undefined) {
-        bodyVerif[key] = body[key];
-      }
+  _mlTestParams(ctx, body, type) {
+    type.test(body);
+    if (type.error || type.errors) {
+      this.throw(400, type.errors || type.error);
     }
-    return bodyVerif;
-  }
-
-  /**
-   *@ignore
-   */
-  _paramsNormalize(paramsTest) {
-    let paramsConvert = {};
-    // convert array to object
-    if (isArray(paramsTest)) {
-      for (const elem of paramsTest) {
-        if (isObject(elem, false)) {
-          paramsConvert = Object.assign(paramsConvert, elem);
-        } else {
-          paramsConvert[elem] = false;
-        }
-      }
-    } else {
-      paramsConvert = paramsTest;
-    }
-
-    // normalize objects
-    for (const key in paramsConvert) {
-      const elem = paramsConvert[key];
-      if (!this.privateKeyInParamsRoute.includes(key)) {
-        if (isObject(elem) || isArray(elem)) {
-          paramsConvert[key] = this._paramsNormalize(elem);
-        } else if (elem === false || elem === true) {
-          paramsConvert[key] = { __force: elem };
-        }
-      }
-    }
-    return paramsConvert;
-  }
-
-  /**
-   *@ignore
-   */
-  _paramsHasSubElement(paramsTest) {
-    for (const key in paramsTest) {
-      if (!this.privateKeyInParamsRoute.includes(key)) {
-        return true;
-      }
-    }
-    return false;
+    return type.value;
   }
 
   // ************************************ !MIDDLEWARE *********************************
@@ -390,7 +313,7 @@ export default class Route {
    *                                  otherwise, it will return the filtered and transformed body.
    */
   body(ctx, original = false) {
-    return original ? ctx.request.bodyOrig : ctx.request.body;
+    return original ? ctx.request.bodyOrigin : ctx.request.body;
   }
 
   /**
@@ -399,17 +322,9 @@ export default class Route {
    * @param {KoaContext} ctx koa's context object
    * @return {Object.<string, *>}
    */
-  bodyGet(ctx) {
-    return ctx.request.query || {};
+  queryParam(ctx, original = false) {
+    return original ? ctx.request.queryOrigin : ctx.request.query;
   }
-
-  /**
-   * @access public
-   * @desc alias of {@link bodyGet}
-   * @param {KoaContext} ctx koa's context object
-   * @return {Object.<string, *>}
-   */
-  paramsGet(ctx) { return this.bodyGet(ctx); }
 
   /**
    * @access public
@@ -473,66 +388,6 @@ export default class Route {
 
   /**
    * @access public
-   * @desc same as {@link send}, but automatically sets the status to 400 BAD REQUEST
-   * @param {KoaContext} ctx koa's context object
-   * @param {*} [data] the data to be yielded by the requests
-   * @param {string} [message] the message to be yielded by the request
-   * @return { }
-   */
-  sendBadRequest(ctx, data, message) {
-    return this.send(ctx, Route.StatusCode.badRequest, data, message);
-  }
-
-  /**
-   * @access public
-   * @desc same as {@link send}, but automatically sets the status to 401 UNAUTHORIZED
-   * @param {KoaContext} ctx koa's context object
-   * @param {*} [data] the data to be yielded by the requests
-   * @param {string} [message] the message to be yielded by the request
-   * @return { }
-   */
-  sendUnauthorized(ctx, data, message) {
-    return this.send(ctx, Route.StatusCode.unauthorized, data, message);
-  }
-
-  /**
-   * @access public
-   * @desc same as {@link send}, but automatically sets the status to 403 FORBIDDEN
-   * @param {KoaContext} ctx koa's context object
-   * @param {*} [data] the data to be yielded by the requests
-   * @param {string} [message] the message to be yielded by the request
-   * @return { }
-   */
-  sendForbidden(ctx, data, message) {
-    return this.send(ctx, Route.StatusCode.forbidden, data, message);
-  }
-
-  /**
-   * @access public
-   * @desc same as {@link send}, but automatically sets the status to 404 NOT FOUND
-   * @param {KoaContext} ctx koa's context object
-   * @param {*} [data] the data to be yielded by the requests
-   * @param {string} [message] the message to be yielded by the request
-   * @return { }
-   */
-  sendNotFound(ctx, data, message) {
-    return this.send(ctx, Route.StatusCode.notFound, data, message);
-  }
-
-  /**
-   * @access public
-   * @desc same as {@link send}, but automatically sets the status to 500 INTERNAL SERVER ERROR
-   * @param {KoaContext} ctx koa's context object
-   * @param {*} [data] the data to be yielded by the requests
-   * @param {string} [message] the message to be yielded by the request
-   * @return { }
-   */
-  sendInternalServerError(ctx, data, message) {
-    return this.send(ctx, Route.StatusCode.internalServerError, data, message);
-  }
-
-  /**
-   * @access public
    * @desc throws a formated error to be caught.
    * @param {number} status the error's HTTP status StatusCode
    * @param {string} message  a message describing the error
@@ -540,8 +395,63 @@ export default class Route {
    * @throws {ErrorApp} thrown error.
    * @return { }
    */
-  throw(status, message, translate = false) {
-    throw new ErrorApp(status, message, translate);
+  throw(status, error, translate = false) {
+    throw new ErrorApp(status, error, translate);
+  }
+
+  /**
+   * @access public
+   * @desc same as {@link throw}, but automatically sets the status to 400 BAD REQUEST
+   * @param {string | object} [error] the error(s) to be yielded by the request
+   * @param {boolean} translate indicates whether the message should be translated or not
+   * @return { }
+   */
+  throwBadRequest(error, translate = false) {
+    return this.throw(Route.StatusCode.badRequest, error, translate);
+  }
+
+  /**
+   * @access public
+   * @desc same as {@link throw}, but automatically sets the status to 401 UNAUTHORIZED
+   * @param {string | object} [error] the error(s) to be yielded by the request
+   * @param {boolean} translate indicates whether the message should be translated or not
+   * @return { }
+   */
+  throwUnauthorized(error, translate = false) {
+    return this.throw(Route.StatusCode.unauthorized, error, translate);
+  }
+
+  /**
+   * @access public
+   * @desc same as {@link throw}, but automatically sets the status to 403 FORBIDDEN
+   * @param {string | object} [error] the error(s) to be yielded by the request
+   * @param {boolean} translate indicates whether the message should be translated or not
+   * @return { }
+   */
+  throwForbidden(error, translate = false) {
+    return this.throw(Route.StatusCode.forbidden, error, translate);
+  }
+
+  /**
+   * @access public
+   * @desc same as {@link throw}, but automatically sets the status to 404 NOT FOUND
+   * @param {string | object} [error] the error(s) to be yielded by the request
+   * @param {boolean} translate indicates whether the message should be translated or not
+   * @return { }
+   */
+  throwNotFound(error, translate = false) {
+    return this.throw(Route.StatusCode.notFound, error, translate);
+  }
+
+  /**
+   * @access public
+   * @desc same as {@link throw}, but automatically sets the status to 500 INTERNAL SERVER ERROR
+   * @param {string | object} [error] the error(s) to be yielded by the request
+   * @param {boolean} translate indicates whether the message should be translated or not
+   * @return { }
+   */
+  throwInternalServerError(error, translate = false) {
+    return this.throw(Route.StatusCode.internalServerError, error, translate);
   }
 
   /**

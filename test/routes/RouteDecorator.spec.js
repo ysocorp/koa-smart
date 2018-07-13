@@ -118,43 +118,94 @@ describe('RouteDecorator', () => {
     });
   });
 
-  describe('params', () => {
-    it('should keep only elem in params decorator', async () => {
-      const bodySend = {
-        email: 'clientnew@new.com',
-        password: 'password',
-        notPermited: 'notPermited',
-      };
-      const { body, statusCode } = await request.post('/params').send(bodySend);
+  describe('Params', () => {
+    describe('Body', () => {
+      it('should keep only elem in params decorator', async () => {
+        const bodySend = {
+          email: 'clientnew@new.com',
+          password: 'password',
+          notPermited: 'notPermited',
+        };
+        const { body, statusCode } = await request.post('/params').send(bodySend);
 
-      expect(statusCode).toBeLessThan(400);
-      expect(body.data.original).toEqual(bodySend);
-      expect(body.data.checked).toEqual({
-        email: 'clientnew@new.com',
-        password: 'password',
+        expect(statusCode).toBeLessThan(400);
+        expect(body.data.bodyOriginal).toEqual(bodySend);
+        expect(body.data.bodyChecked).toEqual({
+          email: 'clientnew@new.com',
+          password: 'password',
+        });
+        expect(body.data.bodyChecked.notPermited).toBe(undefined);
       });
-      expect(body.data.checked.notPermited).toBe(undefined);
-    });
-    it('should return 400 if required params are not send', async () => {
-      const respKO = await request.post('/params').send({ password: 'password' });
-      expect(respKO.statusCode).toBe(400);
+      it('should return 400 if required params are not send', async () => {
+        const respKO = await request.post('/params').send({ password: 'password' });
+        expect(respKO.statusCode).toBe(400);
 
-      const respOK = await request.post('/params').send({ email: 'email' });
-      expect(respOK.statusCode).toBeLessThan(400);
+        const respOK = await request.post('/params').send({ email: 'email' });
+        expect(respOK.statusCode).toBeLessThan(400);
+      });
+      it('should apply param only in the specific path and type', async () => {
+        const bodySend = {
+          post: 'post',
+          patch: 'patch',
+        };
+        let res = await request.post('/params/samepath').send(bodySend);
+        expect(res.statusCode).toBeLessThan(400);
+        expect(res.body.data).toEqual({ post: 'post' });
+        expect(res.body.data.patch).toBe(undefined);
+        res = await request.patch('/params/samepath').send(bodySend);
+        expect(res.statusCode).toBeLessThan(400);
+        expect(res.body.data).toEqual({ patch: 'patch' });
+        expect(res.body.data.post).toBe(undefined);
+      });
     });
-    it('should apply param only in the specific path and type', async () => {
-      const bodySend = {
-        post: 'post',
-        patch: 'patch',
-      };
-      let res = await request.post('/params/samepath').send(bodySend);
-      expect(res.statusCode).toBeLessThan(400);
-      expect(res.body.data).toEqual({ post: 'post' });
-      expect(res.body.data.patch).toBe(undefined);
-      res = await request.patch('/params/samepath').send(bodySend);
-      expect(res.statusCode).toBeLessThan(400);
-      expect(res.body.data).toEqual({ patch: 'patch' });
-      expect(res.body.data.post).toBe(undefined);
+
+    describe('Query', () => {
+      it('should keep only elem in params decorator', async () => {
+        const bodySend = {
+          email: 'clientnew@new.com',
+          passwordB: 'passwordB',
+          notPermited: 'notPermited',
+        };
+        const querySend = { ...bodySend, passwordQ: 'passwordQ' };
+        delete querySend.passwordB;
+        const { body, statusCode } = await request
+          .post(
+            `/params/queryType?email=${querySend.email}&passwordQ=${querySend.passwordQ}&notPermited=${
+              querySend.notPermited
+            }`,
+          )
+          .send(bodySend);
+
+        expect(statusCode).toBeLessThan(400);
+        expect(body.data.bodyOriginal).toEqual(bodySend);
+        expect(body.data.bodyChecked).toEqual({
+          email: 'clientnew@new.com',
+          passwordB: 'passwordB',
+        });
+        expect(body.data.bodyChecked.notPermited).toBe(undefined);
+
+        expect(body.data.queryOriginal).toEqual(querySend);
+        expect(body.data.queryChecked).toEqual({
+          email: 'clientnew@new.com',
+          passwordQ: 'passwordQ',
+        });
+        expect(body.data.queryChecked.notPermited).toBe(undefined);
+      });
+    });
+
+    describe('Error', () => {
+      it('should throw error if invalid params', async () => {
+        const bodySend = {};
+        const { body, statusCode } = await request.post(`/params`).send(bodySend);
+
+        expect(statusCode).toBe(400);
+        expect(Object.keys(body.messages.email)).toEqual(['msg', 'code']);
+      });
+      it('should throw error if no params', async () => {
+        const { body, statusCode } = await request.post(`/params`);
+        expect(statusCode).toBe(400);
+        expect(Object.keys(body.messages.email)).toEqual(['msg', 'code']);
+      });
     });
   });
 

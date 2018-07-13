@@ -66,7 +66,8 @@ export default class RouteDecorators {
       options = {
         path: undefined,
         accesses: [],
-        params: {},
+        bodyType: null,
+        queryType: null,
         routeBase: target.routeBase,
         ...options,
       };
