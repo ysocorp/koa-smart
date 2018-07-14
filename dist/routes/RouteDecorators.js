@@ -46,7 +46,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /**
  *@ignore
-*/
+ */
 var RouteDecorators = function () {
   function RouteDecorators() {
     (0, _classCallCheck3.default)(this, RouteDecorators);
@@ -85,8 +85,7 @@ var RouteDecorators = function () {
           _ref$middlewares = _ref.middlewares,
           middlewares = _ref$middlewares === undefined ? null : _ref$middlewares;
 
-      return function (target, key, descriptor) {
-        // eslint-disable-line no-unused-vars
+      return function (target /*, key, descriptor*/) {
         if (routeBase != null) {
           // null or undefined
           target.prototype.routeBase = routeBase;
@@ -110,7 +109,8 @@ var RouteDecorators = function () {
         options = (0, _extends3.default)({
           path: undefined,
           accesses: [],
-          params: {},
+          bodyType: null,
+          queryType: null,
           routeBase: target.routeBase
         }, options);
         (0, _defineProperty2.default)(target, functionName, descriptor);

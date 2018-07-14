@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Types = undefined;
+exports.Types = exports.TypeString = exports.TypeOneOf = exports.TypeObject = exports.TypeNumber = exports.TypeBoolean = exports.TypeBinary = exports.TypeAny = undefined;
 
 var _TypeAny = require('./TypeAny');
 
@@ -18,6 +18,14 @@ var _TypeObject = require('./TypeObject');
 var _TypeOneOf = require('./TypeOneOf');
 
 var _TypeString = require('./TypeString');
+
+var TypeAny = exports.TypeAny = _TypeAny.TypeAny;
+var TypeBinary = exports.TypeBinary = _TypeBinary.TypeBinary;
+var TypeBoolean = exports.TypeBoolean = _TypeBoolean.TypeBoolean;
+var TypeNumber = exports.TypeNumber = _TypeNumber.TypeNumber;
+var TypeObject = exports.TypeObject = _TypeObject.TypeObject;
+var TypeOneOf = exports.TypeOneOf = _TypeOneOf.TypeOneOf;
+var TypeString = exports.TypeString = _TypeString.TypeString;
 
 var Types = exports.Types = {
   any: function any() {

@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
 /**
  * @typedef {Object} StatusCode
  * @property {Number} ok HTTP response 200

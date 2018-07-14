@@ -54,7 +54,7 @@ var TypeBoolean = exports.TypeBoolean = function (_TypeAny) {
 
     _this._getDescription = function () {
       var valideValue = [].concat((0, _toConsumableArray3.default)(_this._truthyValues), (0, _toConsumableArray3.default)(_this._falsyValues));
-      return 'It sould be a boolean or one of (' + valideValue.join(',') + ').';
+      return 'It sould be a boolean or one of (' + valideValue.join(', ') + ').';
     };
 
     _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;

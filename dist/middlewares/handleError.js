@@ -40,7 +40,12 @@ var handleError = function () {
             if (_context.t0.constructor.name === 'ErrorApp') {
               // expected error
               ctx.status = _context.t0.status;
-              ctx.body = { message: getMessageTranslate(ctx, _context.t0.message, _context.t0.toTranslate) };
+              ctx.body = {};
+              if (_context.t0.messages) {
+                ctx.body.messages = _context.t0.messages;
+              } else {
+                ctx.body.message = getMessageTranslate(ctx, _context.t0.message, _context.t0.toTranslate);
+              }
               displayLog(_context.t0, 'logErrorApp');
             } else if (arraySequelize.includes(_context.t0.name)) {
               // sequilize expected error by validattor or other
@@ -97,6 +102,7 @@ var options = {
 
 function displayLog(error, type) {
   if (options.logAll || options[type]) {
+    // eslint-disable-next-line
     console.error(error);
   }
 }

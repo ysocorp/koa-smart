@@ -5,10 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = undefined;
 
-var _assign = require('babel-runtime/core-js/object/assign');
-
-var _assign2 = _interopRequireDefault(_assign);
-
 var _regenerator = require('babel-runtime/regenerator');
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
@@ -70,7 +66,7 @@ var Route = (_temp = _class = function () {
   /**
    * @typedef {Object} BeforeRouteParams
    * @property {string} path the path at which the route will be available.
-   * @property {ParamsMethodDecorator} options 
+   * @property {ParamsMethodDecorator} options
    * @property {function} call the fonction to call when route match, this is automaticaly add by route decorator
    */
 
@@ -189,8 +185,8 @@ var Route = (_temp = _class = function () {
    */
 
   /**
-  * @type {StatusCode}
-  */
+   * @type {StatusCode}
+   */
 
 
   /**
@@ -250,6 +246,7 @@ var Route = (_temp = _class = function () {
           args[_key - 1] = arguments[_key];
         }
 
+        // eslint-disable-next-line
         (_console = console).log.apply(_console, [str].concat(args));
       }
     }
@@ -479,48 +476,16 @@ var Route = (_temp = _class = function () {
   }, {
     key: '_mlParams',
     value: function _mlParams(ctx, _ref6) {
-      var params = _ref6.params;
+      var bodyType = _ref6.bodyType,
+          queryType = _ref6.queryType;
 
-      ctx.request.bodyOrig = (0, _utils.deepCopy)(ctx.request.body);
-      ctx.request.body = this._mlTestParams(ctx, ctx.request.body, params);
-    }
-
-    /**
-     *@ignore
-     */
-
-  }, {
-    key: '_mlParamsExecFunc',
-    value: function _mlParamsExecFunc(ctx, body, keyBody, param) {
-      if (body && body[keyBody]) {
-        var __func = param.__func;
-
-        if (__func && Array.isArray(__func)) {
-          var _iteratorNormalCompletion3 = true;
-          var _didIteratorError3 = false;
-          var _iteratorError3 = undefined;
-
-          try {
-            for (var _iterator3 = (0, _getIterator3.default)(__func), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-              var func = _step3.value;
-
-              body[keyBody] = func(body[keyBody], this, { ctx: ctx, body: body, keyBody: keyBody });
-            }
-          } catch (err) {
-            _didIteratorError3 = true;
-            _iteratorError3 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                _iterator3.return();
-              }
-            } finally {
-              if (_didIteratorError3) {
-                throw _iteratorError3;
-              }
-            }
-          }
-        }
+      if (bodyType) {
+        ctx.request.bodyOrigin = (0, _utils.deepCopy)(ctx.request.body);
+        ctx.request.body = this._mlTestParams(ctx, ctx.request.body, bodyType);
+      }
+      if (queryType) {
+        ctx.request.queryOrigin = (0, _utils.deepCopy)(ctx.request.query || {});
+        ctx.request.query = this._mlTestParams(ctx, ctx.request.query, queryType);
       }
     }
 
@@ -530,107 +495,12 @@ var Route = (_temp = _class = function () {
 
   }, {
     key: '_mlTestParams',
-    value: function _mlTestParams(ctx, body, paramsTest) {
-      var bodyVerif = {};
-      var paramsConvert = this._paramsNormalize(paramsTest);
-      for (var key in paramsConvert) {
-        var param = paramsConvert[key];
-
-        var bodyElem = body ? body[key] : undefined;
-        // test param
-        if (param.__force && (bodyElem === undefined || bodyElem === null)) {
-          this.throw(400, (ctx.state.__ ? ctx.state.__('param required:') : 'param required:') + ' ' + key);
-        }
-        this._mlParamsExecFunc(ctx, body, key, param);
-
-        if (this._paramsHasSubElement(param)) {
-          if (body && (0, _utils.isObject)(body)) {
-            var tmp = this._mlTestParams(ctx, body[key], param);
-            if (body[key]) {
-              bodyVerif[key] = tmp;
-            }
-          } else {
-            var _tmp = this._mlTestParams(ctx, undefined, param);
-            if (body && (0, _utils.isObject)(body) && body[key] !== undefined) {
-              bodyVerif[key] = _tmp;
-            }
-          }
-        } else if (body && (0, _utils.isObject)(body) && body[key] !== undefined) {
-          bodyVerif[key] = body[key];
-        }
+    value: function _mlTestParams(ctx, body, type) {
+      type.test(body);
+      if (type.error || type.errors) {
+        this.throw(400, type.errors || type.error);
       }
-      return bodyVerif;
-    }
-
-    /**
-     *@ignore
-     */
-
-  }, {
-    key: '_paramsNormalize',
-    value: function _paramsNormalize(paramsTest) {
-      var paramsConvert = {};
-      // convert array to object
-      if ((0, _utils.isArray)(paramsTest)) {
-        var _iteratorNormalCompletion4 = true;
-        var _didIteratorError4 = false;
-        var _iteratorError4 = undefined;
-
-        try {
-          for (var _iterator4 = (0, _getIterator3.default)(paramsTest), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-            var elem = _step4.value;
-
-            if ((0, _utils.isObject)(elem, false)) {
-              paramsConvert = (0, _assign2.default)(paramsConvert, elem);
-            } else {
-              paramsConvert[elem] = false;
-            }
-          }
-        } catch (err) {
-          _didIteratorError4 = true;
-          _iteratorError4 = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion4 && _iterator4.return) {
-              _iterator4.return();
-            }
-          } finally {
-            if (_didIteratorError4) {
-              throw _iteratorError4;
-            }
-          }
-        }
-      } else {
-        paramsConvert = paramsTest;
-      }
-
-      // normalize objects
-      for (var key in paramsConvert) {
-        var _elem = paramsConvert[key];
-        if (!this.privateKeyInParamsRoute.includes(key)) {
-          if ((0, _utils.isObject)(_elem) || (0, _utils.isArray)(_elem)) {
-            paramsConvert[key] = this._paramsNormalize(_elem);
-          } else if (_elem === false || _elem === true) {
-            paramsConvert[key] = { __force: _elem };
-          }
-        }
-      }
-      return paramsConvert;
-    }
-
-    /**
-     *@ignore
-     */
-
-  }, {
-    key: '_paramsHasSubElement',
-    value: function _paramsHasSubElement(paramsTest) {
-      for (var key in paramsTest) {
-        if (!this.privateKeyInParamsRoute.includes(key)) {
-          return true;
-        }
-      }
-      return false;
+      return type.value;
     }
 
     // ************************************ !MIDDLEWARE *********************************
@@ -647,7 +517,7 @@ var Route = (_temp = _class = function () {
     value: function body(ctx) {
       var original = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-      return original ? ctx.request.bodyOrig : ctx.request.body;
+      return original ? ctx.request.bodyOrigin : ctx.request.body;
     }
 
     /**
@@ -658,22 +528,11 @@ var Route = (_temp = _class = function () {
      */
 
   }, {
-    key: 'bodyGet',
-    value: function bodyGet(ctx) {
-      return ctx.request.query || {};
-    }
+    key: 'queryParam',
+    value: function queryParam(ctx) {
+      var original = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-    /**
-     * @access public
-     * @desc alias of {@link bodyGet}
-     * @param {KoaContext} ctx koa's context object
-     * @return {Object.<string, *>}
-     */
-
-  }, {
-    key: 'paramsGet',
-    value: function paramsGet(ctx) {
-      return this.bodyGet(ctx);
+      return original ? ctx.request.queryOrigin : ctx.request.query;
     }
 
     /**
@@ -754,81 +613,6 @@ var Route = (_temp = _class = function () {
 
     /**
      * @access public
-     * @desc same as {@link send}, but automatically sets the status to 400 BAD REQUEST
-     * @param {KoaContext} ctx koa's context object
-     * @param {*} [data] the data to be yielded by the requests
-     * @param {string} [message] the message to be yielded by the request
-     * @return { }
-     */
-
-  }, {
-    key: 'sendBadRequest',
-    value: function sendBadRequest(ctx, data, message) {
-      return this.send(ctx, Route.StatusCode.badRequest, data, message);
-    }
-
-    /**
-     * @access public
-     * @desc same as {@link send}, but automatically sets the status to 401 UNAUTHORIZED
-     * @param {KoaContext} ctx koa's context object
-     * @param {*} [data] the data to be yielded by the requests
-     * @param {string} [message] the message to be yielded by the request
-     * @return { }
-     */
-
-  }, {
-    key: 'sendUnauthorized',
-    value: function sendUnauthorized(ctx, data, message) {
-      return this.send(ctx, Route.StatusCode.unauthorized, data, message);
-    }
-
-    /**
-     * @access public
-     * @desc same as {@link send}, but automatically sets the status to 403 FORBIDDEN
-     * @param {KoaContext} ctx koa's context object
-     * @param {*} [data] the data to be yielded by the requests
-     * @param {string} [message] the message to be yielded by the request
-     * @return { }
-     */
-
-  }, {
-    key: 'sendForbidden',
-    value: function sendForbidden(ctx, data, message) {
-      return this.send(ctx, Route.StatusCode.forbidden, data, message);
-    }
-
-    /**
-     * @access public
-     * @desc same as {@link send}, but automatically sets the status to 404 NOT FOUND
-     * @param {KoaContext} ctx koa's context object
-     * @param {*} [data] the data to be yielded by the requests
-     * @param {string} [message] the message to be yielded by the request
-     * @return { }
-     */
-
-  }, {
-    key: 'sendNotFound',
-    value: function sendNotFound(ctx, data, message) {
-      return this.send(ctx, Route.StatusCode.notFound, data, message);
-    }
-
-    /**
-     * @access public
-     * @desc same as {@link send}, but automatically sets the status to 500 INTERNAL SERVER ERROR
-     * @param {KoaContext} ctx koa's context object
-     * @param {*} [data] the data to be yielded by the requests
-     * @param {string} [message] the message to be yielded by the request
-     * @return { }
-     */
-
-  }, {
-    key: 'sendInternalServerError',
-    value: function sendInternalServerError(ctx, data, message) {
-      return this.send(ctx, Route.StatusCode.internalServerError, data, message);
-    }
-
-    /**
-     * @access public
      * @desc throws a formated error to be caught.
      * @param {number} status the error's HTTP status StatusCode
      * @param {string} message  a message describing the error
@@ -839,10 +623,90 @@ var Route = (_temp = _class = function () {
 
   }, {
     key: 'throw',
-    value: function _throw(status, message) {
+    value: function _throw(status, error) {
       var translate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-      throw new _ErrorApp2.default(status, message, translate);
+      throw new _ErrorApp2.default(status, error, translate);
+    }
+
+    /**
+     * @access public
+     * @desc same as {@link throw}, but automatically sets the status to 400 BAD REQUEST
+     * @param {string | object} [error] the error(s) to be yielded by the request
+     * @param {boolean} translate indicates whether the message should be translated or not
+     * @return { }
+     */
+
+  }, {
+    key: 'throwBadRequest',
+    value: function throwBadRequest(error) {
+      var translate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+      return this.throw(Route.StatusCode.badRequest, error, translate);
+    }
+
+    /**
+     * @access public
+     * @desc same as {@link throw}, but automatically sets the status to 401 UNAUTHORIZED
+     * @param {string | object} [error] the error(s) to be yielded by the request
+     * @param {boolean} translate indicates whether the message should be translated or not
+     * @return { }
+     */
+
+  }, {
+    key: 'throwUnauthorized',
+    value: function throwUnauthorized(error) {
+      var translate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+      return this.throw(Route.StatusCode.unauthorized, error, translate);
+    }
+
+    /**
+     * @access public
+     * @desc same as {@link throw}, but automatically sets the status to 403 FORBIDDEN
+     * @param {string | object} [error] the error(s) to be yielded by the request
+     * @param {boolean} translate indicates whether the message should be translated or not
+     * @return { }
+     */
+
+  }, {
+    key: 'throwForbidden',
+    value: function throwForbidden(error) {
+      var translate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+      return this.throw(Route.StatusCode.forbidden, error, translate);
+    }
+
+    /**
+     * @access public
+     * @desc same as {@link throw}, but automatically sets the status to 404 NOT FOUND
+     * @param {string | object} [error] the error(s) to be yielded by the request
+     * @param {boolean} translate indicates whether the message should be translated or not
+     * @return { }
+     */
+
+  }, {
+    key: 'throwNotFound',
+    value: function throwNotFound(error) {
+      var translate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+      return this.throw(Route.StatusCode.notFound, error, translate);
+    }
+
+    /**
+     * @access public
+     * @desc same as {@link throw}, but automatically sets the status to 500 INTERNAL SERVER ERROR
+     * @param {string | object} [error] the error(s) to be yielded by the request
+     * @param {boolean} translate indicates whether the message should be translated or not
+     * @return { }
+     */
+
+  }, {
+    key: 'throwInternalServerError',
+    value: function throwInternalServerError(error) {
+      var translate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+      return this.throw(Route.StatusCode.internalServerError, error, translate);
     }
 
     /**

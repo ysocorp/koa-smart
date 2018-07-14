@@ -54,7 +54,6 @@ var _utils = require('./utils/utils');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var App = function () {
-
   /**
    * @ignore
    */

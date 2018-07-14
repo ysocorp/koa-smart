@@ -23,6 +23,7 @@ var logger = function () {
             status = 500;
             _context.prev = 2;
 
+            // eslint-disable-next-line
             console.log(_chalk2.default.blue(dateFormat(start)) + ' - ' + _chalk2.default.bold(ctx.method) + ' ' + _chalk2.default.blue.bold(ctx.url) + ' START');
             _context.next = 6;
             return next();
@@ -41,10 +42,12 @@ var logger = function () {
             if (_context.t0.constructor.name === 'ErrorApp') {
               msg = _context.t0.status + ': ' + _context.t0.message;
               status = _context.t0.status;
-            }if (arraySequelize.includes(_context.t0.name)) {
+            }
+            if (arraySequelize.includes(_context.t0.name)) {
               msg = _context.t0.name + ': ' + _context.t0.message;
               status = 400;
             }
+            // eslint-disable-next-line
             console.log(_chalk2.default.red('[ERROR]'), _chalk2.default.red.bold(ctx.method) + ' ' + ctx.url, msg);
             throw _context.t0;
 
@@ -52,6 +55,7 @@ var logger = function () {
             _context.prev = 17;
             ms = new Date() - start;
             fColor = _chalk2.default[getColor(status)];
+            // eslint-disable-next-line
 
             console.log(fColor(dateFormat(new Date())) + ' - ' + fColor.bold(status) + ' ' + _chalk2.default.bold(ctx.method) + ' ' + ctx.url + ' - ' + fColor(ms + ' ms'));
             return _context.finish(17);

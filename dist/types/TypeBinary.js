@@ -46,7 +46,7 @@ var TypeBinary = function (_TypeAny) {
 
     _this._getDescription = function () {
       // TODO return custom error message
-      var msgError = 'It should be \xE0 binary';
+      var msgError = 'It should be à binary';
       return msgError + '.';
     };
 
