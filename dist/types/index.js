@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Types = exports.TypeString = exports.TypeOneOf = exports.TypeObject = exports.TypeNumber = exports.TypeEnum = exports.TypeBoolean = exports.TypeBinary = exports.TypeArray = exports.TypeAny = undefined;
+exports.Types = exports.TypeString = exports.TypeOneOf = exports.TypeObject = exports.TypeNumber = exports.TypeEnum = exports.TypeDate = exports.TypeBoolean = exports.TypeBinary = exports.TypeArray = exports.TypeAny = undefined;
 
 var _TypeAny = require('./TypeAny');
 
@@ -12,6 +12,8 @@ var _TypeArray = require('./TypeArray');
 var _TypeBinary = require('./TypeBinary');
 
 var _TypeBoolean = require('./TypeBoolean');
+
+var _TypeDate = require('./TypeDate');
 
 var _TypeEnum = require('./TypeEnum');
 
@@ -27,6 +29,7 @@ var TypeAny = exports.TypeAny = _TypeAny.TypeAny;
 var TypeArray = exports.TypeArray = _TypeArray.TypeArray;
 var TypeBinary = exports.TypeBinary = _TypeBinary.TypeBinary;
 var TypeBoolean = exports.TypeBoolean = _TypeBoolean.TypeBoolean;
+var TypeDate = exports.TypeDate = _TypeDate.TypeDate;
 var TypeEnum = exports.TypeEnum = _TypeEnum.TypeEnum;
 var TypeNumber = exports.TypeNumber = _TypeNumber.TypeNumber;
 var TypeObject = exports.TypeObject = _TypeObject.TypeObject;
@@ -45,6 +48,9 @@ var Types = exports.Types = {
   },
   boolean: function boolean() {
     return new _TypeBoolean.TypeBoolean();
+  },
+  date: function date() {
+    return new _TypeDate.TypeDate();
   },
   enum: function _enum() {
     return new _TypeEnum.TypeEnum();
