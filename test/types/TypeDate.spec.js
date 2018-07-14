@@ -121,9 +121,9 @@ describe('TypeDate', () => {
     });
 
     it('Should format a date to the start of a day', () => {
-      let date = new Date('2020-12-30T12:00:00.000Z');
+      let date = new Date('2020-12-30T12:00:00');
       schema.test(date);
-      expect(schema.value).toEqual(new Date('2020-12-29T23:00:00.000Z'));
+      expect(schema.value).toEqual(new Date('2020-12-30T00:00:00.000'));
     });
   });
 
@@ -134,9 +134,9 @@ describe('TypeDate', () => {
     });
 
     it('Should format a date to the start of a day', () => {
-      let date = new Date('2020-12-30T12:00:00.000Z');
+      let date = new Date('2020-12-30T12:00:00');
       schema.test(date);
-      expect(schema.value).toEqual(new Date('2020-12-30T22:59:59.999Z'));
+      expect(schema.value).toEqual(new Date('2020-12-30T23:59:59.999'));
     });
   });
 
@@ -157,10 +157,7 @@ describe('TypeDate', () => {
     let schema;
     beforeEach(async () => {
       schema = Types.object().keys({
-        date: Types.date().between(
-          new Date('05-18-2018'),
-          new Date('05-24-2018'),
-        ),
+        date: Types.date().between(new Date('05-18-2018'), new Date('05-24-2018')),
       });
     });
 
