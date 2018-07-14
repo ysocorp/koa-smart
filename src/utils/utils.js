@@ -166,3 +166,24 @@ export function deepCopy(obj) {
 export function objValToArray(obj) {
   return Object.keys(obj).map(k => obj[k]);
 }
+
+/**
+ * @desc join array by adding double cote on string
+ * @param {Arrat} elems the array to join
+ * @return {string}
+ */
+export function joinWithCote(elems, delimiter = ', ') {
+  let str = '';
+  for (let i = 0; i < elems.length; i++) {
+    const elem = elems[i];
+    if (i > 0) {
+      str += delimiter;
+    }
+    if (typeof elem === 'string') {
+      str += `"${elem}"`;
+    } else {
+      str += `${elem}`;
+    }
+  }
+  return str;
+}

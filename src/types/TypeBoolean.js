@@ -1,6 +1,7 @@
 import { castArray, uniq } from 'lodash';
 
 import { TypeAny } from './TypeAny';
+import { utils } from '../utils';
 
 export class TypeBoolean extends TypeAny {
   _truthyValues = ['true']; // Specifies additional values to be considered as 'truthy'
@@ -14,7 +15,7 @@ export class TypeBoolean extends TypeAny {
 
   _getDescription = () => {
     const valideValue = [...this._truthyValues, ...this._falsyValues];
-    return `It sould be a boolean or one of (${valideValue.join(', ')}).`;
+    return `It should be a boolean or one of: (${utils.joinWithCote(valideValue, ', ')}).`;
   };
 
   _insensitiveArray(array) {

@@ -3,13 +3,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Types = exports.TypeString = exports.TypeOneOf = exports.TypeObject = exports.TypeNumber = exports.TypeBoolean = exports.TypeBinary = exports.TypeAny = undefined;
+exports.Types = exports.TypeString = exports.TypeOneOf = exports.TypeObject = exports.TypeNumber = exports.TypeEnum = exports.TypeBoolean = exports.TypeBinary = exports.TypeAny = undefined;
 
 var _TypeAny = require('./TypeAny');
 
 var _TypeBinary = require('./TypeBinary');
 
 var _TypeBoolean = require('./TypeBoolean');
+
+var _TypeEnum = require('./TypeEnum');
 
 var _TypeNumber = require('./TypeNumber');
 
@@ -22,6 +24,7 @@ var _TypeString = require('./TypeString');
 var TypeAny = exports.TypeAny = _TypeAny.TypeAny;
 var TypeBinary = exports.TypeBinary = _TypeBinary.TypeBinary;
 var TypeBoolean = exports.TypeBoolean = _TypeBoolean.TypeBoolean;
+var TypeEnum = exports.TypeEnum = _TypeEnum.TypeEnum;
 var TypeNumber = exports.TypeNumber = _TypeNumber.TypeNumber;
 var TypeObject = exports.TypeObject = _TypeObject.TypeObject;
 var TypeOneOf = exports.TypeOneOf = _TypeOneOf.TypeOneOf;
@@ -36,6 +39,9 @@ var Types = exports.Types = {
   },
   boolean: function boolean() {
     return new _TypeBoolean.TypeBoolean();
+  },
+  enum: function _enum() {
+    return new _TypeEnum.TypeEnum();
   },
   number: function number() {
     return new _TypeNumber.TypeNumber();

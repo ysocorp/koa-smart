@@ -68,6 +68,7 @@ exports.jsonDecode = jsonDecode;
 exports.toNumber = toNumber;
 exports.deepCopy = deepCopy;
 exports.objValToArray = objValToArray;
+exports.joinWithCote = joinWithCote;
 
 var _moment = require('moment');
 
@@ -248,4 +249,27 @@ function objValToArray(obj) {
   return (0, _keys2.default)(obj).map(function (k) {
     return obj[k];
   });
+}
+
+/**
+ * @desc join array by adding double cote on string
+ * @param {Arrat} elems the array to join
+ * @return {string}
+ */
+function joinWithCote(elems) {
+  var delimiter = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ', ';
+
+  var str = '';
+  for (var i = 0; i < elems.length; i++) {
+    var elem = elems[i];
+    if (i > 0) {
+      str += delimiter;
+    }
+    if (typeof elem === 'string') {
+      str += '"' + elem + '"';
+    } else {
+      str += '' + elem;
+    }
+  }
+  return str;
 }

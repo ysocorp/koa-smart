@@ -37,6 +37,8 @@ var _lodash = require('lodash');
 
 var _TypeAny2 = require('./TypeAny');
 
+var _utils = require('../utils');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var TypeBoolean = exports.TypeBoolean = function (_TypeAny) {
@@ -54,7 +56,7 @@ var TypeBoolean = exports.TypeBoolean = function (_TypeAny) {
 
     _this._getDescription = function () {
       var valideValue = [].concat((0, _toConsumableArray3.default)(_this._truthyValues), (0, _toConsumableArray3.default)(_this._falsyValues));
-      return 'It sould be a boolean or one of (' + valideValue.join(', ') + ').';
+      return 'It should be a boolean or one of: (' + _utils.utils.joinWithCote(valideValue, ', ') + ').';
     };
 
     _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;
