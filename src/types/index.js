@@ -1,4 +1,5 @@
 import { TypeAny as KsAny } from './TypeAny';
+import { TypeArray as KsArray } from './TypeArray';
 import { TypeBinary as KsBinary } from './TypeBinary';
 import { TypeBoolean as KsBoolean } from './TypeBoolean';
 import { TypeEnum as KsEnum } from './TypeEnum';
@@ -8,6 +9,7 @@ import { TypeOneOf as KsOneOf } from './TypeOneOf';
 import { TypeString as KsString } from './TypeString';
 
 export const TypeAny = KsAny;
+export const TypeArray = KsArray;
 export const TypeBinary = KsBinary;
 export const TypeBoolean = KsBoolean;
 export const TypeEnum = KsEnum;
@@ -18,6 +20,7 @@ export const TypeString = KsString;
 
 export const Types = {
   any: () => new KsAny(),
+  array: () => new KsArray(),
   binary: () => new KsBinary(),
   boolean: () => new KsBoolean(),
   enum: () => new KsEnum(),
