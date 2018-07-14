@@ -55,7 +55,7 @@ export class TypeBinary extends TypeAny {
     try {
       this._value = Buffer.from(this._value, this._encoding);
     } catch (e) {
-      return this._setError(this._TypeError.INVALIDE_VALUE);
+      return this._setError(this._TypeError.INVALIDE_TYPE);
     }
   }
 }
