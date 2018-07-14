@@ -615,7 +615,7 @@ var Route = (_temp = _class = function () {
      * @access public
      * @desc throws a formated error to be caught.
      * @param {number} status the error's HTTP status StatusCode
-     * @param {string} message  a message describing the error
+     * @param {string | object} [error] the error(s) to be yielded by the request
      * @param {boolean} translate indicates whether the message should be translated or not
      * @throws {ErrorApp} thrown error.
      * @return { }
@@ -714,7 +714,7 @@ var Route = (_temp = _class = function () {
      * @desc checks a condition. If it evaluates to false, throws a formated error to be caught.
      * @param {boolean} condition if set to false; assert will fail and throw.
      * @param {number} status the error's HTTP status StatusCode
-     * @param {string} message  a message describing the error
+     * @param {string | object} [error] the error(s) to be yielded by the request
      * @param {boolean} translate indicates whether the message should be translated or not
      * @throws {ErrorApp} thrown error, should the assert fail.
      * @return { }
@@ -722,12 +722,66 @@ var Route = (_temp = _class = function () {
 
   }, {
     key: 'assert',
-    value: function assert(condition, status, message) {
+    value: function assert(condition, status, error) {
       var translate = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
       if (!condition) {
-        this.throw(status, message, translate);
+        this.throw(status, error, translate);
       }
+    }
+
+    /**
+     * @access public
+     * @desc same as {@link assert}, but automatically sets the status to 400 BAD REQUEST
+     * @param {boolean} condition if set to false; assert will fail and throw.
+     * @param {string | object} [error] the error(s) to be yielded by the request
+     * @param {boolean} translate indicates whether the message should be translated or not
+     * @throws {ErrorApp} thrown error, should the assert fail.
+     * @return { }
+     */
+
+  }, {
+    key: 'assertBadRequest',
+    value: function assertBadRequest(condition, error) {
+      var translate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+      this.assert(condition, Route.StatusCode.badRequest, error, translate);
+    }
+
+    /**
+     * @access public
+     * @desc same as {@link assert}, but automatically sets the status to 401 UNAUTHORIZED
+     * @param {boolean} condition if set to false; assert will fail and throw.
+     * @param {string | object} [error] the error(s) to be yielded by the request
+     * @param {boolean} translate indicates whether the message should be translated or not
+     * @throws {ErrorApp} thrown error, should the assert fail.
+     * @return { }
+     */
+
+  }, {
+    key: 'assertUnauthorized',
+    value: function assertUnauthorized(condition, error) {
+      var translate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+      this.assert(condition, Route.StatusCode.unauthorized, error, translate);
+    }
+
+    /**
+     * @access public
+     * @desc same as {@link assert}, but automatically sets the status to 403 FORBIDDEN
+     * @param {boolean} condition if set to false; assert will fail and throw.
+     * @param {string | object} [error] the error(s) to be yielded by the request
+     * @param {boolean} translate indicates whether the message should be translated or not
+     * @throws {ErrorApp} thrown error, should the assert fail.
+     * @return { }
+     */
+
+  }, {
+    key: 'assertForbidden',
+    value: function assertForbidden(condition, error) {
+      var translate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+      this.assert(condition, Route.StatusCode.forbidden, error, translate);
     }
   }]);
   return Route;

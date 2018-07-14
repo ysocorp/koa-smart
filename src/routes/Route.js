@@ -390,7 +390,7 @@ export default class Route {
    * @access public
    * @desc throws a formated error to be caught.
    * @param {number} status the error's HTTP status StatusCode
-   * @param {string} message  a message describing the error
+   * @param {string | object} [error] the error(s) to be yielded by the request
    * @param {boolean} translate indicates whether the message should be translated or not
    * @throws {ErrorApp} thrown error.
    * @return { }
@@ -459,14 +459,53 @@ export default class Route {
    * @desc checks a condition. If it evaluates to false, throws a formated error to be caught.
    * @param {boolean} condition if set to false; assert will fail and throw.
    * @param {number} status the error's HTTP status StatusCode
-   * @param {string} message  a message describing the error
+   * @param {string | object} [error] the error(s) to be yielded by the request
    * @param {boolean} translate indicates whether the message should be translated or not
    * @throws {ErrorApp} thrown error, should the assert fail.
    * @return { }
    */
-  assert(condition, status, message, translate = false) {
+  assert(condition, status, error, translate = false) {
     if (!condition) {
-      this.throw(status, message, translate);
+      this.throw(status, error, translate);
     }
+  }
+
+  /**
+   * @access public
+   * @desc same as {@link assert}, but automatically sets the status to 400 BAD REQUEST
+   * @param {boolean} condition if set to false; assert will fail and throw.
+   * @param {string | object} [error] the error(s) to be yielded by the request
+   * @param {boolean} translate indicates whether the message should be translated or not
+   * @throws {ErrorApp} thrown error, should the assert fail.
+   * @return { }
+   */
+  assertBadRequest(condition, error, translate = false) {
+    this.assert(condition, Route.StatusCode.badRequest, error, translate);
+  }
+
+  /**
+   * @access public
+   * @desc same as {@link assert}, but automatically sets the status to 401 UNAUTHORIZED
+   * @param {boolean} condition if set to false; assert will fail and throw.
+   * @param {string | object} [error] the error(s) to be yielded by the request
+   * @param {boolean} translate indicates whether the message should be translated or not
+   * @throws {ErrorApp} thrown error, should the assert fail.
+   * @return { }
+   */
+  assertUnauthorized(condition, error, translate = false) {
+    this.assert(condition, Route.StatusCode.unauthorized, error, translate);
+  }
+
+  /**
+   * @access public
+   * @desc same as {@link assert}, but automatically sets the status to 403 FORBIDDEN
+   * @param {boolean} condition if set to false; assert will fail and throw.
+   * @param {string | object} [error] the error(s) to be yielded by the request
+   * @param {boolean} translate indicates whether the message should be translated or not
+   * @throws {ErrorApp} thrown error, should the assert fail.
+   * @return { }
+   */
+  assertForbidden(condition, error, translate = false) {
+    this.assert(condition, Route.StatusCode.forbidden, error, translate);
   }
 }

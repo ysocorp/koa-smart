@@ -165,7 +165,7 @@ describe('Route', () => {
         }
       });
       describe('throwBadRequest', () => {
-        it('should fill body with message and set statusCode = 400', () => {
+        it('should throw ErrorApp with message and set statusCode = 400', () => {
           try {
             route.throwBadRequest(message);
           } catch (error) {
@@ -176,7 +176,7 @@ describe('Route', () => {
         });
       });
       describe('throwUnauthorized', () => {
-        it('should fill body with messages and set statusCode = 401', () => {
+        it('should throw ErrorApp with messages and set statusCode = 401', () => {
           try {
             route.throwUnauthorized(messages);
           } catch (error) {
@@ -187,7 +187,7 @@ describe('Route', () => {
         });
       });
       describe('throwForbidden', () => {
-        it('should fill body with message and set statusCode = 403', () => {
+        it('should throw ErrorApp with message and set statusCode = 403', () => {
           try {
             route.throwForbidden(messages);
           } catch (error) {
@@ -198,7 +198,7 @@ describe('Route', () => {
         });
       });
       describe('throwNotFound', () => {
-        it('should fill body with message and set statusCode = 404', () => {
+        it('should throw ErrorApp with message and set statusCode = 404', () => {
           try {
             route.throwNotFound(messages);
           } catch (error) {
@@ -209,7 +209,7 @@ describe('Route', () => {
         });
       });
       describe('throwInternalServerError', () => {
-        it('should fill body with message and set statusCode = 500', () => {
+        it('should throw ErrorApp with message and set statusCode = 500', () => {
           try {
             route.throwInternalServerError(messages);
           } catch (error) {
@@ -227,10 +227,53 @@ describe('Route', () => {
           route.assert(false, 404, 'message');
         } catch (error) {
           expect(error instanceof ErrorApp).toBeTruthy();
+          expect(error.status).toBe(404);
         }
       });
       it('should not throw ErrorApp (if condiction is true)', () => {
         route.assert(true, 404, 'message');
+      });
+    });
+    describe('assertBadRequest', () => {
+      it('should throw ErrorApp with message and set statusCode = 400', () => {
+        try {
+          route.assertBadRequest(false, 'message');
+        } catch (error) {
+          expect(error instanceof ErrorApp).toBeTruthy();
+          expect(error.status).toBe(Route.StatusCode.badRequest);
+          expect(error.message).toBe('message');
+        }
+      });
+      it('should not throw ErrorApp (if condiction is true)', () => {
+        route.assertBadRequest(true, 'message');
+      });
+    });
+    describe('assertUnauthorized', () => {
+      it('should throw ErrorApp with messages and set statusCode = 401', () => {
+        try {
+          route.assertUnauthorized(false, 'messages');
+        } catch (error) {
+          expect(error instanceof ErrorApp).toBeTruthy();
+          expect(error.status).toBe(Route.StatusCode.unauthorized);
+          expect(error.message).toBe('messages');
+        }
+      });
+      it('should not throw ErrorApp (if condiction is true)', () => {
+        route.assertUnauthorized(true, 'message');
+      });
+    });
+    describe('assertForbidden', () => {
+      it('should throw ErrorApp with message and set statusCode = 403', () => {
+        try {
+          route.assertForbidden(false, 'messages');
+        } catch (error) {
+          expect(error instanceof ErrorApp).toBeTruthy();
+          expect(error.status).toBe(Route.StatusCode.forbidden);
+          expect(error.message).toBe('messages');
+        }
+      });
+      it('should not throw ErrorApp (if condiction is true)', () => {
+        route.assertForbidden(true, 'message');
       });
     });
   });
