@@ -2,7 +2,7 @@ import expect from 'expect';
 
 import Route from '../../dist/routes/Route';
 import ErrorApp from '../../dist/utils/ErrorApp';
-import { Types } from '../../dist/types';
+import { Types } from '../../dist';
 
 describe('Route', () => {
   let route;
@@ -85,11 +85,7 @@ describe('Route', () => {
         });
         try {
           route._mlTestParams(ctx, body, paramsTest);
-          done(
-            new Error(
-              'should throw error if elem is force but it is not in body',
-            ),
-          );
+          done(new Error('should throw error if elem is force but it is not in body'));
         } catch (err) {
           done();
         }

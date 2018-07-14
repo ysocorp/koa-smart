@@ -7,22 +7,21 @@ import StatusCode from '../utils/StatusCode';
 import { deepCopy } from '../utils/utils';
 import RouteDecorators from './RouteDecorators';
 
-
 export default class Route {
   /**
    * @type {boolean}
    * @desc if true it will log which route are mount and which are not
    */
-  static displayLog = true;  
+  static displayLog = true;
   /**
-  * @type {StatusCode}
-  */
+   * @type {StatusCode}
+   */
   static StatusCode = StatusCode;
 
   /**
    * @typedef {Object} BeforeRouteParams
    * @property {string} path the path at which the route will be available.
-   * @property {ParamsMethodDecorator} options 
+   * @property {ParamsMethodDecorator} options
    * @property {function} call the fonction to call when route match, this is automaticaly add by route decorator
    */
 
@@ -51,22 +50,22 @@ export default class Route {
    *
    */
 
-   /**
-    * @typedef {function} Decorator
-    * @return { }
-    */
+  /**
+   * @typedef {function} Decorator
+   * @return { }
+   */
 
   /**
    * @external {KoaContext} http://koajs.com/#api
    */
 
-   /**
-    * @external {Koa} http://koajs.com/#application
-    */
+  /**
+   * @external {Koa} http://koajs.com/#application
+   */
 
-   /**
-    * @param {RouteParams} params the route's parameters
-    */
+  /**
+   * @param {RouteParams} params the route's parameters
+   */
   constructor({ app, prefix, routes, models, model, disable }) {
     /**
      * @type {Koa}
@@ -120,53 +119,52 @@ export default class Route {
     this.routeBase;
   }
 
-
- /**
-  * @access public
-  * @desc mounts the tagged function as a GET route.
-  * @param {ParamsMethodDecorator} params the route's parameters
-  * @return {Decorator}
-  */
+  /**
+   * @access public
+   * @desc mounts the tagged function as a GET route.
+   * @param {ParamsMethodDecorator} params the route's parameters
+   * @return {Decorator}
+   */
   static Get = RouteDecorators.Get;
 
- /**
-  * @access public
-  * @desc mounts the tagged function as a POST route.
-  * @param {ParamsMethodDecorator} params the route's parameters
-  * @return {Decorator}
-  */
+  /**
+   * @access public
+   * @desc mounts the tagged function as a POST route.
+   * @param {ParamsMethodDecorator} params the route's parameters
+   * @return {Decorator}
+   */
   static Post = RouteDecorators.Post;
 
- /**
-  * @access public
-  * @desc mounts the tagged function as a PUT route.
-  * @param {ParamsMethodDecorator} params the route's parameters
-  * @return {Decorator}
-  */
+  /**
+   * @access public
+   * @desc mounts the tagged function as a PUT route.
+   * @param {ParamsMethodDecorator} params the route's parameters
+   * @return {Decorator}
+   */
   static Put = RouteDecorators.Put;
 
- /**
-  * @access public
-  * @desc mounts the tagged function as a PATCH route.
-  * @param {ParamsMethodDecorator} params the route's parameters
-  * @return {Decorator}
-  */
+  /**
+   * @access public
+   * @desc mounts the tagged function as a PATCH route.
+   * @param {ParamsMethodDecorator} params the route's parameters
+   * @return {Decorator}
+   */
   static Patch = RouteDecorators.Patch;
 
- /**
-  * @access public
-  * @desc mounts the tagged function as a DELETE route.
-  * @param {ParamsMethodDecorator} params the route's parameters
-  * @return {Decorator}
-  */
+  /**
+   * @access public
+   * @desc mounts the tagged function as a DELETE route.
+   * @param {ParamsMethodDecorator} params the route's parameters
+   * @return {Decorator}
+   */
   static Delete = RouteDecorators.Delete;
 
- /**
-  * @access public
-  * @desc used to set some parameters on an entire class.The supported parameters are middlewares, disable, and routeBase.
-  * @return {Decorator}
-  * @param {ParamsClassDecorator} params the route's parameters
-  */
+  /**
+   * @access public
+   * @desc used to set some parameters on an entire class.The supported parameters are middlewares, disable, and routeBase.
+   * @return {Decorator}
+   * @param {ParamsClassDecorator} params the route's parameters
+   */
   static Route = RouteDecorators.Route;
 
   /**
@@ -176,6 +174,7 @@ export default class Route {
    */
   log(str, ...args) {
     if (Route.displayLog) {
+      // eslint-disable-next-line
       console.log(str, ...args);
     }
   }
@@ -189,7 +188,8 @@ export default class Route {
    */
   mount() {
     if (this.disable !== true) {
-      for (const type in this.routes) { // eslint-disable-line
+      for (const type in this.routes) {
+        // eslint-disable-line
         for (const route of this.routes[type]) {
           const routePath = `/${this.prefix}/${this.routeBase}/${route.path}`.replace(/[/]{2,10}/g, '/');
           route.options.routePath = routePath;
@@ -211,7 +211,7 @@ export default class Route {
   /**
    *@ignore
    */
-   _use(infos) {
+  _use(infos) {
     const { options = {} } = infos;
     const { middlewares = [] } = options;
 

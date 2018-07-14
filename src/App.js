@@ -8,9 +8,7 @@ import notFound from './middlewares/notFound';
 
 import { objValToArray } from './utils/utils';
 
-
 export default class App {
-
   /**
    * @ignore
    */
@@ -21,10 +19,7 @@ export default class App {
   routes = {};
 
   constructor(opt) {
-    const {
-      routeParam = {},
-      port = process.env.PORT || 3000,
-    } = opt;
+    const { routeParam = {}, port = process.env.PORT || 3000 } = opt;
     this.routeParam = routeParam;
     /**
      * @ignore
@@ -37,7 +32,7 @@ export default class App {
      */
     this.app = new Koa();
 
-    locale(this.app)
+    locale(this.app);
   }
 
   /**
@@ -48,7 +43,7 @@ export default class App {
 
     readdirSync(path)
       .filter(file => file.endsWith('.js') || file.endsWith('.ts'))
-      .forEach((file) => {
+      .forEach(file => {
         const RouteClass = require(pathJoin(path, file)).default;
         if (RouteClass && RouteClass.prototype instanceof Route) {
           const route = new RouteClass({

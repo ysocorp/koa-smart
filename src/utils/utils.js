@@ -7,7 +7,7 @@ export const lodash = Lodash;
  * @desc generates a random number configurable range and floating precision
  */
 export function random(from, to, fixed) {
-  return ((Math.random() * (to - from)) + from).toFixed(fixed) * 1;
+  return (Math.random() * (to - from) + from).toFixed(fixed) * 1;
 }
 
 /**
@@ -20,7 +20,9 @@ export function ucFirst(str) {
 /**
  * @desc turns the first letter of every words into capital letters
  */
-export function capitalize(str) { return ucFirst(str); }
+export function capitalize(str) {
+  return ucFirst(str);
+}
 
 /**
  * @desc converts a javascript date to the YYYY-MM-DD format
@@ -28,7 +30,9 @@ export function capitalize(str) { return ucFirst(str); }
  * @return {string} the formated date
  */
 export function dateYYYYMMDD(date) {
-  if (!date) { return undefined; }
+  if (!date) {
+    return undefined;
+  }
   return moment(date).format('YYYY-MM-DD');
 }
 
@@ -160,5 +164,5 @@ export function deepCopy(obj) {
  * @return {[string, *][]}
  */
 export function objValToArray(obj) {
-  return Object.keys(obj).map((k) => obj[k]);
+  return Object.keys(obj).map(k => obj[k]);
 }

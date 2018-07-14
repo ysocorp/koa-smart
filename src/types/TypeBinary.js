@@ -13,7 +13,7 @@ export class TypeBinary extends TypeAny {
 
   _getDescription = () => {
     // TODO return custom error message
-    let msgError = `It should be à binary`;
+    let msgError = 'It should be à binary';
     return `${msgError}.`;
   };
 
@@ -48,8 +48,7 @@ export class TypeBinary extends TypeAny {
     if (this._min != null && this._value < this._min) return this._setError(t);
     if (this._min && this._value.length < this._min) return this._setError(t);
     if (this._max && this._value.length > this._max) return this._setError(t);
-    if (this._length && this._value.length !== this._length)
-      return this._setError(t);
+    if (this._length && this._value.length !== this._length) return this._setError(t);
   }
 
   _transform() {

@@ -7,11 +7,11 @@ export default class RouteBasePath extends Route {
 
   @Route.Get({ path: '' })
   async index(ctx) {
-    this.sendOk(ctx, "hellow");
+    this.sendOk(ctx, 'hellow');
   }
 
   @Route.Get({})
   async MyPath(ctx) {
-    this.sendOk(ctx, "hellow");
+    this.sendOk(ctx, 'hellow');
   }
 }

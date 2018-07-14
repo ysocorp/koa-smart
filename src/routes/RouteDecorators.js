@@ -1,4 +1,3 @@
-
 /**
  * @typedef {Object} ParamsMethodDecorator
  * @property {Object.<string, boolean | PostParamsFilter>} params the params describing the route's middlewares,
@@ -22,7 +21,7 @@
 
 /**
  *@ignore
-*/
+ */
 export default class RouteDecorators {
   // replace A-Z to lowercase and add - ex myFunc => my-func
   static _getRouteFromMethode(str) {
@@ -46,8 +45,9 @@ export default class RouteDecorators {
   }
 
   static Route({ routeBase, disable = false, middlewares = null }) {
-    return (target, key, descriptor) => { // eslint-disable-line no-unused-vars
-      if (routeBase != null) { // null or undefined
+    return (target /*, key, descriptor*/) => {
+      if (routeBase != null) {
+        // null or undefined
         target.prototype.routeBase = routeBase;
       }
       if (disable != null) {
@@ -73,8 +73,8 @@ export default class RouteDecorators {
       };
       Object.defineProperty(target, functionName, descriptor);
 
-      const routeName = options.path === undefined ?
-        RouteDecorators._getRouteFromMethode(functionName) : options.path;
+      const routeName =
+        options.path === undefined ? RouteDecorators._getRouteFromMethode(functionName) : options.path;
 
       target.routeBase = options.routeBase;
       target.routes[type].push({

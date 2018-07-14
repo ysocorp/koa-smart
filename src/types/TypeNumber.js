@@ -109,16 +109,13 @@ export class TypeNumber extends TypeAny {
     const t = this._TypeError.INVALIDE_VALUE;
     if (this._min != null && this._value < this._min) return this._setError(t);
     if (this._max != null && this._value > this._max) return this._setError(t);
-    if (this._multiple != null && this._value % this._multiple !== 0)
-      return this._setError(t);
+    if (this._multiple != null && this._value % this._multiple !== 0) return this._setError(t);
     if (this._positive && this._value < 0) return this._setError(t);
     if (this._negative && this._value >= 0) return this._setError(t);
-    if (this._port != null && (this._value < 0 || this._value > 65535))
-      return this._setError(t);
+    if (this._port != null && (this._value < 0 || this._value > 65535)) return this._setError(t);
   }
 
-  _precisionTo = (nb, nbDigit, type) =>
-    Math[type](nb * 10 ** nbDigit) / 10 ** nbDigit;
+  _precisionTo = (nb, nbDigit, type) => Math[type](nb * 10 ** nbDigit) / 10 ** nbDigit;
 
   _transform() {
     if (this._integer) {
@@ -128,10 +125,6 @@ export class TypeNumber extends TypeAny {
     }
 
     if (this._tPrecision >= 0)
-      this._value = this._precisionTo(
-        this._value,
-        this._tPrecision,
-        this._tPrecisionType,
-      );
+      this._value = this._precisionTo(this._value, this._tPrecision, this._tPrecisionType);
   }
 }

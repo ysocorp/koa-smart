@@ -172,7 +172,7 @@ describe('RouteDecorator', () => {
           .post(
             `/params/queryType?email=${querySend.email}&passwordQ=${querySend.passwordQ}&notPermited=${
               querySend.notPermited
-            }`,
+            }`
           )
           .send(bodySend);
 
@@ -196,13 +196,13 @@ describe('RouteDecorator', () => {
     describe('Error', () => {
       it('should throw error if invalid params', async () => {
         const bodySend = {};
-        const { body, statusCode } = await request.post(`/params`).send(bodySend);
+        const { body, statusCode } = await request.post('/params').send(bodySend);
 
         expect(statusCode).toBe(400);
         expect(Object.keys(body.messages.email)).toEqual(['msg', 'code']);
       });
       it('should throw error if no params', async () => {
-        const { body, statusCode } = await request.post(`/params`);
+        const { body, statusCode } = await request.post('/params');
         expect(statusCode).toBe(400);
         expect(Object.keys(body.messages.email)).toEqual(['msg', 'code']);
       });
@@ -272,7 +272,6 @@ describe('RouteDecorator', () => {
       res = await request.post('/rate-limit/samepath-min1max2');
       expect(res.statusCode).toBe(429);
     });
-
   });
 
   describe('middlewares', () => {
@@ -290,5 +289,4 @@ describe('RouteDecorator', () => {
       expect(body.data).toEqual('content');
     });
   });
-
 });

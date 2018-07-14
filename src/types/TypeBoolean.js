@@ -14,7 +14,7 @@ export class TypeBoolean extends TypeAny {
 
   _getDescription = () => {
     const valideValue = [...this._truthyValues, ...this._falsyValues];
-    return `It sould be a boolean or one of (${valideValue.join(',')}).`;
+    return `It sould be a boolean or one of (${valideValue.join(', ')}).`;
   };
 
   _insensitiveArray(array) {

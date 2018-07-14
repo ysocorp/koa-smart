@@ -16,10 +16,7 @@ export default class RouteRateLimit extends Route {
   }
 
   @Route.Get({
-    rateLimit: [
-      { interval: { min: 1 }, max: 2 },
-      { interval: { sec: 1 }, max: 5 }
-    ]
+    rateLimit: [{ interval: { min: 1 }, max: 2 }, { interval: { sec: 1 }, max: 5 }],
   })
   async min1max2Sec1max5(ctx) {
     this.sendNoContent(ctx);

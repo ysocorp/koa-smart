@@ -54,9 +54,7 @@ export class TypeAny {
   _setError(typeCode) {
     // skip error if has a default value
     if (this._default == null) {
-      const fnMessage =
-        this._errorMessages[this._TypeError.ALL] ||
-        this._errorMessages[typeCode];
+      const fnMessage = this._errorMessages[this._TypeError.ALL] || this._errorMessages[typeCode];
       this._error = fnMessage();
       this._codeError = this._errorCodes[typeCode];
     }

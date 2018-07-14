@@ -12,7 +12,7 @@ export class TypeObject extends TypeAny {
 
   _getDescription = () => {
     // TODO
-    return `It should be an object`;
+    return 'It should be an object';
   };
 
   _initValues(value) {

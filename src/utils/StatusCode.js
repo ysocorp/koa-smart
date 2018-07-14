@@ -1,4 +1,3 @@
-
 /**
  * @typedef {Object} StatusCode
  * @property {Number} ok HTTP response 200
@@ -10,7 +9,6 @@
  * @property {Number} notFound HTTP response 404
  * @property {Number} internalServerError HTTP response 500
  */
-
 
 export default {
   ok: 200,

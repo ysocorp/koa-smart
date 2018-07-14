@@ -15,7 +15,7 @@ describe('TypeOneOf', () => {
         Types.string(),
         Types.object().keys({
           b: Types.any().required(),
-        }),
+        })
       );
     });
 

@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import moment from 'moment';
 
 function dateFormat(date) {
-  return moment(date).format('YYYY/MM/DD, h:mm:ss a')
+  return moment(date).format('YYYY/MM/DD, h:mm:ss a');
 }
 
 function getColor(status) {
@@ -11,14 +11,17 @@ function getColor(status) {
   } else if (status < 500) {
     return 'gray';
   }
-  return 'red'
+  return 'red';
 }
 
 async function logger(ctx, next) {
   const start = new Date();
   let status = 500;
   try {
-    console.log(`${chalk.blue(dateFormat(start))} - ${chalk.bold(ctx.method)} ${chalk.blue.bold(ctx.url)} START`);
+    // eslint-disable-next-line
+    console.log(
+      `${chalk.blue(dateFormat(start))} - ${chalk.bold(ctx.method)} ${chalk.blue.bold(ctx.url)} START`
+    );
     await next();
     status = ctx.status;
   } catch (err) {
@@ -28,16 +31,23 @@ async function logger(ctx, next) {
     if (err.constructor.name === 'ErrorApp') {
       msg = `${err.status}: ${err.message}`;
       status = err.status;
-    } if (arraySequelize.includes(err.name)) {
+    }
+    if (arraySequelize.includes(err.name)) {
       msg = `${err.name}: ${err.message}`;
       status = 400;
     }
+    // eslint-disable-next-line
     console.log(chalk.red('[ERROR]'), `${chalk.red.bold(ctx.method)} ${ctx.url}`, msg);
     throw err;
   } finally {
     const ms = new Date() - start;
     const fColor = chalk[getColor(status)];
-    console.log(`${fColor(dateFormat(new Date()))} - ${fColor.bold(status)} ${chalk.bold(ctx.method)} ${ctx.url} - ${fColor(ms + ' ms')}`);
+    // eslint-disable-next-line
+    console.log(
+      `${fColor(dateFormat(new Date()))} - ${fColor.bold(status)} ${chalk.bold(ctx.method)} ${
+        ctx.url
+      } - ${fColor(ms + ' ms')}`
+    );
   }
 }
 

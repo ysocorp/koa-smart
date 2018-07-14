@@ -1,5 +1,3 @@
-
-
 async function notFound(ctx) {
   ctx.status = 404;
   ctx.body = {

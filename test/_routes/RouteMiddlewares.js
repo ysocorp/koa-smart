@@ -27,10 +27,9 @@ export default class RouteMiddlewares extends Route {
         ctx.body.data = 'route';
         await next();
       },
-    ]
+    ],
   })
   async with(ctx) {
     ctx.body.data = 'content';
   }
-
 }

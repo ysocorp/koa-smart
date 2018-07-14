@@ -13,8 +13,7 @@ export class TypeOneOf extends TypeAny {
     const msgs = [];
     for (const t of this._types) {
       const fnMessage =
-        t._errorMessages[this._TypeError.ALL] ||
-        t._errorMessages[this._TypeError.INVALIDE_VALUE];
+        t._errorMessages[this._TypeError.ALL] || t._errorMessages[this._TypeError.INVALIDE_VALUE];
       msgs.push(fnMessage());
     }
     return msgs.join(' OR ');

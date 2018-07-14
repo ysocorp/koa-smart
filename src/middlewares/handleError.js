@@ -16,6 +16,7 @@ let options = {
 
 function displayLog(error, type) {
   if (options.logAll || options[type]) {
+    // eslint-disable-next-line
     console.error(error);
   }
 }

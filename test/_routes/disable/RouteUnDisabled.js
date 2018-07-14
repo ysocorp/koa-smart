@@ -10,11 +10,11 @@ export default class RouteUnDisabled extends Route {
 
   @Route.Get({ path: '' })
   async index(ctx) {
-    this.sendOk(ctx, "hellow");
+    this.sendOk(ctx, 'hellow');
   }
 
   @Route.Get({ disable: true })
   async disabled(ctx) {
-    this.sendOk(ctx, "hellow");
+    this.sendOk(ctx, 'hellow');
   }
 }

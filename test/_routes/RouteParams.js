@@ -1,5 +1,5 @@
 import Route from '../../dist/routes/Route';
-import { Types } from '../../dist/types';
+import { Types } from '../../dist';
 
 export default class RouteParams extends Route {
   constructor(params) {
