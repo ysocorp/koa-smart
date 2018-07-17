@@ -35,6 +35,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @property {boolean} disabled if set to true, the route will be ignored
  * @property {function[]} middlewares an array of Koa Middlewares, which will be mounted for the given route
  * @property {Object} rateLimit a rateLimit object, which lets the user describe the max rate at which a user can access the route
+ * @property {function[]} accesses an array of async function, which will be call with ctx, if one of them return true, the current client will access the route. This will overwrite the accesses pass to {ParamsClassDecorator}
  */
 
 /**
@@ -42,6 +43,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @property {string} routeBase a prefix which will be preppended all to the route's path
  * @property {boolean} disabled if set to true, all route in the class will be ignored
  * @property {function[]} middlewares an array of Koa Middlewares, which will be mounted for the given route
+ * @property {function[]} accesses an array of async function, which will be call (for all routes in the class) with ctx, if one of them return true, the current client will access the route
  */
 
 /**
@@ -78,24 +80,17 @@ var RouteDecorators = function () {
     }
   }, {
     key: 'Route',
-    value: function Route(_ref) {
-      var routeBase = _ref.routeBase,
-          _ref$disable = _ref.disable,
-          disable = _ref$disable === undefined ? false : _ref$disable,
-          _ref$middlewares = _ref.middlewares,
-          middlewares = _ref$middlewares === undefined ? null : _ref$middlewares;
+    value: function Route() {
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
       return function (target /*, key, descriptor*/) {
-        if (routeBase != null) {
-          // null or undefined
-          target.prototype.routeBase = routeBase;
+        var opt = (0, _extends3.default)({}, options, { disable: !!options.disable });
+        for (var key in opt) {
+          if (opt[key] != null) {
+            target.prototype[key] = opt[key];
+          }
         }
-        if (disable != null) {
-          target.prototype.disable = disable;
-        }
-        if (Array.isArray(middlewares)) {
-          target.prototype.middlewares = middlewares;
-        }
+
         RouteDecorators._initData(target);
       };
     }

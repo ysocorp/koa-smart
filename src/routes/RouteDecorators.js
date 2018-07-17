@@ -10,6 +10,7 @@
  * @property {boolean} disabled if set to true, the route will be ignored
  * @property {function[]} middlewares an array of Koa Middlewares, which will be mounted for the given route
  * @property {Object} rateLimit a rateLimit object, which lets the user describe the max rate at which a user can access the route
+ * @property {function[]} accesses an array of async function, which will be call with ctx, if one of them return true, the current client will access the route. This will overwrite the accesses pass to {ParamsClassDecorator}
  */
 
 /**
@@ -17,6 +18,7 @@
  * @property {string} routeBase a prefix which will be preppended all to the route's path
  * @property {boolean} disabled if set to true, all route in the class will be ignored
  * @property {function[]} middlewares an array of Koa Middlewares, which will be mounted for the given route
+ * @property {function[]} accesses an array of async function, which will be call (for all routes in the class) with ctx, if one of them return true, the current client will access the route
  */
 
 /**
@@ -44,18 +46,15 @@ export default class RouteDecorators {
     }
   }
 
-  static Route({ routeBase, disable = false, middlewares = null }) {
+  static Route(options = {}) {
     return (target /*, key, descriptor*/) => {
-      if (routeBase != null) {
-        // null or undefined
-        target.prototype.routeBase = routeBase;
+      const opt = { ...options, disable: !!options.disable };
+      for (const key in opt) {
+        if (opt[key] != null) {
+          target.prototype[key] = opt[key];
+        }
       }
-      if (disable != null) {
-        target.prototype.disable = disable;
-      }
-      if (Array.isArray(middlewares)) {
-        target.prototype.middlewares = middlewares;
-      }
+
       RouteDecorators._initData(target);
     };
   }

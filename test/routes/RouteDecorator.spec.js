@@ -19,6 +19,26 @@ describe('RouteDecorator', () => {
     _server.close();
   });
 
+  describe('accesses', () => {
+    it('should accesses all route when accesses = true on Class Decorator', async () => {
+      let res = await request.get('/accesses/access');
+      expect(res.statusCode).toBe(200);
+    });
+    it('should deny a single route that has acces by the Class Decorator', async () => {
+      const { statusCode } = await request.get('/accesses/access/not-access');
+      expect(statusCode).toBe(403);
+    });
+
+    it('should deny all route when accesses = false on Class Decorator', async () => {
+      let res = await request.get('/accesses/not-access');
+      expect(res.statusCode).toBe(403);
+    });
+    it('should access a single route that has be deny by the Class Decorator', async () => {
+      const { statusCode } = await request.get('/accesses/not-access/access');
+      expect(statusCode).toBe(200);
+    });
+  });
+
   describe('disabled', () => {
     it('should disabled all route when disable = true on Class Decorator', async () => {
       let res = await request.get('/disable/disabled/');

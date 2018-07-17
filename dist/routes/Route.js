@@ -113,8 +113,7 @@ var Route = (_temp = _class = function () {
    */
 
   /**
-   * @type {boolean}
-   * @desc if true it will log which route are mount and which are not
+   * @type {StatusCode}
    */
   function Route(_ref) {
     var app = _ref.app,
@@ -184,8 +183,15 @@ var Route = (_temp = _class = function () {
    * @return {Decorator}
    */
 
+
   /**
-   * @type {StatusCode}
+   * @type {Object}
+   * @desc manage accesses / permission to routes
+   */
+
+  /**
+   * @type {boolean}
+   * @desc if true it will log which route are mount and which are not
    */
 
 
@@ -360,7 +366,7 @@ var Route = (_temp = _class = function () {
 
 
       if (rateLimit) {
-        if (Array.isArray(rateLimit)) {
+        if ((0, _utils.isArray)(rateLimit)) {
           var _iteratorNormalCompletion2 = true;
           var _didIteratorError2 = false;
           var _iteratorError2 = undefined;
@@ -443,17 +449,21 @@ var Route = (_temp = _class = function () {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
+                _context2.next = 2;
+                return this._mlTestAccess(ctx, options);
+
+              case 2:
                 this._mlParams(ctx, options);
 
                 if (!next) {
-                  _context2.next = 4;
+                  _context2.next = 6;
                   break;
                 }
 
-                _context2.next = 4;
+                _context2.next = 6;
                 return next();
 
-              case 4:
+              case 6:
               case 'end':
                 return _context2.stop();
             }
@@ -468,16 +478,192 @@ var Route = (_temp = _class = function () {
       return beforeRoute;
     }()
 
-    // test params
+    /**
+     *@ignore
+     */
+
+  }, {
+    key: '_mlTestAccess',
+    value: function () {
+      var _ref6 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3(ctx, _ref7) {
+        var accesses = _ref7.accesses;
+
+        var _iteratorNormalCompletion3, _didIteratorError3, _iteratorError3, _iterator3, _step3, access, _iteratorNormalCompletion4, _didIteratorError4, _iteratorError4, _iterator4, _step4, _access;
+
+        return _regenerator2.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                if (!((0, _utils.isArray)(accesses) && accesses.length)) {
+                  _context3.next = 30;
+                  break;
+                }
+
+                _iteratorNormalCompletion3 = true;
+                _didIteratorError3 = false;
+                _iteratorError3 = undefined;
+                _context3.prev = 4;
+                _iterator3 = (0, _getIterator3.default)(accesses);
+
+              case 6:
+                if (_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done) {
+                  _context3.next = 15;
+                  break;
+                }
+
+                access = _step3.value;
+                _context3.next = 10;
+                return access(ctx);
+
+              case 10:
+                if (!_context3.sent) {
+                  _context3.next = 12;
+                  break;
+                }
+
+                return _context3.abrupt('return', true);
+
+              case 12:
+                _iteratorNormalCompletion3 = true;
+                _context3.next = 6;
+                break;
+
+              case 15:
+                _context3.next = 21;
+                break;
+
+              case 17:
+                _context3.prev = 17;
+                _context3.t0 = _context3['catch'](4);
+                _didIteratorError3 = true;
+                _iteratorError3 = _context3.t0;
+
+              case 21:
+                _context3.prev = 21;
+                _context3.prev = 22;
+
+                if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                  _iterator3.return();
+                }
+
+              case 24:
+                _context3.prev = 24;
+
+                if (!_didIteratorError3) {
+                  _context3.next = 27;
+                  break;
+                }
+
+                throw _iteratorError3;
+
+              case 27:
+                return _context3.finish(24);
+
+              case 28:
+                return _context3.finish(21);
+
+              case 29:
+                this.throwForbidden('Forbidden access');
+
+              case 30:
+                if (!((0, _utils.isArray)(this.accesses) && this.accesses.length)) {
+                  _context3.next = 60;
+                  break;
+                }
+
+                _iteratorNormalCompletion4 = true;
+                _didIteratorError4 = false;
+                _iteratorError4 = undefined;
+                _context3.prev = 34;
+                _iterator4 = (0, _getIterator3.default)(this.accesses);
+
+              case 36:
+                if (_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done) {
+                  _context3.next = 45;
+                  break;
+                }
+
+                _access = _step4.value;
+                _context3.next = 40;
+                return _access(ctx);
+
+              case 40:
+                if (!_context3.sent) {
+                  _context3.next = 42;
+                  break;
+                }
+
+                return _context3.abrupt('return', true);
+
+              case 42:
+                _iteratorNormalCompletion4 = true;
+                _context3.next = 36;
+                break;
+
+              case 45:
+                _context3.next = 51;
+                break;
+
+              case 47:
+                _context3.prev = 47;
+                _context3.t1 = _context3['catch'](34);
+                _didIteratorError4 = true;
+                _iteratorError4 = _context3.t1;
+
+              case 51:
+                _context3.prev = 51;
+                _context3.prev = 52;
+
+                if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                  _iterator4.return();
+                }
+
+              case 54:
+                _context3.prev = 54;
+
+                if (!_didIteratorError4) {
+                  _context3.next = 57;
+                  break;
+                }
+
+                throw _iteratorError4;
+
+              case 57:
+                return _context3.finish(54);
+
+              case 58:
+                return _context3.finish(51);
+
+              case 59:
+                this.throwForbidden('Forbidden access');
+
+              case 60:
+                return _context3.abrupt('return', true);
+
+              case 61:
+              case 'end':
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this, [[4, 17, 21, 29], [22,, 24, 28], [34, 47, 51, 59], [52,, 54, 58]]);
+      }));
+
+      function _mlTestAccess(_x6, _x7) {
+        return _ref6.apply(this, arguments);
+      }
+
+      return _mlTestAccess;
+    }()
+
     /**
      *@ignore
      */
 
   }, {
     key: '_mlParams',
-    value: function _mlParams(ctx, _ref6) {
-      var bodyType = _ref6.bodyType,
-          queryType = _ref6.queryType;
+    value: function _mlParams(ctx, _ref8) {
+      var bodyType = _ref8.bodyType,
+          queryType = _ref8.queryType;
 
       if (bodyType) {
         ctx.request.bodyOrigin = (0, _utils.deepCopy)(ctx.request.body);
@@ -785,5 +971,10 @@ var Route = (_temp = _class = function () {
     }
   }]);
   return Route;
-}(), _class.displayLog = true, _class.StatusCode = _StatusCode2.default, _class.Get = _RouteDecorators2.default.Get, _class.Post = _RouteDecorators2.default.Post, _class.Put = _RouteDecorators2.default.Put, _class.Patch = _RouteDecorators2.default.Patch, _class.Delete = _RouteDecorators2.default.Delete, _class.Route = _RouteDecorators2.default.Route, _temp);
+}(), _class.displayLog = true, _class.StatusCode = _StatusCode2.default, _class.accesses = {
+  public: function _public() {
+    return (/*ctx*/true
+    );
+  }
+}, _class.Get = _RouteDecorators2.default.Get, _class.Post = _RouteDecorators2.default.Post, _class.Put = _RouteDecorators2.default.Put, _class.Patch = _RouteDecorators2.default.Patch, _class.Delete = _RouteDecorators2.default.Delete, _class.Route = _RouteDecorators2.default.Route, _temp);
 exports.default = Route;

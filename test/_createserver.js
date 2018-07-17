@@ -28,6 +28,7 @@ export default async function create(options = {}) {
   app.mountFolder(join(__dirname, '_routes'), '/');
   app.mountFolder(join(__dirname, '_routes/disable'), '/disable');
   app.mountFolder(join(__dirname, '_routes/path'), '/path');
+  app.mountFolder(join(__dirname, '_routes/accesses'), '/accesses');
 
   return app.start();
 }

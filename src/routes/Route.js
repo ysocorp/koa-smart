@@ -4,7 +4,7 @@ import { RateLimit } from 'koa2-ratelimit';
 
 import ErrorApp from '../utils/ErrorApp';
 import StatusCode from '../utils/StatusCode';
-import { deepCopy } from '../utils/utils';
+import { deepCopy, isArray } from '../utils/utils';
 import RouteDecorators from './RouteDecorators';
 
 export default class Route {
@@ -17,6 +17,14 @@ export default class Route {
    * @type {StatusCode}
    */
   static StatusCode = StatusCode;
+
+  /**
+   * @type {Object}
+   * @desc manage accesses / permission to routes
+   */
+  static accesses = {
+    public: (/*ctx*/) => true,
+  };
 
   /**
    * @typedef {Object} BeforeRouteParams
@@ -247,7 +255,7 @@ export default class Route {
     const { rateLimit, routePath, type } = options;
 
     if (rateLimit) {
-      if (Array.isArray(rateLimit)) {
+      if (isArray(rateLimit)) {
         for (const elem of rateLimit) {
           middlewares.push(this.getRateLimit(elem, routePath, type));
         }
@@ -272,13 +280,33 @@ export default class Route {
    * @param {function} next the next middleware in the chain
    */
   async beforeRoute(ctx, { options }, next) {
+    await this._mlTestAccess(ctx, options);
     this._mlParams(ctx, options);
     if (next) {
       await next();
     }
   }
 
-  // test params
+  /**
+   *@ignore
+   */
+  async _mlTestAccess(ctx, { accesses }) {
+    if (isArray(accesses) && accesses.length) {
+      for (const access of accesses) {
+        if (await access(ctx)) return true;
+      }
+      this.throwForbidden('Forbidden access');
+    }
+    if (isArray(this.accesses) && this.accesses.length) {
+      for (const access of this.accesses) {
+        if (await access(ctx)) return true;
+      }
+      this.throwForbidden('Forbidden access');
+    }
+
+    return true;
+  }
+
   /**
    *@ignore
    */
