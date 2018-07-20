@@ -313,11 +313,13 @@ export default class Route {
   _mlParams(ctx, { bodyType, queryType }) {
     if (bodyType) {
       ctx.request.bodyOrigin = deepCopy(ctx.request.body);
-      ctx.request.body = this._mlTestParams(ctx, ctx.request.body, bodyType);
+      ctx.request.bodyChanged = this._mlTestParams(ctx, ctx.request.body, bodyType);
+      ctx.request.body = ctx.request.bodyChanged;
     }
     if (queryType) {
       ctx.request.queryOrigin = deepCopy(ctx.request.query || {});
-      ctx.request.query = this._mlTestParams(ctx, ctx.request.query, queryType);
+      ctx.request.queryChanged = this._mlTestParams(ctx, ctx.request.query, queryType);
+      ctx.request.query = ctx.request.queryChanged;
     }
   }
 
@@ -341,7 +343,7 @@ export default class Route {
    *                                  otherwise, it will return the filtered and transformed body.
    */
   body(ctx, original = false) {
-    return original ? ctx.request.bodyOrigin : ctx.request.body;
+    return original ? ctx.request.bodyOrigin : ctx.request.bodyChanged;
   }
 
   /**
@@ -351,7 +353,7 @@ export default class Route {
    * @return {Object.<string, *>}
    */
   queryParam(ctx, original = false) {
-    return original ? ctx.request.queryOrigin : ctx.request.query;
+    return original ? ctx.request.queryOrigin : ctx.request.queryChanged;
   }
 
   /**
