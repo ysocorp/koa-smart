@@ -9,10 +9,16 @@ describe('TypeArray', () => {
       schema = Types.array();
     });
 
-    it('Should validate a string and turn it into an array of characters', async () => {
+    it('Should validate a string if the opt splitBy is set', async () => {
       let value = 'abcdefg';
-      schema.test(value);
+      schema.splitBy('').test(value);
       expect(schema.value).toEqual(['a', 'b', 'c', 'd', 'e', 'f', 'g']);
+    });
+
+    it('Should validate a any if the opt single is set', async () => {
+      let value = { toto: 'abcdefg' };
+      schema.single().test(value);
+      expect(schema.value).toEqual([value]);
     });
 
     it('Should validate an array', async () => {
@@ -29,6 +35,12 @@ describe('TypeArray', () => {
 
     it('Should reject an object', async () => {
       let value = { some: 'param' };
+      schema.test(value);
+      expect(schema.error).toBeTruthy();
+    });
+
+    it('Should reject a string', async () => {
+      let value = 'abcdefg';
       schema.test(value);
       expect(schema.error).toBeTruthy();
     });

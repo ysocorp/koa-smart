@@ -37,13 +37,12 @@ var TypeArray = function (_TypeAny) {
   // the array's inner type
 
   // the array's minimum allowed length
-  // whether single values are allowed
   function TypeArray() {
     (0, _classCallCheck3.default)(this, TypeArray);
 
     var _this = (0, _possibleConstructorReturn3.default)(this, (TypeArray.__proto__ || (0, _getPrototypeOf2.default)(TypeArray)).call(this, 'object'));
 
-    _this._single = false;
+    _this._tSingle = false;
 
     _this._getDescription = function () {
       // TODO return custom error message
@@ -56,6 +55,7 @@ var TypeArray = function (_TypeAny) {
     return _this;
   } // the array's maximum allowed length
   // the array's exact allowed length
+  // whether single values are allowed
 
 
   (0, _createClass3.default)(TypeArray, [{
@@ -69,7 +69,13 @@ var TypeArray = function (_TypeAny) {
     value: function single() {
       var enabled = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
-      this._single = enabled;
+      this._tSingle = enabled;
+      return this;
+    }
+  }, {
+    key: 'splitBy',
+    value: function splitBy(split) {
+      this._tSplitBy = split;
       return this;
     }
   }, {
@@ -99,15 +105,14 @@ var TypeArray = function (_TypeAny) {
   }, {
     key: '_testType',
     value: function _testType() {
-      if (!this._single && !Array.isArray(this._value) && typeof this._value !== 'string') {
+      var canSplit = this._tSplitBy != null && typeof this._value === 'string';
+      if (!Array.isArray(this._value) && !this._tSingle && !canSplit) {
         this._setError(this._TypeError.INVALIDE_TYPE);
       }
     }
   }, {
     key: '_test',
     value: function _test() {
-      var _this2 = this;
-
       if (this._min && this._value.length < this._min) {
         return this._setError(this._TypeError.INVALIDE_VALUE);
       }
@@ -117,19 +122,26 @@ var TypeArray = function (_TypeAny) {
       if (this._length && this._value.length !== this._length) {
         return this._setError(this._TypeError.INVALIDE_VALUE);
       }
-      if (this._innerType && this._value && !this._value.every(function (val) {
-        _this2._innerType.test(val);
-        return !_this2._innerType.error;
-      })) {
-        return this._setError(this._TypeError.INVALIDE_TYPE);
+      if (this._innerType && this._value) {
+        var test = true;
+        for (var i = 0; i < this._value.length; i++) {
+          this._innerType.test(this._value[i]);
+          if (this._innerType.error) {
+            test = false;
+            break;
+          }
+          this._value[i] = this._innerType.value;
+        }
+        if (!test) return this._setError(this._TypeError.INVALIDE_TYPE);
       }
     }
   }, {
     key: '_transform',
     value: function _transform() {
-      if (typeof this._value === 'string') {
-        this._value = this._value.split('');
-      } else if (this._single && !Array.isArray(this._value)) {
+      if (this._tSplitBy != null && typeof this._value === 'string') {
+        this._value = this._value.split(this._tSplitBy);
+      }
+      if (this._tSingle && !Array.isArray(this._value)) {
         this._value = (0, _lodash.castArray)(this._value);
       }
     }
