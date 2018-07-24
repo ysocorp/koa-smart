@@ -177,6 +177,16 @@ describe('RouteDecorator', () => {
         expect(res.body.data).toEqual({ patch: 'patch' });
         expect(res.body.data.post).toBe(undefined);
       });
+      it('should accepte array of number', async () => {
+        const bodySend = [1, 2, 3];
+        let res = await request.post('/params/array').send(bodySend);
+        expect(res.body.data.bodyChecked).toEqual(bodySend);
+      });
+      it('should deny array if one is not a string', async () => {
+        const bodySend = [1, 2, 3, 'sisi'];
+        let res = await request.post('/params/array').send(bodySend);
+        expect(res.statusCode).toBe(400);
+      });
     });
 
     describe('Query', () => {
@@ -211,6 +221,16 @@ describe('RouteDecorator', () => {
         });
         expect(body.data.queryChecked.notPermited).toBe(undefined);
       });
+      it('should accept array in query params', async () => {
+        const bodySend = [1, 4];
+        let res = await request.post('/params/array?single=1&single=4').send(bodySend);
+        expect(res.body.data.queryChecked.single).toEqual(bodySend);
+      });
+      it('should convert number to array of number in query params', async () => {
+        const bodySend = [1, 4];
+        let res = await request.post('/params/array?single=20').send(bodySend);
+        expect(res.body.data.queryChecked.single).toEqual([20]);
+      });
     });
 
     describe('Error', () => {
@@ -225,6 +245,18 @@ describe('RouteDecorator', () => {
         const { body, statusCode } = await request.post('/params');
         expect(statusCode).toBe(400);
         expect(Object.keys(body.messages.email)).toEqual(['msg', 'code']);
+      });
+      it('should throw error if invalid array in bodyParams', async () => {
+        const bodySend = [1, 'sisi4'];
+        let { body, statusCode } = await request.post('/params/array?single=1&single=4').send(bodySend);
+        expect(statusCode).toBe(400);
+        expect(Object.keys(body.messages)).toEqual(['msg', 'code']);
+      });
+      it('should throw error if invalid array in queryParams', async () => {
+        const bodySend = [1, 4];
+        let { body, statusCode } = await request.post('/params/array?single=1&single=sisi4').send(bodySend);
+        expect(statusCode).toBe(400);
+        expect(Object.keys(body.messages.single)).toEqual(['msg', 'code']);
       });
     });
   });

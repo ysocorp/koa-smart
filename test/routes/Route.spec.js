@@ -90,6 +90,12 @@ describe('Route', () => {
           done();
         }
       });
+      it('should accept array', () => {
+        body = [1, 4, 6];
+        paramsTest = Types.array();
+        route._mlTestParams(ctx, body, paramsTest);
+        expect(paramsTest.value).toEqual(body);
+      });
     });
 
     describe('send', () => {

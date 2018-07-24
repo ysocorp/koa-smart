@@ -59,4 +59,22 @@ export default class RouteParams extends Route {
       queryOriginal: this.queryParam(ctx, true),
     });
   }
+
+  @Route.Post({
+    queryType: Types.object().keys({
+      single: Types.array()
+        .type(Types.number())
+        .single(),
+      notSingle: Types.array().type(Types.number()),
+    }),
+    bodyType: Types.array().type(Types.number().integer()),
+  })
+  async array(ctx) {
+    this.sendOk(ctx, {
+      bodyChecked: this.body(ctx),
+      bodyOriginal: this.body(ctx, true),
+      queryChecked: this.queryParam(ctx),
+      queryOriginal: this.queryParam(ctx, true),
+    });
+  }
 }

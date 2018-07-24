@@ -3,7 +3,8 @@ import { castArray } from 'lodash';
 import { TypeAny } from './TypeAny';
 
 export class TypeArray extends TypeAny {
-  _single = false; // whether single values are allowed
+  _tSingle = false; // whether single values are allowed
+  _tSplitBy;
   _length; // the array's exact allowed length
   _min; // the array's minimum allowed length
   _max; // the array's maximum allowed length
@@ -27,7 +28,12 @@ export class TypeArray extends TypeAny {
   }
 
   single(enabled = true) {
-    this._single = enabled;
+    this._tSingle = enabled;
+    return this;
+  }
+
+  splitBy(split) {
+    this._tSplitBy = split;
     return this;
   }
 
@@ -52,11 +58,8 @@ export class TypeArray extends TypeAny {
   }
 
   _testType() {
-    if (
-      !this._single &&
-      !Array.isArray(this._value) &&
-      typeof this._value !== 'string'
-    ) {
+    const canSplit = this._tSplitBy != null && typeof this._value === 'string';
+    if (!Array.isArray(this._value) && !this._tSingle && !canSplit) {
       this._setError(this._TypeError.INVALIDE_TYPE);
     }
   }
@@ -71,22 +74,25 @@ export class TypeArray extends TypeAny {
     if (this._length && this._value.length !== this._length) {
       return this._setError(this._TypeError.INVALIDE_VALUE);
     }
-    if (
-      this._innerType &&
-      this._value &&
-      !this._value.every(val => {
-        this._innerType.test(val);
-        return !this._innerType.error;
-      })
-    ) {
-      return this._setError(this._TypeError.INVALIDE_TYPE);
+    if (this._innerType && this._value) {
+      let test = true;
+      for (let i = 0; i < this._value.length; i++) {
+        this._innerType.test(this._value[i]);
+        if (this._innerType.error) {
+          test = false;
+          break;
+        }
+        this._value[i] = this._innerType.value;
+      }
+      if (!test) return this._setError(this._TypeError.INVALIDE_TYPE);
     }
   }
 
   _transform() {
-    if (typeof this._value === 'string') {
-      this._value = this._value.split('');
-    } else if (this._single && !Array.isArray(this._value)) {
+    if (this._tSplitBy != null && typeof this._value === 'string') {
+      this._value = this._value.split(this._tSplitBy);
+    }
+    if (this._tSingle && !Array.isArray(this._value)) {
       this._value = castArray(this._value);
     }
   }

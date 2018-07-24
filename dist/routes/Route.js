@@ -667,11 +667,13 @@ var Route = (_temp = _class = function () {
 
       if (bodyType) {
         ctx.request.bodyOrigin = (0, _utils.deepCopy)(ctx.request.body);
-        ctx.request.body = this._mlTestParams(ctx, ctx.request.body, bodyType);
+        ctx.request.bodyChanged = this._mlTestParams(ctx, ctx.request.body, bodyType);
+        ctx.request.body = ctx.request.bodyChanged;
       }
       if (queryType) {
         ctx.request.queryOrigin = (0, _utils.deepCopy)(ctx.request.query || {});
-        ctx.request.query = this._mlTestParams(ctx, ctx.request.query, queryType);
+        ctx.request.queryChanged = this._mlTestParams(ctx, ctx.request.query, queryType);
+        ctx.request.query = ctx.request.queryChanged;
       }
     }
 
@@ -703,7 +705,7 @@ var Route = (_temp = _class = function () {
     value: function body(ctx) {
       var original = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-      return original ? ctx.request.bodyOrigin : ctx.request.body;
+      return original ? ctx.request.bodyOrigin : ctx.request.bodyChanged;
     }
 
     /**
@@ -718,7 +720,7 @@ var Route = (_temp = _class = function () {
     value: function queryParam(ctx) {
       var original = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-      return original ? ctx.request.queryOrigin : ctx.request.query;
+      return original ? ctx.request.queryOrigin : ctx.request.queryChanged;
     }
 
     /**
