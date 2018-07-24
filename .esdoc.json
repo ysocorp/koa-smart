@@ -1,9 +1,24 @@
 {
   "source": "./src",
-  "destination": "./docs",
-  "includes": ["routes", "App.js", "ErrorApp.js", "StatusCode.js", "handleError.js"],
+  "destination": "./esdoc",
+  "includes": [
+    "routes",
+    "App.js",
+    "ErrorApp.js",
+    "StatusCode.js",
+    "handleError.js"
+  ],
   "plugins": [
-    {"name": "esdoc-ecmascript-proposal-plugin", "option": {"all": true}},
-    {"name": "esdoc-standard-plugin"}
+    { "name": "esdoc-ecmascript-proposal-plugin", "option": { "all": true } },
+    {
+      "name": "esdoc-standard-plugin",
+      "option": {
+        "manual": {
+          "globalIndex": true,
+          "badge": false,
+          "files": ["./docs/type-system.md"]
+        }
+      }
+    }
   ]
 }
