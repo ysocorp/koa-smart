@@ -1,9 +1,10 @@
 # **KoaSmart** is a framework based on **Koajs2**, which allows you to develop RESTful APIs with : **Class**, **Decorator**, **Params checker**
 
-[![Build Status](https://secure.travis-ci.org/ysocorp/koa-smart.png?branch=master "Test")](http://travis-ci.org/ysocorp/koa-smart)
-[![NPM version](http://badge.fury.io/js/koa-smart.png)](https://npmjs.org/package/koa-smart "View this project on NPM")
+[![Build Status](https://secure.travis-ci.org/ysocorp/koa-smart.png?branch=master 'Test')](http://travis-ci.org/ysocorp/koa-smart)
+[![NPM version](http://badge.fury.io/js/koa-smart.png)](https://npmjs.org/package/koa-smart 'View this project on NPM')
 
 A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, **Params checker** and a **base of modules** ([`cors`](https://www.npmjs.com/package/kcors), [`bodyparser`](https://github.com/koajs/bodyparser), [`compress`](https://github.com/koajs/compress), [`I18n`](https://github.com/koa-modules/i18n), etc... ) to allow you to develop a smart api easily
+
 ```sh
   export default class RouteUsers extends Route {
 
@@ -13,17 +14,17 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
     })
     async get(ctx) {
       const user = await this.models.users.findById(ctx.params.id);
-      this.assert(user, 404, ctx.state.__('User not found'));
+      this.assert(user, 404, 'User not found');
       this.sendOk(ctx, user);
     }
 
     // post route: http://localhost:3000/users/add
     @Route.Post({
       accesses: [Route.accesses.public],
-      params: { // params to allow: all other params will be rejected
-        email: true, // return an 400 if the body doesn't contain email key
-        name: false,
-      },
+      bodyType: Types.object().keys({
+        email: Types.string().required(), // return an 400 if the body doesn't contain email key
+        name: Types.string().uppercase(), // optional parameter
+      }),
     })
     async add(ctx) {
       const body = this.body(ctx); // or ctx.request.body
@@ -35,102 +36,108 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
   }
 ```
 
+# [Api documentation](https://ysocorp.github.io/koa-smart/)
+
 ## Summary
-* What's in this framework ?
-* [Install](#install)
-* [Router with decorator](#router-with-decorator)
-* [Params checker of POST body](#params-checker-of-post-body)
-* [Get Started](#get-started)
-    * [Full example](#full-example)
-* [Add treatment on route](#add-treatment-on-route)
+
+- What's in this framework ?
+- [Install](#install)
+- [Router with decorator](#router-with-decorator)
+- [Params checker of POST body](#params-checker-of-post-body)
+- [Get Started](#get-started)
+  - [Full example](#full-example)
+- [Add treatment on route](#add-treatment-on-route)
 
 ## What is in this framework ?
 
 **This framework gives you the tools to use a set of modules: **
 
-* **For routing**
-    * [`koajs 2`](https://github.com/koajs/koa) as the main, underlying framework
-    * [`kcors`](https://www.npmjs.com/package/kcors) is used to handle cross-domain requests
-    * [`koa2-ratelimit`](https://github.com/ysocorp/koa2-ratelimit) To limit bruteforce requests
-    * [`koa-helmet`](https://www.npmjs.com/package/koa-helmet) helps you secure your api
-    * [`koa-bodyparser`](https://github.com/koajs/bodyparser) to parse request bodies
-    * [`koa-compress`](https://github.com/koajs/compress) to compress the response
-    * [`koa-i18n`](https://github.com/koa-modules/i18n) for Internationalization (I18n)
-* [`@Decorators`](https://babeljs.io/docs/plugins/transform-decorators/) to ensure a better project structure
-* [`moment`](https://github.com/moment/moment) Parse, validate, manipulate, and display dates in javascript.
-* [`lodash`](https://github.com/lodash/lodash) A modern JavaScript utility library delivering modularity, performance, & extras
-* [`jsonwebtoken`](https://github.com/auth0/node-jsonwebtoken) an implementation of [JSON Web Tokens JWT](https://tools.ietf.org/html/rfc7519)
-
-the full documentation for this module can be found [here](https://ysocorp.github.io/koa-smart/)
+- **For routing**
+  - [`koajs 2`](https://github.com/koajs/koa) as the main, underlying framework
+  - [`kcors`](https://www.npmjs.com/package/kcors) is used to handle cross-domain requests
+  - [`koa2-ratelimit`](https://github.com/ysocorp/koa2-ratelimit) To limit bruteforce requests
+  - [`koa-helmet`](https://www.npmjs.com/package/koa-helmet) helps you secure your api
+  - [`koa-bodyparser`](https://github.com/koajs/bodyparser) to parse request bodies
+  - [`koa-compress`](https://github.com/koajs/compress) to compress the response
+  - [`koa-i18n`](https://github.com/koa-modules/i18n) for Internationalization (I18n)
+- [`@Decorators`](https://babeljs.io/docs/plugins/transform-decorators/) to ensure a better project structure
+- [`moment`](https://github.com/moment/moment) Parse, validate, manipulate, and display dates in javascript.
+- [`lodash`](https://github.com/lodash/lodash) A modern JavaScript utility library delivering modularity, performance, & extras
+- [`jsonwebtoken`](https://github.com/auth0/node-jsonwebtoken) an implementation of [JSON Web Tokens JWT](https://tools.ietf.org/html/rfc7519)
 
 ## Install
+
 `npm install koa-smart`
 
 ## Router with decorator
 
 **All routes have to extend the `Route` class in order to be mount**
 
-* **Prefix of routes**
+- **Prefix of routes**
 
-    If you have a route class with the name `RouteMyApi`, all the routes inside said class will be **preceded** by **`/my-api/`**
+  If you have a route class with the name `RouteMyApi`, all the routes inside said class will be **preceded** by **`/my-api/`**
 
-    * How does it work ?
-        1) the `Route` word is removed
-        2) uppercase letters are replaced with '-'. (essentially converting camelCase into camel-case)
+  - How does it work ?
+
+    1.  the `Route` word is removed
+    2.  uppercase letters are replaced with '-'. (essentially converting camelCase into camel-case)
         **e.g.**: this will add a get route => http://localhost:3000/my-api/hello
 
-      ```sh
-      export default class RouteMyApi extends Route {
+    ```sh
+    export default class RouteMyApi extends Route {
 
-          @Route.Get({})
-          async hello(ctx) {
-              this.sendOk(ctx, ctx.state.__('hello'));
-          }
+        @Route.Get({})
+        async hello(ctx) {
+            this.sendOk(ctx, 'hello');
+        }
 
-      }
-      ```
+    }
+    ```
 
-    * Change prefix of all routes in the class: http://localhost:3000/my-prefix/hello
-      ```sh
-      @Route.Route({
-          routeBase: 'my-prefix',
-      })
-      export default class RouteMyApi extends Route {
+  - Change prefix of all routes in the class: http://localhost:3000/my-prefix/hello
 
-          @Route.Get({})
-          async hello(ctx) {
-              this.sendOk(ctx, ctx.state.__('hello'));
-          }
+    ```sh
+    @Route.Route({
+        routeBase: 'my-prefix',
+    })
+    export default class RouteMyApi extends Route {
 
-      }
-      ```
+        @Route.Get({})
+        async hello(ctx) {
+            this.sendOk(ctx, 'hello');
+        }
 
-* **Get route** http://localhost:3000/my-api/hello
+    }
+    ```
+
+- **Get route** http://localhost:3000/my-api/hello
 
   ```sh
     @Route.Get({})
     async hello(ctx) {
-      this.sendOk(ctx, null, ctx.state.__('hello'));
+      this.sendOk(ctx, null, 'hello');
     }
   ```
-* **Change path** http://localhost:3000/my-api/myroute/15
+
+- **Change path** http://localhost:3000/my-api/myroute/15
 
   ```sh
     @Route.Get({
       path: '/myroute/:id'
     })
     async hello(ctx) {
-      this.sendOk(ctx, ctx.state.__('hello') + ctx.params.id);
+      this.sendOk(ctx, 'hello' + ctx.params.id);
     }
   ```
 
-* **Post route** http://localhost:3000/my-api/user-post
+- **Post route** http://localhost:3000/my-api/user-post
+
   ```sh
     @Route.Post({
-        params: { // params to allow: all other params will be rejected
-            email: true, // return a 400 error if the body doesn't contain email key
-            name: false, // optional parameter
-        },
+      bodyType: Types.object().keys({ // body to allow: all other params will be rejected
+        email: Types.string().required(), // return an 400 if the body doesn't contain email key
+        name: Types.string().uppercase(), // optional parameter
+      }),
     })
     async userPost(ctx) {
       const body = this.body(ctx);
@@ -140,36 +147,37 @@ the full documentation for this module can be found [here](https://ysocorp.githu
     }
   ```
 
-* **Disable route**
-    * **Disable all routes in a class**
+- **Disable route**
 
-    to disable all routes in a class you should add `disable` in the content of your decorator class
+  - **Disable all routes in a class**
 
-    ```sh
-    @Route.Route({
-        disable: true,
-    })
-    export default class RouteMyApi extends Route {
-        // All routes in this class will not be mounted
-    }
-    ```
+  to disable all routes in a class you should add `disable` in the content of your decorator class
 
-    * **Disable a specific route**
+  ```sh
+  @Route.Route({
+      disable: true,
+  })
+  export default class RouteMyApi extends Route {
+      // All routes in this class will not be mounted
+  }
+  ```
 
-    to disable a specific route you can add `disable` in the content of your decorator
+  - **Disable a specific route**
 
-    ```sh
-    @Route.Get({
-        disable: true, // this route will not be mounted
-    })
-    async hello(ctx) {
-      this.sendOk(ctx, null, ctx.state.__('hello'));
-    }
-    ```
+  to disable a specific route you can add `disable` in the content of your decorator
 
-* **RateLimit** : For more infos, see the [`koa2-ratelimit`](https://github.com/ysocorp/koa2-ratelimit) module
+  ```sh
+  @Route.Get({
+      disable: true, // this route will not be mounted
+  })
+  async hello(ctx) {
+    this.sendOk(ctx, null, 'hello');
+  }
+  ```
 
-  * **Configure**
+- **RateLimit** : For more infos, see the [`koa2-ratelimit`](https://github.com/ysocorp/koa2-ratelimit) module
+
+  - **Configure**
 
     ```sh
     import { App } from 'koa-smart';
@@ -192,7 +200,7 @@ the full documentation for this module can be found [here](https://ysocorp.githu
     ]);
     ```
 
-  * **RateLimit On Decorator**
+  - **RateLimit On Decorator**
 
     Single RateLimit
 
@@ -201,7 +209,7 @@ the full documentation for this module can be found [here](https://ysocorp.githu
         rateLimit: { interval: { day: 1 }, max: 100 },
     })
     async view(ctx) {
-      this.sendOk(ctx, null, ctx.state.__('hello'));
+      this.sendOk(ctx, null, 'hello');
     }
     ```
 
@@ -216,345 +224,307 @@ the full documentation for this module can be found [here](https://ysocorp.githu
         ],
     })
     async hello(ctx) {
-      this.sendOk(ctx, null, ctx.state.__('hello'));
+      this.sendOk(ctx, null, 'hello');
     }
     ```
 
-* **middlewares of a Class**
+- **middlewares**
 
-  ```sh
-  @Route.Route({
-      middlewares: [ // Array of middlewares
-        async (ctx, next) => {
-          console.log('I will be call before all route in this class');
-          await next();
-        },
-      ],
-  })
-  class RouteMiddlewares extends Route {
-      async view(ctx, next) {
-        console.log('I will be call after middlewares of class');
-        this.sendOk(ctx, null, ctx.state.__('hello'));
-      }
-  }
-  ```
-
-* **middlewares of a specific route**
-
-  ```sh
-  @Route.Get({
-      middlewares: [ // Array of middlewares
-        async (ctx, next) => {
-          console.log('I will be call before the route but after middlewares of class');
-          await next();
-        },
-      ],
-  })
-  async view(ctx, next) {
-      console.log('I will be call after middlewares of the class and route');
-      this.sendOk(ctx, null, ctx.state.__('hello'));
-  }
-  ```
-
-## Params checker of POST body
-
-* **all other fields which aren't in the params object will be rejected**
-* simplified writing
-
-  ```sh
-    params: ['email', 'name']
-    // is equal to
-    params: {
-      email: false,
-      name: false,
-    }
-    // is equal to
-    params: {
-      email: {
-        __force: false,
-      },
-      name: false,
-    }
-  ```
-* **more option:**
-    * `__force` [boolean] tells whether a field is required or not
-    * `__func` an `Array<Function>` to be executed on the field one by one in order to validate / transform it
-    * Eg:
-
-        ```sh
-        params: {
-          name: {
-            __force: false,
-            __func: [
-                utils.trim,
-                utilsParam.test(utils.notEmpty), // return 400 if empty
-                utils.capitalize,
-                (elem, route, { ctx, body, keyBody }) => {
-                  return elem.trim();
-                },
-                // do whatever you want...
-            ],
-          },
-        },
-        ```
-* **Eg: object nested inside another object:**
+  - **Of a Class**
 
     ```sh
-    params: {
-      user: {
-        __force: true,
-        name: {
-          __force: true,
-          __func: [utils.trim],
-        },
-        password: true,
-        address: {
-          __force: true,
-          country: true,
-          street: true,
+    @Route.Route({
+        middlewares: [ // Array of middlewares
+          async (ctx, next) => {
+            console.log('I will be call before all route in this class');
+            await next();
+          },
+        ],
+    })
+    class RouteMiddlewares extends Route {
+        @Route.Get({})
+        async view(ctx, next) {
+          console.log('I will be call after middlewares of class');
+          this.sendOk(ctx, null, 'hello');
         }
-      },
-      date: false,
-    },
+    }
+    ```
+
+  - **Of a specific route**
+
+    ```sh
+    @Route.Get({
+        middlewares: [ // Array of middlewares
+          async (ctx, next) => {
+            console.log('I will be call before the route but after middlewares of class');
+            await next();
+          },
+        ],
+    })
+    async view(ctx, next) {
+        console.log('I will be call after middlewares of the class and route');
+        this.sendOk(ctx, null, 'hello');
+    }
+    ```
+
+- **accesses**
+  **`accesses`** shoul be an array of async function that return a boolean. If one of the function return true, it will have access.
+
+  ```sh
+    async function isConnected(ctx) {
+      // TODO test if the user is connected
+      return ctx.state.user;
+    }
+    async function isUserPremium(ctx) {
+      // TODO test if the user is premium
+      return ctx.state.user.isPremium;
+    }
+    async function isAdmin(ctx) {
+      // TODO test if the user is a admin
+      return ctx.state.user.isAdmin;
+    }
+  ```
+
+  - **Of a Class**
+
+    ```sh
+    @Route.Route({ accesses: [isConnected] })
+    class RouteMiddlewares extends Route {
+      @Route.Get({})
+      async view(ctx, next) {
+        console.log('I can be call if the current user is connected');
+        this.sendOk(ctx, null, 'OK');
+      }
+    }
+    ```
+
+  - **Of a specific route**
+
+    ```sh
+    @Route.Get({})
+    async myPublicRoute(ctx, next) {
+      console.log('I am a public route, I can be call by any one');
+      this.sendOk(ctx, null, 'OK');
+    }
+
+    @Route.Get({ accesses: [isConnected] })
+    async myConnectedRoute(ctx, next) {
+      console.log('I can be call if the current user is connected');
+      this.sendOk(ctx, null, 'OK');
+    }
+
+    @Route.Get({ accesses: [isUserPremium, isAdmin] })
+    async myPremiumRoute(ctx, next) {
+      console.log('I can be call if the current user is connected and premium or admin');
+      this.sendOk(ctx, null, 'OK');
+    }
+    ```
+
+## Params checker:
+
+# [TODO ADD LINK TO TYPES](https://ysocorp.github.io/koa-smart/)
+
+- ### `bodyType` to checkeck body params
+
+  - quick example
+
+    ```sh
+      @Route.Post({ // or Put, Patch
+        bodyType: Types.object().keys({
+          email: Types.string().regex(/\S+@\S+\.\S+/).required(),
+          password: Types.string().min(8).required(),
+          address: Types.object().keys({
+            country: Types.string().required(),
+            street: Types.string().required(),
+          }).required(),
+        }),
+      })
+      async user(ctx) {
+        // this is the body manage by bodyType
+        const bodyParams = this.body(ctx);
+
+        // this is the origin body pass
+        const originBodyParams = this.body(ctx, true);
+      }
+    ```
+
+- ### `queryType` to checkeck query params
+
+  - quick example
+
+    ```sh
+      @Route.Get({
+        queryType: Types.object().keys({
+          limit: Types.number().integer().required().default(10),
+          offset: Types.number().integer().required().default(10),
+        }),
+      })
+      async users(ctx) {
+        // this can contain only limit and offset
+        const queryParams = this.queryParam(ctx);
+
+        // this is the origin queryParams pass
+        const originQueryParams = this.queryParam(ctx, true);
+      }
     ```
 
 ## Get Started ([quick-start boilerplate](https://github.com/ysocorp/koa-smart-light-example))
 
 in order to get started quickly, look at [this boilerplate](https://github.com/ysocorp/koa-smart-light-example), or follow the instructions below:
 
-  * import the app and your middlewares
+- import the app and your middlewares
 
-    ```sh
-    import { join } from 'path';
-    // import the app
-    import { App } from 'koa-smart';
-    // import middlewares koa-smart give you OR others
-    import {
-      bodyParser,
-      compress,
-      cors,
-      handleError,
-      RateLimit,
-      ...
-    } from 'koa-smart/middlewares';
-    ```
+  ```sh
+  import { join } from 'path';
+  // import the app
+  import { App } from 'koa-smart';
+  // import middlewares koa-smart give you OR others
+  import {
+    bodyParser,
+    compress,
+    cors,
+    handleError,
+    RateLimit,
+    ...
+  } from 'koa-smart/middlewares';
+  ```
 
-  * create an app listening on port 3000
+- create an app listening on port 3000
 
-    ```sh
-    const myApp = new App({
-      port: 3000,
-    });
-    ```
+  ```sh
+  const myApp = new App({
+    port: 3000,
+  });
+  ```
 
-  * add your middlewares
+- add your middlewares
 
-    ```sh
-    myApp.addMiddlewares([
-      cors({ credentials: true }),
-      helmet(),
-      bodyParser(),
-      handleError(),
-      RateLimit.middleware({ interval: { min: 1 }, max: 100 }),
-      ...
-    ]);
-    ```
+  ```sh
+  myApp.addMiddlewares([
+    cors({ credentials: true }),
+    helmet(),
+    bodyParser(),
+    handleError(),
+    RateLimit.middleware({ interval: { min: 1 }, max: 100 }),
+    ...
+  ]);
+  ```
 
-  * add your routes
-    mount a folder with a prefix (all file who extends from `Route` will be added and mounted)
+- add your routes
+  mount a folder with a prefix (all file who extends from `Route` will be added and mounted)
 
-    ```sh
-        myApp.mountFolder(join(__dirname, 'routes'), '/');
-    ```
+  ```sh
+      myApp.mountFolder(join(__dirname, 'routes'), '/');
+  ```
 
-  * Start your app
+- Start your app
 
-    ```sh
-    myApp.start();
-    ```
+  ```sh
+  myApp.start();
+  ```
 
 ### Full example
 
-  * Basic one
-
-    ```sh
-    import { join } from 'path';
-    // import the app
-    import { App } from 'koa-smart';
-    // import middlewares koa-smart give you OR others
-    import {
-      i18n,
-      bodyParser,
-      compress,
-      cors,
-      helmet,
-      addDefaultBody,
-      handleError,
-      logger,
-      RateLimit,
-    } from 'koa-smart/middlewares';
-
-    const myApp = new App({
-      port: 3000,
-    });
-
-    myApp.addMiddlewares([
-      cors({ credentials: true }),
-      helmet(),
-      bodyParser(),
-      i18n(myApp.app, {
-        directory: join(__dirname, 'locales'),
-        locales: ['en', 'fr'],
-        modes: ['query', 'subdomain', 'cookie', 'header', 'tld'],
-      }),
-      handleError(),
-      logger(),
-      addDefaultBody(),
-      compress({}),
-      RateLimit.middleware({ interval: { min: 1 }, max: 100 }),
-    ]);
-
-    // mount a folder with an prefix (all file who extends from `Route` will be add and mount)
-    myApp.mountFolder(join(__dirname, 'routes'), '/');
-
-    // start the app
-    myApp.start();
-    ```
-
-  * Other example who Extends class App
-
-    ```sh
-    import { join } from 'path';
-    // import the app
-    import { App } from 'koa-smart';
-    // import middlewares koa-smart give you OR others
-    import {
-      i18n,
-      bodyParser,
-      compress,
-      cors,
-      helmet,
-      addDefaultBody,
-      handleError,
-      logger,
-      RateLimit,
-    } from 'koa-smart/middlewares';
-
-    // create an class who extends from App class
-    export default class MyApp extends App {
-      constructor() {
-        super({ port: 3000 });
-      }
-
-      async start() {
-        // add your Middlewares
-        super.addMiddlewares([
-          cors({ credentials: true }),
-          helmet(),
-          bodyParser(),
-          i18n(this.app, {
-            directory: join(__dirname, 'locales'),
-            locales: ['en', 'fr'],
-            modes: ['query', 'subdomain', 'cookie', 'header', 'tld'],
-          }),
-          handleError(),
-          logger(),
-          addDefaultBody(),
-          compress({}),
-          RateLimit.middleware({ interval: { min: 1 }, max: 100 }),
-        ]);
-
-        // mount a folder with an prefix (all file who extends from `Route` will be add and mount)
-        super.mountFolder(join(__dirname, 'routes'));
-        return super.start();
-      }
-    }
-
-    // start the app
-    const myApp = new MyApp();
-    myApp.start();
-    ```
-
-## Add treatment on route
-  **you can add you own treatment and attribute to the route.**
-
-  In this example we will see how you can manage **accesses** to your route in 2 steps  
-
-  1. Extends `Route` Class and overload  `beforeRoute` methode
+- Basic one
 
   ```sh
-  export default class MyRoute extends Route {
-    static accesses = {
-      public: -1,
-      connected: 100,
-      admin: GROUPS.ADMIN_ID,
-      client: GROUPS.CLIENT_ID,
-      // whatever ...
-    };
+  import { join } from 'path';
+  // import the app
+  import { App } from 'koa-smart';
+  // import middlewares koa-smart give you OR others
+  import {
+    i18n,
+    bodyParser,
+    compress,
+    cors,
+    helmet,
+    addDefaultBody,
+    handleError,
+    logger,
+    RateLimit,
+  } from 'koa-smart/middlewares';
 
-    // overload beforeRoute
-    async beforeRoute(ctx, infos, next) {
-      // infos.options content all the param give to the route
+  const myApp = new App({
+    port: 3000,
+  });
 
-      if (this.mlCanAccessRoute(ctx, infos.options)) { // test if you can access
-        this.throw(StatusCode.forbidden, ctx.state.__('Forbidden access'));
-      }
-      // call the super methode
-      await super.beforeRoute(ctx, infos, next);
-    }
+  myApp.addMiddlewares([
+    cors({ credentials: true }),
+    helmet(),
+    bodyParser(),
+    i18n(myApp.app, {
+      directory: join(__dirname, 'locales'),
+      locales: ['en', 'fr'],
+      modes: ['query', 'subdomain', 'cookie', 'header', 'tld'],
+    }),
+    handleError(),
+    logger(),
+    addDefaultBody(),
+    compress({}),
+    RateLimit.middleware({ interval: { min: 1 }, max: 100 }),
+  ]);
 
-    mlCanAccessRoute(ctx, { accesses }) {
-      if (accesses && Array.isArray(accesses)) {
-        const { user } = ctx.state;
-        return accesses.includes(Route.accesses.public) ||
-          (!!user && (
-            accesses.includes(Route.accesses.connected) ||
-            user.usergroup_id === Route.accesses.admin ||
-            accesses.includes(user.usergroup_id)
-          ));
-      }
-      return false;
-    }
-  }
+  // mount a folder with an prefix (all file who extends from `Route` will be add and mount)
+  myApp.mountFolder(join(__dirname, 'routes'), '/');
 
+  // start the app
+  myApp.start();
   ```
 
-  2. Create a route with access 
-
+- Other example who Extends class App
 
   ```sh
-  export default class RouteMyApi extends MyRoute {
-    constructor(params) {
-      super({ ...params });
+  import { join } from 'path';
+  // import the app
+  import { App } from 'koa-smart';
+  // import middlewares koa-smart give you OR others
+  import {
+    i18n,
+    bodyParser,
+    compress,
+    cors,
+    helmet,
+    addDefaultBody,
+    handleError,
+    logger,
+    RateLimit,
+  } from 'koa-smart/middlewares';
+
+  // create an class who extends from App class
+  export default class MyApp extends App {
+    constructor() {
+      super({ port: 3000 });
     }
 
-    @Route.Get({ accesses: [MyRoute.accesses.public] })
-    async publicRoute(ctx) {
-      this.sendOk(ctx, ctx.i18n.__('I can be call by any one'));
-    }
+    async start() {
+      // add your Middlewares
+      super.addMiddlewares([
+        cors({ credentials: true }),
+        helmet(),
+        bodyParser(),
+        i18n(this.app, {
+          directory: join(__dirname, 'locales'),
+          locales: ['en', 'fr'],
+          modes: ['query', 'subdomain', 'cookie', 'header', 'tld'],
+        }),
+        handleError(),
+        logger(),
+        addDefaultBody(),
+        compress({}),
+        RateLimit.middleware({ interval: { min: 1 }, max: 100 }),
+      ]);
 
-    @Route.Get({ accesses: [MyRoute.accesses.client] })
-    async clientRoute(ctx) {
-      this.sendOk(ctx, ctx.i18n.__('I can be call by only client user'));
-    }
-
-    @Route.Get({ accesses: [MyRoute.accesses.admin] })
-    async adminRoute(ctx) {
-      this.sendOk(ctx, ctx.state.__('I can be call by only admin user'));
-    }
-
-    @Route.Get({ accesses: [MyRoute.accesses.client, MyRoute.accesses.admin] })
-    async adminRoute(ctx) {
-      this.sendOk(ctx, ctx.state.__('I can be call by client and admin user'));
-    }
-
-    @Route.Get({ accesses: [MyRoute.accesses.connected] })
-    async adminRoute(ctx) {
-      this.sendOk(ctx, ctx.state.__('I can be call by all connected users'));
+      // mount a folder with an prefix (all file who extends from `Route` will be add and mount)
+      super.mountFolder(join(__dirname, 'routes'));
+      return super.start();
     }
   }
+
+  // start the app
+  const myApp = new MyApp();
+  myApp.start();
   ```
 
 ## License
 
-  MIT © [YSO Corp](http://ysocorp.com/)
+MIT © [YSO Corp](http://ysocorp.com/)
