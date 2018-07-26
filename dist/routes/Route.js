@@ -55,6 +55,8 @@ var _StatusCode2 = _interopRequireDefault(_StatusCode);
 
 var _utils = require('../utils/utils');
 
+var _docGenerator = require('../utils/docGenerator');
+
 var _RouteDecorators = require('./RouteDecorators');
 
 var _RouteDecorators2 = _interopRequireDefault(_RouteDecorators);
@@ -279,7 +281,7 @@ var Route = (_temp = _class = function () {
             for (var _iterator = (0, _getIterator3.default)(this.routes[type]), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
               var route = _step.value;
 
-              var routePath = ('/' + this.prefix + '/' + this.routeBase + '/' + route.path).replace(/[/]{2,10}/g, '/');
+              var routePath = ('/' + this.prefix + '/' + this.routeBase + '/' + route.path).replace(/[/]{2,10}/g, '/').replace(/[/]$/, '');
               route.options.routePath = routePath;
               route.options.type = type;
               if (!route.options.disable) {
@@ -287,6 +289,7 @@ var Route = (_temp = _class = function () {
 
                 this.log(_chalk2.default.green.bold('[Mount route]'), '\t' + type + '\t', routePath);
                 (_koaRouter = this.koaRouter)[type].apply(_koaRouter, [routePath].concat((0, _toConsumableArray3.default)(this._use(route))));
+                (0, _docGenerator.generateDoc)(this, route);
               } else {
                 this.log(_chalk2.default.yellow.bold('[Disable Mount route]\t'), type, routePath);
               }

@@ -51,6 +51,12 @@ var _notFound2 = _interopRequireDefault(_notFound);
 
 var _utils = require('./utils/utils');
 
+var _docGenerator = require('./utils/docGenerator');
+
+var docGenerator = _interopRequireWildcard(_docGenerator);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var App = function () {
@@ -64,7 +70,11 @@ var App = function () {
     var _opt$routeParam = opt.routeParam,
         routeParam = _opt$routeParam === undefined ? {} : _opt$routeParam,
         _opt$port = opt.port,
-        port = _opt$port === undefined ? process.env.PORT || 3000 : _opt$port;
+        port = _opt$port === undefined ? process.env.PORT || 3000 : _opt$port,
+        _opt$docPath = opt.docPath,
+        docPath = _opt$docPath === undefined ? (0, _path.join)(__dirname, '..', 'apidoc') : _opt$docPath,
+        _opt$generateDoc = opt.generateDoc,
+        generateDoc = _opt$generateDoc === undefined ? false : _opt$generateDoc;
 
     this.routeParam = routeParam;
     /**
@@ -79,6 +89,8 @@ var App = function () {
     this.app = new _koa2.default();
 
     (0, _koaLocale2.default)(this.app);
+
+    docGenerator.init(docPath, generateDoc);
   }
 
   /**
@@ -156,6 +168,9 @@ var App = function () {
     key: 'mountFolder',
     value: function mountFolder(pathFolder) {
       var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '/';
+      var opt = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+      var _opt$generateDoc2 = opt.generateDoc,
+          generateDoc = _opt$generateDoc2 === undefined ? true : _opt$generateDoc2;
 
       var routes = this._getAllRoutes(pathFolder, prefix);
       var _iteratorNormalCompletion = true;
@@ -166,6 +181,7 @@ var App = function () {
         for (var _iterator = (0, _getIterator3.default)(routes), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var route = _step.value;
 
+          route.generateDoc = generateDoc;
           route.mount();
           this.app.use(route.koaRouter.middleware());
         }
@@ -200,9 +216,12 @@ var App = function () {
             switch (_context.prev = _context.next) {
               case 0:
                 this.app.use((0, _notFound2.default)());
+
+                docGenerator.end();
+
                 return _context.abrupt('return', this.app.listen(this.port));
 
-              case 2:
+              case 3:
               case 'end':
                 return _context.stop();
             }

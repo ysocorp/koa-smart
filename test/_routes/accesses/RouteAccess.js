@@ -1,7 +1,14 @@
 import Route from '../../../dist/routes/Route';
 
+async function Private() {
+  return false;
+}
+async function Public() {
+  return true;
+}
+
 @Route.Route({
-  accesses: [() => true],
+  accesses: [Public],
 })
 export default class RouteAccess extends Route {
   constructor(params) {
@@ -13,7 +20,7 @@ export default class RouteAccess extends Route {
     this.sendOk(ctx, 'hellow');
   }
 
-  @Route.Get({ accesses: [() => false] })
+  @Route.Get({ accesses: [Private] })
   async notAccess(ctx) {
     this.sendOk(ctx, 'hellow');
   }

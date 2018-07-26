@@ -9,8 +9,8 @@ export default class RouteParams extends Route {
   @Route.Post({
     path: '',
     bodyType: Types.object().keys({
-      email: Types.any().required(),
-      password: Types.any(),
+      email: Types.string().required(),
+      password: Types.string(),
     }),
   })
   async params(ctx) {
@@ -43,12 +43,12 @@ export default class RouteParams extends Route {
   @Route.Post({
     path: 'queryType',
     queryType: Types.object().keys({
-      email: Types.any().required(),
-      passwordQ: Types.any(),
+      email: Types.string().required(),
+      passwordQ: Types.string(),
     }),
     bodyType: Types.object().keys({
-      email: Types.any().required(),
-      passwordB: Types.any(),
+      email: Types.string().required(),
+      passwordB: Types.string(),
     }),
   })
   async postQueryType(ctx) {

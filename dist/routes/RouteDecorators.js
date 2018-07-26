@@ -106,7 +106,8 @@ var RouteDecorators = function () {
           accesses: [],
           bodyType: null,
           queryType: null,
-          routeBase: target.routeBase
+          routeBase: target.routeBase,
+          doc: {}
         }, options);
         (0, _defineProperty2.default)(target, functionName, descriptor);
 

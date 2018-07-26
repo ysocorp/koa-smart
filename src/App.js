@@ -7,6 +7,7 @@ import Route from './routes/Route';
 import notFound from './middlewares/notFound';
 
 import { objValToArray } from './utils/utils';
+import * as docGenerator from './utils/docGenerator';
 
 export default class App {
   /**
@@ -19,7 +20,12 @@ export default class App {
   routes = {};
 
   constructor(opt) {
-    const { routeParam = {}, port = process.env.PORT || 3000 } = opt;
+    const {
+      routeParam = {},
+      port = process.env.PORT || 3000,
+      docPath = pathJoin(__dirname, '..', 'apidoc'),
+      generateDoc = false,
+    } = opt;
     this.routeParam = routeParam;
     /**
      * @ignore
@@ -33,6 +39,8 @@ export default class App {
     this.app = new Koa();
 
     locale(this.app);
+
+    docGenerator.init(docPath, generateDoc);
   }
 
   /**
@@ -86,9 +94,11 @@ export default class App {
    * @param {string} [prefix='/'] an optional prefix to prepend to all of the folder's routes
    * @return { }
    */
-  mountFolder(pathFolder, prefix = '/') {
+  mountFolder(pathFolder, prefix = '/', opt = {}) {
+    const { generateDoc = true } = opt;
     const routes = this._getAllRoutes(pathFolder, prefix);
     for (const route of routes) {
+      route.generateDoc = generateDoc;
       route.mount();
       this.app.use(route.koaRouter.middleware());
     }
@@ -101,6 +111,9 @@ export default class App {
    */
   async start() {
     this.app.use(notFound());
+
+    docGenerator.end();
+
     return this.app.listen(this.port);
   }
 }

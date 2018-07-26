@@ -5,6 +5,7 @@ import { RateLimit } from 'koa2-ratelimit';
 import ErrorApp from '../utils/ErrorApp';
 import StatusCode from '../utils/StatusCode';
 import { deepCopy, isArray } from '../utils/utils';
+import { generateDoc } from '../utils/docGenerator';
 import RouteDecorators from './RouteDecorators';
 
 export default class Route {
@@ -199,12 +200,15 @@ export default class Route {
       for (const type in this.routes) {
         // eslint-disable-line
         for (const route of this.routes[type]) {
-          const routePath = `/${this.prefix}/${this.routeBase}/${route.path}`.replace(/[/]{2,10}/g, '/');
+          const routePath = `/${this.prefix}/${this.routeBase}/${route.path}`
+            .replace(/[/]{2,10}/g, '/')
+            .replace(/[/]$/, '');
           route.options.routePath = routePath;
           route.options.type = type;
           if (!route.options.disable) {
             this.log(chalk.green.bold('[Mount route]'), `\t${type}\t`, routePath);
             this.koaRouter[type](routePath, ...this._use(route));
+            generateDoc(this, route);
           } else {
             this.log(chalk.yellow.bold('[Disable Mount route]\t'), type, routePath);
           }

@@ -68,6 +68,7 @@ export default class RouteDecorators {
         bodyType: null,
         queryType: null,
         routeBase: target.routeBase,
+        doc: {},
         ...options,
       };
       Object.defineProperty(target, functionName, descriptor);
