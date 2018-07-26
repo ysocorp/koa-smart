@@ -45,7 +45,7 @@ var TypeEnum = exports.TypeEnum = function (_TypeAny) {
   function TypeEnum() {
     (0, _classCallCheck3.default)(this, TypeEnum);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeEnum.__proto__ || (0, _getPrototypeOf2.default)(TypeEnum)).call(this, 'object'));
+    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeEnum.__proto__ || (0, _getPrototypeOf2.default)(TypeEnum)).call(this, 'enum'));
 
     _this._oneOf = [];
     _this._insensitive = true;

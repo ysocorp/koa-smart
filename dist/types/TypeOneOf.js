@@ -39,7 +39,7 @@ var TypeOneOf = exports.TypeOneOf = function (_TypeAny) {
   function TypeOneOf() {
     (0, _classCallCheck3.default)(this, TypeOneOf);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeOneOf.__proto__ || (0, _getPrototypeOf2.default)(TypeOneOf)).call(this, 'object'));
+    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeOneOf.__proto__ || (0, _getPrototypeOf2.default)(TypeOneOf)).call(this, 'oneOf'));
 
     _this._types = [];
     _this._errors = [];

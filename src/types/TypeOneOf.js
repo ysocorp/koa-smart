@@ -5,7 +5,7 @@ export class TypeOneOf extends TypeAny {
   _errors = [];
 
   constructor() {
-    super('object');
+    super('oneOf');
     this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
   }
 

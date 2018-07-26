@@ -40,7 +40,7 @@ var TypeArray = function (_TypeAny) {
   function TypeArray() {
     (0, _classCallCheck3.default)(this, TypeArray);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeArray.__proto__ || (0, _getPrototypeOf2.default)(TypeArray)).call(this, 'object'));
+    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeArray.__proto__ || (0, _getPrototypeOf2.default)(TypeArray)).call(this, 'Array'));
 
     _this._tSingle = false;
 

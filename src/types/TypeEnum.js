@@ -7,7 +7,7 @@ export class TypeEnum extends TypeAny {
   _number = true;
 
   constructor() {
-    super('object');
+    super('enum');
     this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
   }
 

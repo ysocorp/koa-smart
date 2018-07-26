@@ -11,7 +11,7 @@ export class TypeArray extends TypeAny {
   _innerType; // the array's inner type
 
   constructor() {
-    super('object');
+    super('Array');
     this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
     this._errorMessages[this._TypeError.INVALIDE_TYPE] = this._getDescription;
   }

@@ -15,6 +15,8 @@ var _fsExtra2 = _interopRequireDefault(_fsExtra);
 
 var _child_process = require('child_process');
 
+var _TypeArray = require('../types/TypeArray');
+
 var _TypeObject = require('../types/TypeObject');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -36,8 +38,15 @@ function _param(file, type, keyBase) {
       var sType = _capitalize(tmpType._type || 'Any');
       var description = _capitalize(tmpType._getDescription());
       _fsExtra2.default.appendFileSync(file, ' * @apiParam {' + sType + '} ' + sKeyD + ' ' + description + '\n');
-      _param(file, tmpType, sKey);
+      if (tmpType instanceof _TypeObject.TypeObject) {
+        _param(file, tmpType, sKey);
+      }
     }
+  }
+  if (type instanceof _TypeArray.TypeArray) {
+    var _sType = _capitalize(type._type || 'Any');
+    var _description = _capitalize(type._getDescription());
+    _fsExtra2.default.appendFileSync(file, ' * @apiParam {' + _sType + '} __ARRAY_BODY__ ' + _description + '\n');
   }
 }
 
@@ -99,7 +108,8 @@ function end() {
   var cmdApidoc = (0, _child_process.spawn)('npx', ['apidoc', '-i', DIR_TMP, '-o', DIR]);
   cmdApidoc.on('close', function (code) {
     if (code === 1) {
-      console.error('[DocGenerator] an error, please verified that you have ', code);
+      // eslint-disable-next-line
+      console.error('[DocGenerator] an error when generate the apiDoc ');
     }
     (0, _child_process.spawn)('rm', ['-rf', DIR_TMP]);
   });
