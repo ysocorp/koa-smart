@@ -436,56 +436,45 @@ export default class Route {
   /**
    * @access public
    * @desc same as {@link throw}, but automatically sets the status to 400 BAD REQUEST
-   * @param {string | object} [error] the error(s) to be yielded by the request
+   * @param {string | object} [error] the error(s) to be yielded by the request, default to "Bad request"
    * @param {boolean} translate indicates whether the message should be translated or not
    * @return { }
    */
   throwBadRequest(error, translate = false) {
-    return this.throw(Route.StatusCode.badRequest, error, translate);
+    return this.throw(Route.StatusCode.badRequest, error || 'Bad request', translate);
   }
 
   /**
    * @access public
    * @desc same as {@link throw}, but automatically sets the status to 401 UNAUTHORIZED
-   * @param {string | object} [error] the error(s) to be yielded by the request
+   * @param {string | object} [error] the error(s) to be yielded by the request, default to "Unauthorized"
    * @param {boolean} translate indicates whether the message should be translated or not
    * @return { }
    */
   throwUnauthorized(error, translate = false) {
-    return this.throw(Route.StatusCode.unauthorized, error, translate);
+    return this.throw(Route.StatusCode.unauthorized, error || 'Unauthorized', translate);
   }
 
   /**
    * @access public
    * @desc same as {@link throw}, but automatically sets the status to 403 FORBIDDEN
-   * @param {string | object} [error] the error(s) to be yielded by the request
+   * @param {string | object} [error] the error(s) to be yielded by the request, default to "Forbidden"
    * @param {boolean} translate indicates whether the message should be translated or not
    * @return { }
    */
   throwForbidden(error, translate = false) {
-    return this.throw(Route.StatusCode.forbidden, error, translate);
+    return this.throw(Route.StatusCode.forbidden, error || 'Forbidden', translate);
   }
 
   /**
    * @access public
    * @desc same as {@link throw}, but automatically sets the status to 404 NOT FOUND
-   * @param {string | object} [error] the error(s) to be yielded by the request
+   * @param {string | object} [error] the error(s) to be yielded by the request, default to "Not found"
    * @param {boolean} translate indicates whether the message should be translated or not
    * @return { }
    */
   throwNotFound(error, translate = false) {
-    return this.throw(Route.StatusCode.notFound, error, translate);
-  }
-
-  /**
-   * @access public
-   * @desc same as {@link throw}, but automatically sets the status to 500 INTERNAL SERVER ERROR
-   * @param {string | object} [error] the error(s) to be yielded by the request
-   * @param {boolean} translate indicates whether the message should be translated or not
-   * @return { }
-   */
-  throwInternalServerError(error, translate = false) {
-    return this.throw(Route.StatusCode.internalServerError, error, translate);
+    return this.throw(Route.StatusCode.notFound, error || 'Not found', translate);
   }
 
   /**
@@ -508,38 +497,38 @@ export default class Route {
    * @access public
    * @desc same as {@link assert}, but automatically sets the status to 400 BAD REQUEST
    * @param {boolean} condition if set to false; assert will fail and throw.
-   * @param {string | object} [error] the error(s) to be yielded by the request
+   * @param {string | object} [error] the error(s) to be yielded by the request, default to "Bad request"
    * @param {boolean} translate indicates whether the message should be translated or not
    * @throws {ErrorApp} thrown error, should the assert fail.
    * @return { }
    */
   assertBadRequest(condition, error, translate = false) {
-    this.assert(condition, Route.StatusCode.badRequest, error, translate);
+    this.assert(condition, Route.StatusCode.badRequest, error || 'Bad request', translate);
   }
 
   /**
    * @access public
    * @desc same as {@link assert}, but automatically sets the status to 401 UNAUTHORIZED
    * @param {boolean} condition if set to false; assert will fail and throw.
-   * @param {string | object} [error] the error(s) to be yielded by the request
+   * @param {string | object} [error] the error(s) to be yielded by the request, default to "Unauthorized"
    * @param {boolean} translate indicates whether the message should be translated or not
    * @throws {ErrorApp} thrown error, should the assert fail.
    * @return { }
    */
   assertUnauthorized(condition, error, translate = false) {
-    this.assert(condition, Route.StatusCode.unauthorized, error, translate);
+    this.assert(condition, Route.StatusCode.unauthorized, error || 'Unauthorized', translate);
   }
 
   /**
    * @access public
    * @desc same as {@link assert}, but automatically sets the status to 403 FORBIDDEN
    * @param {boolean} condition if set to false; assert will fail and throw.
-   * @param {string | object} [error] the error(s) to be yielded by the request
+   * @param {string | object} [error] the error(s) to be yielded by the request, default to "Forbidden"
    * @param {boolean} translate indicates whether the message should be translated or not
    * @throws {ErrorApp} thrown error, should the assert fail.
    * @return { }
    */
   assertForbidden(condition, error, translate = false) {
-    this.assert(condition, Route.StatusCode.forbidden, error, translate);
+    this.assert(condition, Route.StatusCode.forbidden, error || 'Forbidden', translate);
   }
 }
