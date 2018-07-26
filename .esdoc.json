@@ -1,13 +1,7 @@
 {
   "source": "./src",
   "destination": "./esdoc",
-  "includes": [
-    "routes",
-    "App.js",
-    "ErrorApp.js",
-    "StatusCode.js",
-    "handleError.js"
-  ],
+  "includes": ["routes", "App.js", "ErrorApp.js", "StatusCode.js", "handleError.js"],
   "plugins": [
     { "name": "esdoc-ecmascript-proposal-plugin", "option": { "all": true } },
     {
@@ -16,7 +10,7 @@
         "manual": {
           "globalIndex": true,
           "badge": false,
-          "files": ["./docs/type-system.md"]
+          "files": ["./docs/type-system.md", "./docs/upgrade-to-v2.md"]
         }
       }
     }
