@@ -320,11 +320,9 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
     }
     ```
 
-## Params checker:
+## Params checker: [See the doc of Types](https://ysocorp.github.io/koa-smart/manual/type-system.html) for more information
 
-# [TODO ADD LINK TO TYPES](https://ysocorp.github.io/koa-smart/)
-
-- ### `bodyType` to checkeck body params
+* ### `bodyType` to check body params
 
   - quick example
 
@@ -348,7 +346,7 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
       }
     ```
 
-- ### `queryType` to checkeck query params
+* ### `queryType` to check query params
 
   - quick example
 
