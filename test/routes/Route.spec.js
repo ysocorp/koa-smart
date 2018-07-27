@@ -214,17 +214,6 @@ describe('Route', () => {
           }
         });
       });
-      describe('throwInternalServerError', () => {
-        it('should throw ErrorApp with message and set statusCode = 500', () => {
-          try {
-            route.throwInternalServerError(messages);
-          } catch (error) {
-            expect(error instanceof ErrorApp).toBeTruthy();
-            expect(error.status).toBe(Route.StatusCode.internalServerError);
-            expect(error.messages).toBe(messages);
-          }
-        });
-      });
     });
 
     describe('assert()', () => {
