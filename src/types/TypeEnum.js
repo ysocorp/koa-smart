@@ -11,8 +11,8 @@ export class TypeEnum extends TypeAny {
     this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
   }
 
-  _getDescription = () => {
-    return `It should be one of: (${utils.joinWithCote(this._oneOf, ', ')}).`;
+  _getDescription = (prefix = 'It should be ') => {
+    return `${prefix}one of: (${utils.joinWithCote(this._oneOf, ', ')}).`;
   };
 
   _insensitiveArray(array) {

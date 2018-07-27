@@ -29,21 +29,21 @@ function _capitalize(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function _param(file, type, keyBase) {
+function _param(file, type, keyBase, location) {
   if (type instanceof _TypeObject.TypeObject) {
     for (var key in type._schema) {
+      var formatedLocation = location ? '[' + location + '] ' : '';
       var tmpType = type._schema[key];
       var sKey = keyBase ? keyBase + '.' + key : key;
       var sKeyD = !tmpType._isRequired ? '[' + sKey + ']' : sKey;
       var sType = _capitalize(tmpType._type || 'Any');
       var description = _capitalize(tmpType._getDescription());
-      _fsExtra2.default.appendFileSync(file, ' * @apiParam {' + sType + '} ' + sKeyD + ' ' + description + '\n');
+      _fsExtra2.default.appendFileSync(file, ' * @apiParam {' + sType + '} ' + sKeyD + ' ' + formatedLocation + description + '\n');
       if (tmpType instanceof _TypeObject.TypeObject) {
-        _param(file, tmpType, sKey);
+        _param(file, tmpType, sKey, location);
       }
     }
-  }
-  if (type instanceof _TypeArray.TypeArray) {
+  } else if (type instanceof _TypeArray.TypeArray) {
     var _sType = _capitalize(type._type || 'Any');
     var _description = _capitalize(type._getDescription());
     _fsExtra2.default.appendFileSync(file, ' * @apiParam {' + _sType + '} __ARRAY_BODY__ ' + _description + '\n');
@@ -93,8 +93,9 @@ function generateDoc(classRoute, route) {
   } else {
     _fsExtra2.default.appendFileSync(file, ' * @apiPermission public\n');
   }
-
-  _param(file, options.bodyType);
+  var displayLocation = options.bodyType && options.queryType;
+  _param(file, options.bodyType, undefined, displayLocation ? 'BODY' : null);
+  _param(file, options.queryType, undefined, displayLocation ? 'QUERY' : null);
 
   if (options.doc.description) {
     _fsExtra2.default.appendFileSync(file, ' * @apiDescription ' + options.doc.description + '\n');

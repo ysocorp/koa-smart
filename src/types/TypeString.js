@@ -17,29 +17,25 @@ export class TypeString extends TypeAny {
     this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
   }
 
-  _getDescription = () => {
-    let msgError = 'It should be a string';
+  _getDescription = (prefix = 'It should be ') => {
+    let msgError = `${prefix}a string`;
 
-    let and = false;
+    const paramsDesc = [];
     if (this._length != null) {
-      msgError += `${and ? ' and' : ''} with ${this._length} characters`;
-      and = true;
+      paramsDesc.push(`exactly ${this._length} characters`);
     }
     if (this._min != null && this._max != null) {
-      msgError += `${and ? ' and' : ''} with ${this._min} and ${this._max} characters`;
-      and = true;
+      paramsDesc.push(`between ${this._min} and ${this._max} characters`);
     } else if (this._min != null) {
-      msgError += `${and ? ' and' : ''} with at least ${this._min} characters`;
-      and = true;
+      paramsDesc.push(`at least ${this._min} characters`);
     } else if (this._max != null) {
-      msgError += `${and ? ' and' : ''} with a maximum of ${this._max} characters`;
-      and = true;
+      paramsDesc.push(`a maximum of ${this._max} characters`);
     }
     if (this._regex != null) {
-      msgError += `${and ? ' and' : ''} that match with ${this._regex.toString()}`;
-      and = true;
+      paramsDesc.push(`that matches with ${this._regex.toString()}`);
     }
-    return `${msgError}.`;
+
+    return `${msgError}${this._generateParamDescription(paramsDesc, ' with')}.`;
   };
 
   trim(needTrim = true) {

@@ -55,8 +55,10 @@ var TypeBoolean = exports.TypeBoolean = function (_TypeAny) {
     _this._insensitive = true;
 
     _this._getDescription = function () {
+      var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'It should be ';
+
       var valideValue = [].concat((0, _toConsumableArray3.default)(_this._truthyValues), (0, _toConsumableArray3.default)(_this._falsyValues));
-      return 'It should be a boolean or one of: (' + _utils.utils.joinWithCote(valideValue, ', ') + ').';
+      return prefix + 'a boolean or one of: (' + _utils.utils.joinWithCote(valideValue, ', ') + ').';
     };
 
     _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;

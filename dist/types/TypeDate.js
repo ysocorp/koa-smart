@@ -45,7 +45,29 @@ var TypeDate = function (_TypeAny) {
   // the date's output format(will output a string instead of a date)
   function TypeDate() {
     (0, _classCallCheck3.default)(this, TypeDate);
-    return (0, _possibleConstructorReturn3.default)(this, (TypeDate.__proto__ || (0, _getPrototypeOf2.default)(TypeDate)).call(this, 'date'));
+
+    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeDate.__proto__ || (0, _getPrototypeOf2.default)(TypeDate)).call(this, 'date'));
+
+    _this._getDescription = function () {
+      var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'It should be ';
+
+      var msgError = prefix + 'a date';
+      var paramsDesc = [];
+      if (_this._max) {
+        paramsDesc.push('is before ' + _this._max.toDateString());
+      }
+      if (_this._min) {
+        paramsDesc.push('is after ' + _this._min.toDateString());
+      }
+      if (_this._formatIn) {
+        paramsDesc.push('is formated as ' + (typeof _this._formatIn === 'function' ? 'ISO_8601' : _this._formatIn));
+      }
+      var paramMsg = _this._generateParamDescription(paramsDesc, ' which');
+      return '' + msgError + paramMsg + '.';
+    };
+
+    _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;
+    return _this;
   } // earliest possible date
   // the date's input format
 
@@ -126,19 +148,20 @@ var TypeDate = function (_TypeAny) {
     key: '_test',
     value: function _test() {
       (0, _get3.default)(TypeDate.prototype.__proto__ || (0, _getPrototypeOf2.default)(TypeDate.prototype), '_test', this).call(this);
+      var t = this._TypeError.INVALIDE_VALUE;
       if (!this._isValid(this._value)) {
-        return this._setError(this._TypeError.INVALIDE_VALUE);
+        return this._setError(t);
       }
       if (this._min && (0, _moment2.default)(this._value).isBefore(this._formatDateIfEnabled(this._min))) {
-        return this._setError(this._TypeError.INVALIDE_VALUE);
+        return this._setError(t);
       }
       if (this._max && (0, _moment2.default)(this._value).isAfter(this._formatDateIfEnabled(this._max))) {
-        return this._setError(this._TypeError.INVALIDE_VALUE);
+        return this._setError(t);
       }
       if (this._formatOut) {
         this._value = (0, _moment2.default)(this._value).format(this._formatOut);
         if (this._value === 'Invalid date') {
-          return this._setError(this._TypeError.INVALIDE_VALUE);
+          return this._setError(t);
         }
       }
     }

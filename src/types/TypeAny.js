@@ -37,9 +37,20 @@ export class TypeAny {
     this._type = type;
   }
 
-  _getDescription = () => {
-    return 'It should be any type';
+  _getDescription = (prefix = 'It should be') => {
+    return `${prefix} any type.`;
   };
+
+  _generateParamDescription(params, prefix = '') {
+    if (!params.length) {
+      return '';
+    }
+    if (params.length === 1) {
+      return `${prefix} ${params[0]}`;
+    }
+    const firstPartRes = params.slice(0, -1).join(', ');
+    return `${prefix} ${firstPartRes} and ${params[params.length - 1]}`;
+  }
 
   get value() {
     if (this._default != null && (this._value == null || this._hasError)) {

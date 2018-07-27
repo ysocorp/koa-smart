@@ -18,32 +18,27 @@ export class TypeNumber extends TypeAny {
     this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
   }
 
-  _getDescription = () => {
+  _getDescription = (prefix = 'It should be ') => {
     let pN = ' ';
     pN = this._positive ? ' positive ' : pN;
     pN = !this._positive && this._negative ? ' negative ' : pN;
-    let msgError = `It should be a${pN}number`;
+    let msgError = `${prefix}a${pN}number`;
 
-    let and = false;
+    const paramsDesc = [];
     if (this._min != null && this._max != null) {
-      msgError += `${and ? ' and' : ''} between ${this._min} and ${this._max}`;
-      and = true;
+      paramsDesc.push(`is between ${this._min} and ${this._max}`);
     } else if (this._min != null) {
-      msgError += `${and ? ' and' : ''} greater or equal to ${this._min}`;
-      and = true;
+      paramsDesc.push(`is greater or equal to ${this._min}`);
     } else if (this._max != null) {
-      msgError += `${and ? ' and' : ''} smaller or equal to ${this._max}`;
-      and = true;
+      paramsDesc.push(`is smaller or equal to ${this._max}`);
     }
     if (this._multiple != null) {
-      msgError += `${and ? ' and' : ''} multiple of ${this._multiple}`;
-      and = true;
+      paramsDesc.push(`is a multiple of ${this._multiple}`);
     }
     if (this._port != null) {
-      msgError += `${and ? ' and' : ''} between ${0} and ${65535}`;
-      and = true;
+      paramsDesc.push('is between 0 and 65535');
     }
-    return `${msgError}.`;
+    return `${msgError}${this._generateParamDescription(paramsDesc, ' which')}.`;
   };
 
   min(nb = 0) {

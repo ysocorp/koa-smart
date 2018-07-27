@@ -45,9 +45,25 @@ var TypeArray = function (_TypeAny) {
     _this._tSingle = false;
 
     _this._getDescription = function () {
+      var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'It should be ';
+
       // TODO return custom error message
-      var msgError = 'It should be an array';
-      return msgError + '.';
+      var msgError = prefix + 'an array';
+      var paramsDesc = [];
+      if (_this._length) {
+        paramsDesc.push('exactly ' + _this._length + ' items');
+      }
+      if (_this._min) {
+        paramsDesc.push('a minimum of ' + _this._min + ' items');
+      }
+      if (_this._max) {
+        paramsDesc.push('a maximum of ' + _this._max + ' items');
+      }
+      if (_this._innerType) {
+        paramsDesc.push('each item being ' + _this._innerType._getDescription('').slice(0, -1));
+      }
+      var paramMsg = _this._generateParamDescription(paramsDesc, ' with');
+      return '' + msgError + paramMsg + '.';
     };
 
     _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;

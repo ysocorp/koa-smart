@@ -16,10 +16,24 @@ export class TypeArray extends TypeAny {
     this._errorMessages[this._TypeError.INVALIDE_TYPE] = this._getDescription;
   }
 
-  _getDescription = () => {
+  _getDescription = (prefix = 'It should be ') => {
     // TODO return custom error message
-    let msgError = 'It should be an array';
-    return `${msgError}.`;
+    let msgError = `${prefix}an array`;
+    const paramsDesc = [];
+    if (this._length) {
+      paramsDesc.push(`exactly ${this._length} items`);
+    }
+    if (this._min) {
+      paramsDesc.push(`a minimum of ${this._min} items`);
+    }
+    if (this._max) {
+      paramsDesc.push(`a maximum of ${this._max} items`);
+    }
+    if (this._innerType) {
+      paramsDesc.push(`each item being ${this._innerType._getDescription('').slice(0, -1)}`);
+    }
+    const paramMsg = this._generateParamDescription(paramsDesc, ' with');
+    return `${msgError}${paramMsg}.`;
   };
 
   _generateError() {

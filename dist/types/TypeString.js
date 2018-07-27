@@ -47,28 +47,26 @@ var TypeString = function (_TypeAny) {
     _this._tLowercase = false;
 
     _this._getDescription = function () {
-      var msgError = 'It should be a string';
+      var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'It should be ';
 
-      var and = false;
+      var msgError = prefix + 'a string';
+
+      var paramsDesc = [];
       if (_this._length != null) {
-        msgError += (and ? ' and' : '') + ' with ' + _this._length + ' characters';
-        and = true;
+        paramsDesc.push('exactly ' + _this._length + ' characters');
       }
       if (_this._min != null && _this._max != null) {
-        msgError += (and ? ' and' : '') + ' with ' + _this._min + ' and ' + _this._max + ' characters';
-        and = true;
+        paramsDesc.push('between ' + _this._min + ' and ' + _this._max + ' characters');
       } else if (_this._min != null) {
-        msgError += (and ? ' and' : '') + ' with at least ' + _this._min + ' characters';
-        and = true;
+        paramsDesc.push('at least ' + _this._min + ' characters');
       } else if (_this._max != null) {
-        msgError += (and ? ' and' : '') + ' with a maximum of ' + _this._max + ' characters';
-        and = true;
+        paramsDesc.push('a maximum of ' + _this._max + ' characters');
       }
       if (_this._regex != null) {
-        msgError += (and ? ' and' : '') + ' that match with ' + _this._regex.toString();
-        and = true;
+        paramsDesc.push('that matches with ' + _this._regex.toString());
       }
-      return msgError + '.';
+
+      return '' + msgError + _this._generateParamDescription(paramsDesc, ' with') + '.';
     };
 
     _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;

@@ -13,17 +13,18 @@ function _capitalize(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function _param(file, type, keyBase) {
+function _param(file, type, keyBase, location) {
   if (type instanceof TypeObject) {
     for (const key in type._schema) {
+      const formatedLocation = location ? `[${location}] ` : '';
       const tmpType = type._schema[key];
       const sKey = keyBase ? `${keyBase}.${key}` : key;
       const sKeyD = !tmpType._isRequired ? `[${sKey}]` : sKey;
       const sType = _capitalize(tmpType._type || 'Any');
       const description = _capitalize(tmpType._getDescription());
-      fs.appendFileSync(file, ` * @apiParam {${sType}} ${sKeyD} ${description}\n`);
+      fs.appendFileSync(file, ` * @apiParam {${sType}} ${sKeyD} ${formatedLocation}${description}\n`);
       if (tmpType instanceof TypeObject) {
-        _param(file, tmpType, sKey);
+        _param(file, tmpType, sKey, location);
       }
     }
   } else if (type instanceof TypeArray) {
@@ -71,8 +72,9 @@ export function generateDoc(classRoute, route) {
   } else {
     fs.appendFileSync(file, ' * @apiPermission public\n');
   }
-
-  _param(file, options.bodyType);
+  const displayLocation = options.bodyType && options.queryType;
+  _param(file, options.bodyType, undefined, displayLocation ? 'BODY' : null);
+  _param(file, options.queryType, undefined, displayLocation ? 'QUERY' : null);
 
   if (options.doc.description) {
     fs.appendFileSync(file, ` * @apiDescription ${options.doc.description}\n`);

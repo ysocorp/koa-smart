@@ -65,13 +65,29 @@ var TypeAny = exports.TypeAny = function () {
     this._value = null;
 
     this._getDescription = function () {
-      return 'It should be any type';
+      var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'It should be';
+
+      return prefix + ' any type.';
     };
 
     this._type = type;
   }
 
   (0, _createClass3.default)(TypeAny, [{
+    key: '_generateParamDescription',
+    value: function _generateParamDescription(params) {
+      var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+
+      if (!params.length) {
+        return '';
+      }
+      if (params.length === 1) {
+        return prefix + ' ' + params[0];
+      }
+      var firstPartRes = params.slice(0, -1).join(', ');
+      return prefix + ' ' + firstPartRes + ' and ' + params[params.length - 1];
+    }
+  }, {
     key: '_setError',
     value: function _setError(typeCode) {
       // skip error if has a default value

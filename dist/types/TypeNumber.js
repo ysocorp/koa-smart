@@ -52,31 +52,28 @@ var TypeNumber = exports.TypeNumber = function (_TypeAny) {
     _this._negative = false;
 
     _this._getDescription = function () {
+      var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'It should be ';
+
       var pN = ' ';
       pN = _this._positive ? ' positive ' : pN;
       pN = !_this._positive && _this._negative ? ' negative ' : pN;
-      var msgError = 'It should be a' + pN + 'number';
+      var msgError = prefix + 'a' + pN + 'number';
 
-      var and = false;
+      var paramsDesc = [];
       if (_this._min != null && _this._max != null) {
-        msgError += (and ? ' and' : '') + ' between ' + _this._min + ' and ' + _this._max;
-        and = true;
+        paramsDesc.push('is between ' + _this._min + ' and ' + _this._max);
       } else if (_this._min != null) {
-        msgError += (and ? ' and' : '') + ' greater or equal to ' + _this._min;
-        and = true;
+        paramsDesc.push('is greater or equal to ' + _this._min);
       } else if (_this._max != null) {
-        msgError += (and ? ' and' : '') + ' smaller or equal to ' + _this._max;
-        and = true;
+        paramsDesc.push('is smaller or equal to ' + _this._max);
       }
       if (_this._multiple != null) {
-        msgError += (and ? ' and' : '') + ' multiple of ' + _this._multiple;
-        and = true;
+        paramsDesc.push('is a multiple of ' + _this._multiple);
       }
       if (_this._port != null) {
-        msgError += (and ? ' and' : '') + ' between ' + 0 + ' and ' + 65535;
-        and = true;
+        paramsDesc.push('is between 0 and 65535');
       }
-      return msgError + '.';
+      return '' + msgError + _this._generateParamDescription(paramsDesc, ' which') + '.';
     };
 
     _this._isTypeNum = function () {

@@ -13,9 +13,9 @@ export class TypeBoolean extends TypeAny {
     this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
   }
 
-  _getDescription = () => {
+  _getDescription = (prefix = 'It should be ') => {
     const valideValue = [...this._truthyValues, ...this._falsyValues];
-    return `It should be a boolean or one of: (${utils.joinWithCote(valideValue, ', ')}).`;
+    return `${prefix}a boolean or one of: (${utils.joinWithCote(valideValue, ', ')}).`;
   };
 
   _insensitiveArray(array) {

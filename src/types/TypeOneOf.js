@@ -9,14 +9,16 @@ export class TypeOneOf extends TypeAny {
     this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
   }
 
-  _getDescription = () => {
+  _getDescription = (prefix = 'It should be ') => {
     const msgs = [];
     for (const t of this._types) {
       const fnMessage =
-        t._errorMessages[this._TypeError.ALL] || t._errorMessages[this._TypeError.INVALIDE_VALUE];
-      msgs.push(fnMessage());
+        t._getDescription ||
+        t._errorMessages[this._TypeError.ALL] ||
+        t._errorMessages[this._TypeError.INVALIDE_VALUE];
+      msgs.push(fnMessage('').slice(0, -1));
     }
-    return msgs.join(' OR ');
+    return `${prefix}either ${msgs.join(' OR ')}.`;
   };
 
   types(...rest) {

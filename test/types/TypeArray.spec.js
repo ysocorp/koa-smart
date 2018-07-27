@@ -150,7 +150,7 @@ describe('TypeArray', () => {
     let schema;
     beforeEach(() => {
       schema = Types.object().keys({
-        listNumber: Types.array().type(Types.number()),
+        listNumber: Types.array().type(Types.oneOf().types(Types.number(), Types.boolean())),
         listOfList: Types.array().type(Types.array().type(Types.number())),
       });
     });

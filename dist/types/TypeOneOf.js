@@ -45,6 +45,8 @@ var TypeOneOf = exports.TypeOneOf = function (_TypeAny) {
     _this._errors = [];
 
     _this._getDescription = function () {
+      var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'It should be ';
+
       var msgs = [];
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
@@ -54,8 +56,8 @@ var TypeOneOf = exports.TypeOneOf = function (_TypeAny) {
         for (var _iterator = (0, _getIterator3.default)(_this._types), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var t = _step.value;
 
-          var fnMessage = t._errorMessages[_this._TypeError.ALL] || t._errorMessages[_this._TypeError.INVALIDE_VALUE];
-          msgs.push(fnMessage());
+          var fnMessage = t._getDescription || t._errorMessages[_this._TypeError.ALL] || t._errorMessages[_this._TypeError.INVALIDE_VALUE];
+          msgs.push(fnMessage('').slice(0, -1));
         }
       } catch (err) {
         _didIteratorError = true;
@@ -72,7 +74,7 @@ var TypeOneOf = exports.TypeOneOf = function (_TypeAny) {
         }
       }
 
-      return msgs.join(' OR ');
+      return prefix + 'either ' + msgs.join(' OR ') + '.';
     };
 
     _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;

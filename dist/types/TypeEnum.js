@@ -52,7 +52,9 @@ var TypeEnum = exports.TypeEnum = function (_TypeAny) {
     _this._number = true;
 
     _this._getDescription = function () {
-      return 'It should be one of: (' + _utils.utils.joinWithCote(_this._oneOf, ', ') + ').';
+      var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'It should be ';
+
+      return prefix + 'one of: (' + _utils.utils.joinWithCote(_this._oneOf, ', ') + ').';
     };
 
     _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;

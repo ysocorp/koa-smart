@@ -53,8 +53,10 @@ var TypeObject = exports.TypeObject = function (_TypeAny) {
     _this._errors = {};
 
     _this._getDescription = function () {
+      var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'It should be ';
+
       // TODO
-      return 'It should be an object';
+      return prefix + 'an object';
     };
 
     _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;

@@ -10,9 +10,9 @@ export class TypeObject extends TypeAny {
     this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
   }
 
-  _getDescription = () => {
+  _getDescription = (prefix = 'It should be ') => {
     // TODO
-    return 'It should be an object';
+    return `${prefix}an object`;
   };
 
   _initValues(value) {

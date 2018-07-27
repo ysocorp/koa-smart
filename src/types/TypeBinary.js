@@ -11,10 +11,23 @@ export class TypeBinary extends TypeAny {
     this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
   }
 
-  _getDescription = () => {
-    // TODO return custom error message
-    let msgError = 'It should be à binary';
-    return `${msgError}.`;
+  _getDescription = (prefix = 'It should be ') => {
+    let msgError = `${prefix}a binary`;
+    const paramsDesc = [];
+    if (this._encoding) {
+      paramsDesc.push(`a ${this._encoding} encoding`);
+    }
+    if (this._length) {
+      paramsDesc.push(`an exact size of ${this._length} bytes`);
+    }
+    if (this._min) {
+      paramsDesc.push(`a minimum size of ${this._min} bytes`);
+    }
+    if (this._max) {
+      paramsDesc.push(`a maximum size of ${this._max} bytes`);
+    }
+    const paramMsg = this._generateParamDescription(paramsDesc, ' with');
+    return `${msgError}${paramMsg}.`;
   };
 
   encoding(encodingName) {

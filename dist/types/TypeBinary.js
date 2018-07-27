@@ -45,9 +45,24 @@ var TypeBinary = function (_TypeAny) {
     var _this = (0, _possibleConstructorReturn3.default)(this, (TypeBinary.__proto__ || (0, _getPrototypeOf2.default)(TypeBinary)).call(this, 'binary'));
 
     _this._getDescription = function () {
-      // TODO return custom error message
-      var msgError = 'It should be à binary';
-      return msgError + '.';
+      var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'It should be ';
+
+      var msgError = prefix + 'a binary';
+      var paramsDesc = [];
+      if (_this._encoding) {
+        paramsDesc.push('a ' + _this._encoding + ' encoding');
+      }
+      if (_this._length) {
+        paramsDesc.push('an exact size of ' + _this._length + ' bytes');
+      }
+      if (_this._min) {
+        paramsDesc.push('a minimum size of ' + _this._min + ' bytes');
+      }
+      if (_this._max) {
+        paramsDesc.push('a maximum size of ' + _this._max + ' bytes');
+      }
+      var paramMsg = _this._generateParamDescription(paramsDesc, ' with');
+      return '' + msgError + paramMsg + '.';
     };
 
     _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;
