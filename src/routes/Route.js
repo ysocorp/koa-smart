@@ -427,6 +427,7 @@ export default class Route {
 
   /**
    * @access public
+   * @version 2.0.0
    * @desc same as {@link throw}, but automatically sets the status to 400 BAD REQUEST
    * @param {string | object} [error] the error(s) to be yielded by the request, default to "Bad request"
    * @param {boolean} translate indicates whether the message should be translated or not
@@ -438,6 +439,7 @@ export default class Route {
 
   /**
    * @access public
+   * @version 2.0.0
    * @desc same as {@link throw}, but automatically sets the status to 401 UNAUTHORIZED
    * @param {string | object} [error] the error(s) to be yielded by the request, default to "Unauthorized"
    * @param {boolean} translate indicates whether the message should be translated or not
@@ -449,6 +451,7 @@ export default class Route {
 
   /**
    * @access public
+   * @version 2.0.0
    * @desc same as {@link throw}, but automatically sets the status to 403 FORBIDDEN
    * @param {string | object} [error] the error(s) to be yielded by the request, default to "Forbidden"
    * @param {boolean} translate indicates whether the message should be translated or not
@@ -460,6 +463,7 @@ export default class Route {
 
   /**
    * @access public
+   * @version 2.0.0
    * @desc same as {@link throw}, but automatically sets the status to 404 NOT FOUND
    * @param {string | object} [error] the error(s) to be yielded by the request, default to "Not found"
    * @param {boolean} translate indicates whether the message should be translated or not
@@ -487,6 +491,7 @@ export default class Route {
 
   /**
    * @access public
+   * @version 2.0.0
    * @desc same as {@link assert}, but automatically sets the status to 400 BAD REQUEST
    * @param {boolean} condition if set to false; assert will fail and throw.
    * @param {string | object} [error] the error(s) to be yielded by the request, default to "Bad request"
@@ -500,6 +505,7 @@ export default class Route {
 
   /**
    * @access public
+   * @version 2.0.0
    * @desc same as {@link assert}, but automatically sets the status to 401 UNAUTHORIZED
    * @param {boolean} condition if set to false; assert will fail and throw.
    * @param {string | object} [error] the error(s) to be yielded by the request, default to "Unauthorized"
@@ -513,6 +519,7 @@ export default class Route {
 
   /**
    * @access public
+   * @version 2.0.0
    * @desc same as {@link assert}, but automatically sets the status to 403 FORBIDDEN
    * @param {boolean} condition if set to false; assert will fail and throw.
    * @param {string | object} [error] the error(s) to be yielded by the request, default to "Forbidden"
