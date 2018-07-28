@@ -10,7 +10,8 @@
         "manual": {
           "globalIndex": true,
           "badge": false,
-          "files": ["./docs/type-system.md", "./docs/upgrade-to-v2.md"]
+          "files": ["./docs/type-system.md", "./docs/auto-doc.md", "./docs/upgrade-to-v2.md"],
+          "asset": "./docs/asset"
         }
       }
     }

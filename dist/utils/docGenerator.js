@@ -79,6 +79,9 @@ function generateDoc(classRoute, route) {
   _fsExtra2.default.appendFileSync(file, '/**\n');
   _fsExtra2.default.appendFileSync(file, ' * @api {' + options.type + '} ' + (options.routePath || '/') + '\n');
   _fsExtra2.default.appendFileSync(file, ' * @apiGroup ' + group + '\n');
+  if (route.options.doc.version) {
+    _fsExtra2.default.appendFileSync(file, ' * @apiVersion ' + route.options.doc.version + '\n');
+  }
 
   if (Array.isArray(options.accesses) && options.accesses.length) {
     var apiPermission = options.accesses.map(function (e) {

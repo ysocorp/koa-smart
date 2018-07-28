@@ -62,6 +62,9 @@ export function generateDoc(classRoute, route) {
   fs.appendFileSync(file, '/**\n');
   fs.appendFileSync(file, ` * @api {${options.type}} ${options.routePath || '/'}\n`);
   fs.appendFileSync(file, ` * @apiGroup ${group}\n`);
+  if (route.options.doc.version) {
+    fs.appendFileSync(file, ` * @apiVersion ${route.options.doc.version}\n`);
+  }
 
   if (Array.isArray(options.accesses) && options.accesses.length) {
     const apiPermission = options.accesses.map(e => e.name || e).join(' OR ');

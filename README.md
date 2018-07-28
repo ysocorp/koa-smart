@@ -43,9 +43,10 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
 - What's in this framework ?
 - [Install](#install)
 - [Router with decorator](#router-with-decorator)
-- [Params checker of POST body](#params-checker-of-post-body)
-- [Get Started](#get-started)
-  - [Full example](#full-example)
+- [Params checker of POST body](#params-checker-see-the-doc-of-types-for-more-information)
+- [Automatic documention generation](#automatic-documention-generation-see-the-manual-for-more-information)
+- [Get Started](#get-started-quick-start-boilerplate)
+- [Full example](#full-example)
 - [Add treatment on route](#add-treatment-on-route)
 
 ## What is in this framework ?
@@ -175,9 +176,40 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
   }
   ```
 
-- **RateLimit** : For more infos, see the [`koa2-ratelimit`](https://github.com/ysocorp/koa2-ratelimit) module
+- **handle accesses**
 
-  - **Configure**
+Koa smart allows accesses to be handled in a simple and efficient manner.
+
+```sh
+function admin() {
+  return false;
+};
+
+function user(ctx) {
+  // work with ctx...
+  return ctx.user.id != null;
+};
+
+export default class RouteAccess  extends Route {
+  constructor(params) {
+    super({ ...params });
+  }
+  @Route.Post({
+    accesses: [admin, users], // pass an array of functions
+  })
+  async myRoute(ctx) {
+    this.sendOk(ctx, this.body(ctx));
+  }
+}
+```
+
+Each function passed to `accessers` will be given the koa context as a parameter, and must return a `boolean` to express whether is grants access to the route or not.
+
+If at least one of the function given returns `true`, access to the route will be granted.
+
+* **RateLimit** : For more infos, see the [`koa2-ratelimit`](https://github.com/ysocorp/koa2-ratelimit) module
+
+  * **Configure**
 
     ```sh
     import { App } from 'koa-smart';
@@ -366,11 +398,13 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
       }
     ```
 
+## Automatic documention generation: [See the manual](https://ysocorp.github.io/koa-smart/manual/auto-doc.html) for more information
+
 ## Get Started ([quick-start boilerplate](https://github.com/ysocorp/koa-smart-light-example))
 
 in order to get started quickly, look at [this boilerplate](https://github.com/ysocorp/koa-smart-light-example), or follow the instructions below:
 
-- import the app and your middlewares
+* import the app and your middlewares
 
   ```sh
   import { join } from 'path';
