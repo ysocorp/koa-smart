@@ -20,14 +20,6 @@ export default class Route {
   static StatusCode = StatusCode;
 
   /**
-   * @type {Object}
-   * @desc manage accesses / permission to routes
-   */
-  static accesses = {
-    public: (/*ctx*/) => true,
-  };
-
-  /**
    * @typedef {Object} BeforeRouteParams
    * @property {string} path the path at which the route will be available.
    * @property {ParamsMethodDecorator} options
@@ -299,13 +291,13 @@ export default class Route {
       for (const access of accesses) {
         if (await access(ctx)) return true;
       }
-      this.throwForbidden('Forbidden access');
+      this.throwForbidden(null, true);
     }
     if (isArray(this.accesses) && this.accesses.length) {
       for (const access of this.accesses) {
         if (await access(ctx)) return true;
       }
-      this.throwForbidden('Forbidden access');
+      this.throwForbidden(null, true);
     }
 
     return true;
@@ -333,7 +325,7 @@ export default class Route {
   _mlTestParams(ctx, body, type) {
     type.test(body);
     if (type.error || type.errors) {
-      this.throw(400, type.errors || type.error);
+      this.throwBadRequest(type.errors || type.error);
     }
     return type.value;
   }
