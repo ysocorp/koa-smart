@@ -42,7 +42,7 @@ export default class Route {
 
   /**
    * @typedef {Object} RouteParams
-   * @property {Koa} app the Koa application
+   * @property {Koa} koaApp the Koa application
    * @property {string} prefix a prefix which will be preppended before every route's paths
    * @property {Route[]} routes an array containing all the mounted Routes
    * @property {Model[]} [models] an array containing all of the app's models
@@ -67,12 +67,12 @@ export default class Route {
   /**
    * @param {RouteParams} params the route's parameters
    */
-  constructor({ app, prefix, routes, models, model, disable }) {
+  constructor({ koaApp, prefix, routes, models, model, disable }) {
     /**
      * @type {Koa}
      * @desc the main Koa application
      */
-    this.app = app;
+    this.koaApp = koaApp;
     /**
      * @type {string}
      * @desc the route's prefix

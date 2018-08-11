@@ -86,9 +86,9 @@ var App = function () {
      * @ignore
      * @type {Koa}
      */
-    this.app = new _koa2.default();
+    this.koaApp = new _koa2.default();
 
-    (0, _koaLocale2.default)(this.app);
+    (0, _koaLocale2.default)(this.koaApp);
 
     docGenerator.init(docPath, generateDoc);
   }
@@ -116,7 +116,7 @@ var App = function () {
         if (RouteClass && RouteClass.prototype instanceof _Route2.default) {
           var route = new RouteClass((0, _extends3.default)({
             prefix: prefix,
-            app: _this.app,
+            koaApp: _this.koaApp,
             routes: _this.routes[prefix]
           }, _this.routeParam));
           _this.routes[prefix][route.constructor.name] = route;
@@ -152,7 +152,7 @@ var App = function () {
   }, {
     key: 'addMiddleware',
     value: function addMiddleware(middleware) {
-      this.app.use(middleware);
+      this.koaApp.use(middleware);
     }
 
     /**
@@ -183,7 +183,7 @@ var App = function () {
 
           route.generateDoc = generateDoc;
           route.mount();
-          this.app.use(route.koaRouter.middleware());
+          this.koaApp.use(route.koaRouter.middleware());
         }
       } catch (err) {
         _didIteratorError = true;
@@ -215,11 +215,11 @@ var App = function () {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                this.app.use((0, _notFound2.default)());
+                this.koaApp.use((0, _notFound2.default)());
 
                 docGenerator.end();
 
-                return _context.abrupt('return', this.app.listen(this.port));
+                return _context.abrupt('return', this.koaApp.listen(this.port));
 
               case 3:
               case 'end':

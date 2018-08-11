@@ -36,9 +36,9 @@ export default class App {
      * @ignore
      * @type {Koa}
      */
-    this.app = new Koa();
+    this.koaApp = new Koa();
 
-    locale(this.app);
+    locale(this.koaApp);
 
     docGenerator.init(docPath, generateDoc);
   }
@@ -56,7 +56,7 @@ export default class App {
         if (RouteClass && RouteClass.prototype instanceof Route) {
           const route = new RouteClass({
             prefix,
-            app: this.app,
+            koaApp: this.koaApp,
             routes: this.routes[prefix],
             ...this.routeParam,
           });
@@ -83,7 +83,7 @@ export default class App {
    * @return { }
    */
   addMiddleware(middleware) {
-    this.app.use(middleware);
+    this.koaApp.use(middleware);
   }
 
   /**
@@ -100,7 +100,7 @@ export default class App {
     for (const route of routes) {
       route.generateDoc = generateDoc;
       route.mount();
-      this.app.use(route.koaRouter.middleware());
+      this.koaApp.use(route.koaRouter.middleware());
     }
   }
 
@@ -110,10 +110,10 @@ export default class App {
    * @return {Koa}
    */
   async start() {
-    this.app.use(notFound());
+    this.koaApp.use(notFound());
 
     docGenerator.end();
 
-    return this.app.listen(this.port);
+    return this.koaApp.listen(this.port);
   }
 }

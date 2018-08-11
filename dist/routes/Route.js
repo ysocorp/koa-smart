@@ -88,7 +88,7 @@ var Route = (_temp = _class = function () {
 
   /**
    * @typedef {Object} RouteParams
-   * @property {Koa} app the Koa application
+   * @property {Koa} koaApp the Koa application
    * @property {string} prefix a prefix which will be preppended before every route's paths
    * @property {Route[]} routes an array containing all the mounted Routes
    * @property {Model[]} [models] an array containing all of the app's models
@@ -115,10 +115,11 @@ var Route = (_temp = _class = function () {
    */
 
   /**
-   * @type {StatusCode}
+   * @type {boolean}
+   * @desc if true it will log which route are mount and which are not
    */
   function Route(_ref) {
-    var app = _ref.app,
+    var koaApp = _ref.koaApp,
         prefix = _ref.prefix,
         routes = _ref.routes,
         models = _ref.models,
@@ -130,7 +131,7 @@ var Route = (_temp = _class = function () {
      * @type {Koa}
      * @desc the main Koa application
      */
-    this.app = app;
+    this.koaApp = koaApp;
     /**
      * @type {string}
      * @desc the route's prefix
@@ -185,15 +186,8 @@ var Route = (_temp = _class = function () {
    * @return {Decorator}
    */
 
-
   /**
-   * @type {Object}
-   * @desc manage accesses / permission to routes
-   */
-
-  /**
-   * @type {boolean}
-   * @desc if true it will log which route are mount and which are not
+   * @type {StatusCode}
    */
 
 
@@ -566,7 +560,7 @@ var Route = (_temp = _class = function () {
                 return _context3.finish(21);
 
               case 29:
-                this.throwForbidden('Forbidden access');
+                this.throwForbidden(null, true);
 
               case 30:
                 if (!((0, _utils.isArray)(this.accesses) && this.accesses.length)) {
@@ -638,7 +632,7 @@ var Route = (_temp = _class = function () {
                 return _context3.finish(51);
 
               case 59:
-                this.throwForbidden('Forbidden access');
+                this.throwForbidden(null, true);
 
               case 60:
                 return _context3.abrupt('return', true);
@@ -689,7 +683,7 @@ var Route = (_temp = _class = function () {
     value: function _mlTestParams(ctx, body, type) {
       type.test(body);
       if (type.error || type.errors) {
-        this.throw(400, type.errors || type.error);
+        this.throwBadRequest(type.errors || type.error);
       }
       return type.value;
     }
@@ -822,6 +816,7 @@ var Route = (_temp = _class = function () {
 
     /**
      * @access public
+     * @version 2.0.0
      * @desc same as {@link throw}, but automatically sets the status to 400 BAD REQUEST
      * @param {string | object} [error] the error(s) to be yielded by the request, default to "Bad request"
      * @param {boolean} translate indicates whether the message should be translated or not
@@ -838,6 +833,7 @@ var Route = (_temp = _class = function () {
 
     /**
      * @access public
+     * @version 2.0.0
      * @desc same as {@link throw}, but automatically sets the status to 401 UNAUTHORIZED
      * @param {string | object} [error] the error(s) to be yielded by the request, default to "Unauthorized"
      * @param {boolean} translate indicates whether the message should be translated or not
@@ -854,6 +850,7 @@ var Route = (_temp = _class = function () {
 
     /**
      * @access public
+     * @version 2.0.0
      * @desc same as {@link throw}, but automatically sets the status to 403 FORBIDDEN
      * @param {string | object} [error] the error(s) to be yielded by the request, default to "Forbidden"
      * @param {boolean} translate indicates whether the message should be translated or not
@@ -870,6 +867,7 @@ var Route = (_temp = _class = function () {
 
     /**
      * @access public
+     * @version 2.0.0
      * @desc same as {@link throw}, but automatically sets the status to 404 NOT FOUND
      * @param {string | object} [error] the error(s) to be yielded by the request, default to "Not found"
      * @param {boolean} translate indicates whether the message should be translated or not
@@ -907,6 +905,7 @@ var Route = (_temp = _class = function () {
 
     /**
      * @access public
+     * @version 2.0.0
      * @desc same as {@link assert}, but automatically sets the status to 400 BAD REQUEST
      * @param {boolean} condition if set to false; assert will fail and throw.
      * @param {string | object} [error] the error(s) to be yielded by the request, default to "Bad request"
@@ -925,6 +924,7 @@ var Route = (_temp = _class = function () {
 
     /**
      * @access public
+     * @version 2.0.0
      * @desc same as {@link assert}, but automatically sets the status to 401 UNAUTHORIZED
      * @param {boolean} condition if set to false; assert will fail and throw.
      * @param {string | object} [error] the error(s) to be yielded by the request, default to "Unauthorized"
@@ -943,6 +943,7 @@ var Route = (_temp = _class = function () {
 
     /**
      * @access public
+     * @version 2.0.0
      * @desc same as {@link assert}, but automatically sets the status to 403 FORBIDDEN
      * @param {boolean} condition if set to false; assert will fail and throw.
      * @param {string | object} [error] the error(s) to be yielded by the request, default to "Forbidden"
@@ -960,10 +961,5 @@ var Route = (_temp = _class = function () {
     }
   }]);
   return Route;
-}(), _class.displayLog = true, _class.StatusCode = _StatusCode2.default, _class.accesses = {
-  public: function _public() {
-    return (/*ctx*/true
-    );
-  }
-}, _class.Get = _RouteDecorators2.default.Get, _class.Post = _RouteDecorators2.default.Post, _class.Put = _RouteDecorators2.default.Put, _class.Patch = _RouteDecorators2.default.Patch, _class.Delete = _RouteDecorators2.default.Delete, _class.Route = _RouteDecorators2.default.Route, _temp);
+}(), _class.displayLog = true, _class.StatusCode = _StatusCode2.default, _class.Get = _RouteDecorators2.default.Get, _class.Post = _RouteDecorators2.default.Post, _class.Put = _RouteDecorators2.default.Put, _class.Patch = _RouteDecorators2.default.Patch, _class.Delete = _RouteDecorators2.default.Delete, _class.Route = _RouteDecorators2.default.Route, _temp);
 exports.default = Route;
