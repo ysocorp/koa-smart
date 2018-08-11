@@ -7,6 +7,7 @@ All you need to do is add the following option when you create your app:
   const app = new App({
     port: 3001,
     generateDoc: true, // indicates we want koa-smart to generate documentation
+    docPath: join(__dirname, '..', 'apidoc'),
   });
 ```
 
@@ -47,13 +48,13 @@ It should be noted the permissions's name will be the name of the functions pass
 
 It is possible to exclude folders or individual routes from doc generation.
 
-* For a folder, simply add the following option:
+- For a folder, simply add the following option:
 
 ```sh
 app.mountFolder('your/folder/path', '/path', {generateDoc: false});
 ```
 
-* in the same manner, routes can be disabled as such:
+- in the same manner, routes can be disabled as such:
 
 ```sh
   @Route.Post({

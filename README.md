@@ -54,6 +54,7 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
 **This framework gives you the tools to use a set of modules: **
 
 - **For routing**
+
   - [`koajs 2`](https://github.com/koajs/koa) as the main, underlying framework
   - [`kcors`](https://www.npmjs.com/package/kcors) is used to handle cross-domain requests
   - [`koa2-ratelimit`](https://github.com/ysocorp/koa2-ratelimit) To limit bruteforce requests
@@ -61,14 +62,18 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
   - [`koa-bodyparser`](https://github.com/koajs/bodyparser) to parse request bodies
   - [`koa-compress`](https://github.com/koajs/compress) to compress the response
   - [`koa-i18n`](https://github.com/koa-modules/i18n) for Internationalization (I18n)
-- [`@Decorators`](https://babeljs.io/docs/plugins/transform-decorators/) to ensure a better project structure
+
 - [`moment`](https://github.com/moment/moment) Parse, validate, manipulate, and display dates in javascript.
 - [`lodash`](https://github.com/lodash/lodash) A modern JavaScript utility library delivering modularity, performance, & extras
 - [`jsonwebtoken`](https://github.com/auth0/node-jsonwebtoken) an implementation of [JSON Web Tokens JWT](https://tools.ietf.org/html/rfc7519)
+- 💪&nbsp;&nbsp;[`@Decorators`](https://babeljs.io/docs/plugins/transform-decorators/) to ensure a better project structure
+- 🚀&nbsp;&nbsp;[Automatic doc generation](https://ysocorp.github.io/koa-smart/manual/auto-doc.html)
+- 👀&nbsp;&nbsp;[Grants Access](https://ysocorp.github.io/koa-smart/manual/type-system.html)
 
 ## Install
 
-`npm install koa-smart`
+`npm install --save koa-smart`
+Or use the boilerplate ([koa-smart-boilerplate](https://github.com/ysocorp/koa-smart-boilerplate))
 
 ## Router with decorator
 
@@ -152,64 +157,91 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
 
   - **Disable all routes in a class**
 
-  to disable all routes in a class you should add `disable` in the content of your decorator class
+    to disable all routes in a class you should add `disable` in the content of your decorator class
 
-  ```sh
-  @Route.Route({
-      disable: true,
-  })
-  export default class RouteMyApi extends Route {
-      // All routes in this class will not be mounted
-  }
-  ```
+    ```sh
+    @Route.Route({
+        disable: true,
+    })
+    export default class RouteMyApi extends Route {
+        // All routes in this class will not be mounted
+    }
+    ```
 
   - **Disable a specific route**
 
-  to disable a specific route you can add `disable` in the content of your decorator
+    to disable a specific route you can add `disable` in the content of your decorator
+
+    ```sh
+    @Route.Get({
+        disable: true, // this route will not be mounted
+    })
+    async hello(ctx) {
+      this.sendOk(ctx, null, 'hello');
+    }
+    ```
+
+- **Grant accesses**
+
+  Koa smart allows grant permission to be handled in a simple and efficient manner.
+
+  Each function passed to `accessers` will be given the `koa context (ctx)` as a parameter, and must return a `boolean` to express whether is grants access to the route or not.
+
+  If at least one of the function given returns `true`, access to the route will be granted.
 
   ```sh
-  @Route.Get({
-      disable: true, // this route will not be mounted
-  })
-  async hello(ctx) {
-    this.sendOk(ctx, null, 'hello');
-  }
+    async function isConnected(ctx) {
+      // TODO test if the user is connected
+      return ctx.state.user;
+    }
+    async function isUserPremium(ctx) {
+      // TODO test if the user is premium
+      return ctx.state.user.isPremium;
+    }
+    async function isAdmin(ctx) {
+      // TODO test if the user is a admin
+      return ctx.state.user.isAdmin;
+    }
   ```
 
-- **handle accesses**
+  - **Of a Class**
 
-Koa smart allows accesses to be handled in a simple and efficient manner.
+    ```sh
+    @Route.Route({ accesses: [isConnected] })
+    class RouteMiddlewares extends Route {
+      @Route.Get({})
+      async view(ctx, next) {
+        console.log('I can be call if the current client is connected');
+        this.sendOk(ctx, null, 'OK');
+      }
+    }
+    ```
 
-```sh
-function admin() {
-  return false;
-};
+  - **Of a specific route**
 
-function user(ctx) {
-  // work with ctx...
-  return ctx.user.id != null;
-};
+    ```sh
+    @Route.Get({})
+    async myPublicRoute(ctx, next) {
+      console.log('I am a public route, I can be call by any one');
+      this.sendOk(ctx, null, 'OK');
+    }
 
-export default class RouteAccess  extends Route {
-  constructor(params) {
-    super({ ...params });
-  }
-  @Route.Post({
-    accesses: [admin, users], // pass an array of functions
-  })
-  async myRoute(ctx) {
-    this.sendOk(ctx, this.body(ctx));
-  }
-}
-```
+    @Route.Get({ accesses: [isConnected] })
+    async myConnectedRoute(ctx, next) {
+      console.log('I can be call if the current client is connected');
+      this.sendOk(ctx, null, 'OK');
+    }
 
-Each function passed to `accessers` will be given the koa context as a parameter, and must return a `boolean` to express whether is grants access to the route or not.
-
-If at least one of the function given returns `true`, access to the route will be granted.
+    @Route.Get({ accesses: [isUserPremium, isAdmin] })
+    async myPremiumRoute(ctx, next) {
+      console.log('I can be call if the current client is connected and premium or admin');
+      this.sendOk(ctx, null, 'OK');
+    }
+    ```
 
 * **RateLimit** : For more infos, see the [`koa2-ratelimit`](https://github.com/ysocorp/koa2-ratelimit) module
 
-  * **Configure**
+  - **Configure**
 
     ```sh
     import { App } from 'koa-smart';
@@ -232,7 +264,7 @@ If at least one of the function given returns `true`, access to the route will b
     ]);
     ```
 
-  - **RateLimit On Decorator**
+  * **RateLimit On Decorator**
 
     Single RateLimit
 
@@ -260,7 +292,7 @@ If at least one of the function given returns `true`, access to the route will b
     }
     ```
 
-- **middlewares**
+- **Middlewares**
 
   - **Of a Class**
 
@@ -299,62 +331,9 @@ If at least one of the function given returns `true`, access to the route will b
     }
     ```
 
-- **accesses**
-  **`accesses`** shoul be an array of async function that return a boolean. If one of the function return true, it will have access.
-
-  ```sh
-    async function isConnected(ctx) {
-      // TODO test if the user is connected
-      return ctx.state.user;
-    }
-    async function isUserPremium(ctx) {
-      // TODO test if the user is premium
-      return ctx.state.user.isPremium;
-    }
-    async function isAdmin(ctx) {
-      // TODO test if the user is a admin
-      return ctx.state.user.isAdmin;
-    }
-  ```
-
-  - **Of a Class**
-
-    ```sh
-    @Route.Route({ accesses: [isConnected] })
-    class RouteMiddlewares extends Route {
-      @Route.Get({})
-      async view(ctx, next) {
-        console.log('I can be call if the current user is connected');
-        this.sendOk(ctx, null, 'OK');
-      }
-    }
-    ```
-
-  - **Of a specific route**
-
-    ```sh
-    @Route.Get({})
-    async myPublicRoute(ctx, next) {
-      console.log('I am a public route, I can be call by any one');
-      this.sendOk(ctx, null, 'OK');
-    }
-
-    @Route.Get({ accesses: [isConnected] })
-    async myConnectedRoute(ctx, next) {
-      console.log('I can be call if the current user is connected');
-      this.sendOk(ctx, null, 'OK');
-    }
-
-    @Route.Get({ accesses: [isUserPremium, isAdmin] })
-    async myPremiumRoute(ctx, next) {
-      console.log('I can be call if the current user is connected and premium or admin');
-      this.sendOk(ctx, null, 'OK');
-    }
-    ```
-
 ## Params checker: [See the doc of Types](https://ysocorp.github.io/koa-smart/manual/type-system.html) for more information
 
-* ### `bodyType` to check body params
+- ### `bodyType` to check body params
 
   - quick example
 
@@ -378,7 +357,7 @@ If at least one of the function given returns `true`, access to the route will b
       }
     ```
 
-* ### `queryType` to check query params
+- ### `queryType` to check query params
 
   - quick example
 
@@ -404,7 +383,7 @@ If at least one of the function given returns `true`, access to the route will b
 
 in order to get started quickly, look at [this boilerplate](https://github.com/ysocorp/koa-smart-light-example), or follow the instructions below:
 
-* import the app and your middlewares
+- import the app and your middlewares
 
   ```sh
   import { join } from 'path';
@@ -421,7 +400,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
   } from 'koa-smart/middlewares';
   ```
 
-- create an app listening on port 3000
+* create an app listening on port 3000
 
   ```sh
   const myApp = new App({
@@ -429,7 +408,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
   });
   ```
 
-- add your middlewares
+* add your middlewares
 
   ```sh
   myApp.addMiddlewares([
@@ -442,14 +421,14 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
   ]);
   ```
 
-- add your routes
+* add your routes
   mount a folder with a prefix (all file who extends from `Route` will be added and mounted)
 
   ```sh
       myApp.mountFolder(join(__dirname, 'routes'), '/');
   ```
 
-- Start your app
+* Start your app
 
   ```sh
   myApp.start();
