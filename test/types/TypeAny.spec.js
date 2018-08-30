@@ -7,6 +7,47 @@ describe('TypeAny', () => {
 
   after(async () => {});
 
+  describe('Set error message', () => {
+    describe('Type String', () => {
+      const custumMsg = 'My custum message';
+      const schema = Types.object()
+        .keys({
+          rq: Types.string()
+            .min(3)
+            .required()
+            .setErrorMsg(custumMsg),
+        })
+        .required();
+      it('Should return the default value if value = null', async () => {
+        schema.test({ rq: 'rq' });
+        expect(schema.error.msg).toBe(custumMsg);
+        schema.test({ rq: 5 });
+        expect(schema.error.msg).toBe(custumMsg);
+        schema.test({});
+        expect(schema.error.msg).toBe(custumMsg);
+      });
+    });
+    describe('Function', () => {
+      const custumMsg = () => 'My custum message';
+      const schema = Types.object()
+        .keys({
+          rq: Types.string()
+            .min(3)
+            .required()
+            .setErrorMsg(custumMsg),
+        })
+        .required();
+      it('Should return the default value if value = null', async () => {
+        schema.test({ rq: 'rq' });
+        expect(schema.error.msg).toBe(custumMsg());
+        schema.test({ rq: 5 });
+        expect(schema.error.msg).toBe(custumMsg());
+        schema.test({});
+        expect(schema.error.msg).toBe(custumMsg());
+      });
+    });
+  });
+
   describe('Allow types', () => {
     let schema;
     beforeEach(async () => {

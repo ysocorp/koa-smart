@@ -12,10 +12,21 @@ export class TypeString extends TypeAny {
   _tLowercase = false;
   _tReplace;
 
-  constructor() {
-    super('string');
-    this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
+  constructor(params = {}) {
+    super({ ...params, type: 'string' });
+    this._errorMessages[this._TypeError.INVALID_VALUE] = this._getError;
   }
+
+  _getError = ({ _i18n }, key) => {
+    key = this._errorKey || key;
+    this._errorKey = key;
+
+    if (key === 'length') return _i18n.__('Expected %s characters', this._length);
+    else if (key === 'min') return _i18n.__('Shorter than %d characters', this._min);
+    else if (key === 'max') return _i18n.__('Longer than %d characters', this._max);
+    else if (key === 'regex') return _i18n.__('Doesn\'t match with %s', this._regex.toString());
+    return null;
+  };
 
   _getDescription = (prefix = 'It should be ') => {
     let msgError = `${prefix}a string`;
@@ -90,11 +101,11 @@ export class TypeString extends TypeAny {
   }
 
   _test() {
-    const t = this._TypeError.INVALIDE_VALUE;
-    if (this._length && this._value.length !== this._length) return this._setError(t);
-    if (this._min && this._value.length < this._min) return this._setError(t);
-    if (this._max && this._value.length > this._max) return this._setError(t);
-    if (this._regex && !this._value.match(this._regex)) return this._setError(t);
+    const t = this._TypeError.INVALID_VALUE;
+    if (this._length && this._value.length !== this._length) return this._setError(t, 'length');
+    if (this._min && this._value.length < this._min) return this._setError(t, 'min');
+    if (this._max && this._value.length > this._max) return this._setError(t, 'max');
+    if (this._regex && !this._value.match(this._regex)) return this._setError(t, 'regex');
   }
 
   _transform() {

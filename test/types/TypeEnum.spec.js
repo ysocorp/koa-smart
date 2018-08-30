@@ -11,22 +11,22 @@ describe('TypeEnum', () => {
 
     it('Should validate a string', async () => {
       schema.test('string');
-      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
+      expect(schema.error.code).toBe(schema._errorCodes.INVALID_VALUE);
     });
 
     it('Should validate a number', async () => {
       schema.test(1);
-      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
+      expect(schema.error.code).toBe(schema._errorCodes.INVALID_VALUE);
     });
 
     it('Should reject a boolean', async () => {
       schema.test(true);
-      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_TYPE);
+      expect(schema.error.code).toBe(schema._errorCodes.INVALID_TYPE);
     });
 
     it('Should reject a object', async () => {
       schema.test({});
-      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_TYPE);
+      expect(schema.error.code).toBe(schema._errorCodes.INVALID_TYPE);
     });
   });
 
@@ -50,12 +50,12 @@ describe('TypeEnum', () => {
 
     it('should reject a incorrect string', async () => {
       schema.test('TOTU');
-      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
+      expect(schema.error.code).toBe(schema._errorCodes.INVALID_VALUE);
     });
 
     it('should reject a incorrect number', async () => {
       schema.test(2);
-      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
+      expect(schema.error.code).toBe(schema._errorCodes.INVALID_VALUE);
     });
   });
 
@@ -83,7 +83,7 @@ describe('TypeEnum', () => {
 
       it('should reject a correct a string even if it is correct in insensitive case', async () => {
         schema.test('toto');
-        expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
+        expect(schema.error.code).toBe(schema._errorCodes.INVALID_VALUE);
       });
     });
   });
@@ -104,13 +104,13 @@ describe('TypeEnum', () => {
       it('should convert a string to number if possible and reject the value if incorrect', async () => {
         schema.test('8');
         expect(schema.value).toEqual(8);
-        expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
+        expect(schema.error.code).toBe(schema._errorCodes.INVALID_VALUE);
       });
 
       it('should not convert a string to number if it is not possible', async () => {
         schema.test('a1');
         expect(schema.value).toEqual('a1');
-        expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
+        expect(schema.error.code).toBe(schema._errorCodes.INVALID_VALUE);
       });
     });
 
@@ -125,7 +125,7 @@ describe('TypeEnum', () => {
       it('should not convert a string to number even if possible and reject the value if incorrect', async () => {
         schema.test('1');
         expect(schema.value).toEqual('1');
-        expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
+        expect(schema.error.code).toBe(schema._errorCodes.INVALID_VALUE);
       });
     });
   });

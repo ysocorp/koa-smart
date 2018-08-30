@@ -17,7 +17,7 @@ describe('TypeString', () => {
     it('Should reject a number', async () => {
       schema.test(1);
       expect(schema.error).toBeTruthy();
-      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_TYPE);
+      expect(schema.error.code).toBe(schema._errorCodes.INVALID_TYPE);
     });
   });
 
@@ -35,7 +35,7 @@ describe('TypeString', () => {
 
     it('should reject a value with length less than the min', async () => {
       schema.test('1234');
-      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
+      expect(schema.error.code).toBe(schema._errorCodes.INVALID_VALUE);
     });
   });
 
@@ -53,7 +53,7 @@ describe('TypeString', () => {
 
     it('should reject a value with length greather than the max', async () => {
       schema.test('123456');
-      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
+      expect(schema.error.code).toBe(schema._errorCodes.INVALID_VALUE);
     });
   });
 
@@ -71,9 +71,9 @@ describe('TypeString', () => {
 
     it('should reject a value with not equale length', async () => {
       schema.test('123456');
-      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
+      expect(schema.error.code).toBe(schema._errorCodes.INVALID_VALUE);
       schema.test('123');
-      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
+      expect(schema.error.code).toBe(schema._errorCodes.INVALID_VALUE);
     });
   });
 
@@ -91,7 +91,7 @@ describe('TypeString', () => {
     it('should reject a value that not match the regex', async () => {
       schema.test('nei');
       expect(schema.error).toBeTruthy();
-      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
+      expect(schema.error.code).toBe(schema._errorCodes.INVALID_VALUE);
     });
   });
 

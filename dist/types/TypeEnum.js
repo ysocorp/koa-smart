@@ -13,6 +13,10 @@ var _typeof2 = require('babel-runtime/helpers/typeof');
 
 var _typeof3 = _interopRequireDefault(_typeof2);
 
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -43,13 +47,20 @@ var TypeEnum = exports.TypeEnum = function (_TypeAny) {
   (0, _inherits3.default)(TypeEnum, _TypeAny);
 
   function TypeEnum() {
+    var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     (0, _classCallCheck3.default)(this, TypeEnum);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeEnum.__proto__ || (0, _getPrototypeOf2.default)(TypeEnum)).call(this, 'enum'));
+    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeEnum.__proto__ || (0, _getPrototypeOf2.default)(TypeEnum)).call(this, (0, _extends3.default)({}, params, { type: 'enum' })));
 
     _this._oneOf = [];
     _this._insensitive = true;
     _this._number = true;
+
+    _this._getError = function (_ref) {
+      var _i18n = _ref._i18n;
+
+      return _i18n.__('Should be one of %s', _utils.utils.joinWithCote(_this._oneOf, ', '));
+    };
 
     _this._getDescription = function () {
       var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'It should be ';
@@ -57,7 +68,7 @@ var TypeEnum = exports.TypeEnum = function (_TypeAny) {
       return prefix + 'one of: (' + _utils.utils.joinWithCote(_this._oneOf, ', ') + ').';
     };
 
-    _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;
+    _this._errorMessages[_this._TypeError.INVALID_VALUE] = _this._getError;
     return _this;
   }
 
@@ -101,14 +112,14 @@ var TypeEnum = exports.TypeEnum = function (_TypeAny) {
     key: '_testType',
     value: function _testType() {
       if (!['string', 'number'].includes((0, _typeof3.default)(this._value))) {
-        this._setError(this._TypeError.INVALIDE_TYPE);
+        this._setError(this._TypeError.INVALID_TYPE);
       }
     }
   }, {
     key: '_test',
     value: function _test() {
       if (!this._oneOf.includes(this._value)) {
-        this._setError(this._TypeError.INVALIDE_VALUE);
+        this._setError(this._TypeError.INVALID_VALUE);
       }
     }
   }, {

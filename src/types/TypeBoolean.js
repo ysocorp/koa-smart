@@ -8,10 +8,14 @@ export class TypeBoolean extends TypeAny {
   _falsyValues = ['false']; // Specifies additional values to be considered as 'falsy'
   _insensitive = true;
 
-  constructor() {
-    super('boolean');
-    this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
+  constructor(params = {}) {
+    super({ ...params, type: 'boolean' });
+    this._errorMessages[this._TypeError.INVALID_VALUE] = this._getError;
   }
+
+  _getError = ({ _i18n }) => {
+    return _i18n.__('Should be a boolean');
+  };
 
   _getDescription = (prefix = 'It should be ') => {
     const valideValue = [...this._truthyValues, ...this._falsyValues];
@@ -44,13 +48,13 @@ export class TypeBoolean extends TypeAny {
 
   _testType() {
     if (!['boolean', 'string', 'number'].includes(typeof this._value)) {
-      this._setError(this._TypeError.INVALIDE_TYPE);
+      this._setError(this._TypeError.INVALID_TYPE);
     }
   }
 
   _test() {
     if (typeof this._value !== 'boolean') {
-      this._setError(this._TypeError.INVALIDE_VALUE);
+      this._setError(this._TypeError.INVALID_VALUE);
     }
   }
 

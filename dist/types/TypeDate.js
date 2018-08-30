@@ -5,6 +5,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.TypeDate = undefined;
 
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -44,9 +48,24 @@ var TypeDate = function (_TypeAny) {
 
   // the date's output format(will output a string instead of a date)
   function TypeDate() {
+    var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     (0, _classCallCheck3.default)(this, TypeDate);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeDate.__proto__ || (0, _getPrototypeOf2.default)(TypeDate)).call(this, 'date'));
+    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeDate.__proto__ || (0, _getPrototypeOf2.default)(TypeDate)).call(this, (0, _extends3.default)({}, params, { type: 'date' })));
+
+    _this._getError = function (_ref, key) {
+      var _i18n = _ref._i18n,
+          _max = _ref._max,
+          _min = _ref._min;
+
+      key = _this._errorKey || key;
+      _this._errorKey = key;
+
+      if (key === 'max') return _i18n.__('Is before %s', _max.toDateString());
+      if (key === 'min') return _i18n.__('Is after %s', _min.toDateString());
+      if (key === 'invalid') return _i18n.__('Invalid date');
+      return null;
+    };
 
     _this._getDescription = function () {
       var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'It should be ';
@@ -66,7 +85,7 @@ var TypeDate = function (_TypeAny) {
       return '' + msgError + paramMsg + '.';
     };
 
-    _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;
+    _this._errorMessages[_this._TypeError.INVALID_VALUE] = _this._getError;
     return _this;
   } // earliest possible date
   // the date's input format
@@ -89,14 +108,14 @@ var TypeDate = function (_TypeAny) {
     }
   }, {
     key: 'min',
-    value: function min(_min) {
-      this._min = _min;
+    value: function min(_min2) {
+      this._min = _min2;
       return this;
     }
   }, {
     key: 'max',
-    value: function max(_max) {
-      this._max = _max;
+    value: function max(_max2) {
+      this._max = _max2;
       return this;
     }
   }, {
@@ -148,20 +167,20 @@ var TypeDate = function (_TypeAny) {
     key: '_test',
     value: function _test() {
       (0, _get3.default)(TypeDate.prototype.__proto__ || (0, _getPrototypeOf2.default)(TypeDate.prototype), '_test', this).call(this);
-      var t = this._TypeError.INVALIDE_VALUE;
+      var t = this._TypeError.INVALID_VALUE;
       if (!this._isValid(this._value)) {
-        return this._setError(t);
+        return this._setError(t, 'invalid');
       }
       if (this._min && (0, _moment2.default)(this._value).isBefore(this._formatDateIfEnabled(this._min))) {
-        return this._setError(t);
+        return this._setError(t, 'min');
       }
       if (this._max && (0, _moment2.default)(this._value).isAfter(this._formatDateIfEnabled(this._max))) {
-        return this._setError(t);
+        return this._setError(t, 'max');
       }
       if (this._formatOut) {
         this._value = (0, _moment2.default)(this._value).format(this._formatOut);
         if (this._value === 'Invalid date') {
-          return this._setError(t);
+          return this._setError(t, 'invalid');
         }
       }
     }

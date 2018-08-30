@@ -9,6 +9,10 @@ var _getIterator2 = require('babel-runtime/core-js/get-iterator');
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -37,12 +41,19 @@ var TypeOneOf = exports.TypeOneOf = function (_TypeAny) {
   (0, _inherits3.default)(TypeOneOf, _TypeAny);
 
   function TypeOneOf() {
+    var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     (0, _classCallCheck3.default)(this, TypeOneOf);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeOneOf.__proto__ || (0, _getPrototypeOf2.default)(TypeOneOf)).call(this, 'oneOf'));
+    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeOneOf.__proto__ || (0, _getPrototypeOf2.default)(TypeOneOf)).call(this, (0, _extends3.default)({}, params, { type: 'oneOf' })));
 
     _this._types = [];
     _this._errors = [];
+
+    _this._getError = function (_ref) {
+      var _i18n = _ref._i18n;
+
+      return _i18n.__('Invalid type');
+    };
 
     _this._getDescription = function () {
       var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'It should be ';
@@ -56,7 +67,7 @@ var TypeOneOf = exports.TypeOneOf = function (_TypeAny) {
         for (var _iterator = (0, _getIterator3.default)(_this._types), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var t = _step.value;
 
-          var fnMessage = t._getDescription || t._errorMessages[_this._TypeError.ALL] || t._errorMessages[_this._TypeError.INVALIDE_VALUE];
+          var fnMessage = t._getDescription || t._errorMessages[_this._TypeError.ALL] || t._errorMessages[_this._TypeError.INVALID_VALUE];
           msgs.push(fnMessage('').slice(0, -1));
         }
       } catch (err) {
@@ -77,7 +88,7 @@ var TypeOneOf = exports.TypeOneOf = function (_TypeAny) {
       return prefix + 'either ' + msgs.join(' OR ') + '.';
     };
 
-    _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;
+    _this._errorMessages[_this._TypeError.INVALID_VALUE] = _this._getError;
     return _this;
   }
 
@@ -134,7 +145,7 @@ var TypeOneOf = exports.TypeOneOf = function (_TypeAny) {
       }
 
       if (!isOneOk) {
-        this._setError(this._TypeError.INVALIDE_VALUE);
+        this._setError(this._TypeError.INVALID_VALUE);
       }
     }
   }]);

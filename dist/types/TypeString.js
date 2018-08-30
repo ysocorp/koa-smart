@@ -9,6 +9,10 @@ var _maxSafeInteger = require('babel-runtime/core-js/number/max-safe-integer');
 
 var _maxSafeInteger2 = _interopRequireDefault(_maxSafeInteger);
 
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -37,14 +41,25 @@ var TypeString = function (_TypeAny) {
   (0, _inherits3.default)(TypeString, _TypeAny);
 
   function TypeString() {
+    var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     (0, _classCallCheck3.default)(this, TypeString);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeString.__proto__ || (0, _getPrototypeOf2.default)(TypeString)).call(this, 'string'));
+    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeString.__proto__ || (0, _getPrototypeOf2.default)(TypeString)).call(this, (0, _extends3.default)({}, params, { type: 'string' })));
 
     _this._tTrim = true;
     _this._tTruncate = false;
     _this._tUppercase = false;
     _this._tLowercase = false;
+
+    _this._getError = function (_ref, key) {
+      var _i18n = _ref._i18n;
+
+      key = _this._errorKey || key;
+      _this._errorKey = key;
+
+      if (key === 'length') return _i18n.__('Expected %s characters', _this._length);else if (key === 'min') return _i18n.__('Shorter than %d characters', _this._min);else if (key === 'max') return _i18n.__('Longer than %d characters', _this._max);else if (key === 'regex') return _i18n.__('Doesn\'t match with %s', _this._regex.toString());
+      return null;
+    };
 
     _this._getDescription = function () {
       var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'It should be ';
@@ -69,7 +84,7 @@ var TypeString = function (_TypeAny) {
       return '' + msgError + _this._generateParamDescription(paramsDesc, ' with') + '.';
     };
 
-    _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;
+    _this._errorMessages[_this._TypeError.INVALID_VALUE] = _this._getError;
     return _this;
   }
 
@@ -151,11 +166,11 @@ var TypeString = function (_TypeAny) {
   }, {
     key: '_test',
     value: function _test() {
-      var t = this._TypeError.INVALIDE_VALUE;
-      if (this._length && this._value.length !== this._length) return this._setError(t);
-      if (this._min && this._value.length < this._min) return this._setError(t);
-      if (this._max && this._value.length > this._max) return this._setError(t);
-      if (this._regex && !this._value.match(this._regex)) return this._setError(t);
+      var t = this._TypeError.INVALID_VALUE;
+      if (this._length && this._value.length !== this._length) return this._setError(t, 'length');
+      if (this._min && this._value.length < this._min) return this._setError(t, 'min');
+      if (this._max && this._value.length > this._max) return this._setError(t, 'max');
+      if (this._regex && !this._value.match(this._regex)) return this._setError(t, 'regex');
     }
   }, {
     key: '_transform',

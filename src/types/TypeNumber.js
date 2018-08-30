@@ -7,16 +7,27 @@ export class TypeNumber extends TypeAny {
   _multiple; // Specifies that the value must be a multiple of base:
   _positive = false; // Requires the number to be positive.
   _negative = false; // Requires the number to be negative.
-  _port; // Requires the number to be a TCP port, so between 0 and 65535.
 
   _tPrecision; // Specifies the maximum number of decimal places where:
   _tPrecisionType; // Specifies the type of precision : floor, ceil, trunc, round
 
-  constructor() {
-    super('number');
-
-    this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
+  constructor(params = {}) {
+    super({ ...params, type: 'number' });
+    this._errorMessages[this._TypeError.INVALID_VALUE] = this._getError;
   }
+
+  _getError = ({ _i18n }, key) => {
+    key = this._errorKey || key;
+    this._errorKey = key;
+
+    if (key === 'between') return _i18n.__('Is not between %d and %d', this._min, this._max);
+    if (key === 'min') return _i18n.__('Is smaller than %d', this._min);
+    if (key === 'max') return _i18n.__('Is greater than %d', this._max);
+    if (key === 'multiple') return _i18n.__('Is not a multiple of %d', this._multiple);
+    if (key === 'positive') return _i18n.__('Is negative');
+    if (key === 'negative') return _i18n.__('Is positive');
+    return null;
+  };
 
   _getDescription = (prefix = 'It should be ') => {
     let pN = ' ';
@@ -34,9 +45,6 @@ export class TypeNumber extends TypeAny {
     }
     if (this._multiple != null) {
       paramsDesc.push(`is a multiple of ${this._multiple}`);
-    }
-    if (this._port != null) {
-      paramsDesc.push('is between 0 and 65535');
     }
     return `${msgError}${this._generateParamDescription(paramsDesc, ' which')}.`;
   };
@@ -77,11 +85,6 @@ export class TypeNumber extends TypeAny {
     return this;
   }
 
-  port(val = true) {
-    this._port = val;
-    return this;
-  }
-
   precision(limit, type = 'trunc') {
     this._tPrecision = limit;
     this._tPrecisionType = type;
@@ -96,18 +99,20 @@ export class TypeNumber extends TypeAny {
 
   _testType() {
     if (!this._isNumber()) {
-      this._setError(this._TypeError.INVALIDE_TYPE);
+      this._setError(this._TypeError.INVALID_TYPE);
     }
   }
 
   _test() {
-    const t = this._TypeError.INVALIDE_VALUE;
-    if (this._min != null && this._value < this._min) return this._setError(t);
-    if (this._max != null && this._value > this._max) return this._setError(t);
-    if (this._multiple != null && this._value % this._multiple !== 0) return this._setError(t);
-    if (this._positive && this._value < 0) return this._setError(t);
-    if (this._negative && this._value >= 0) return this._setError(t);
-    if (this._port != null && (this._value < 0 || this._value > 65535)) return this._setError(t);
+    const t = this._TypeError.INVALID_VALUE;
+    const tMin = this._min != null && this._value < this._min;
+    const tMax = this._max != null && this._value > this._max;
+    if (tMin && tMax) return this._setError(t, 'between');
+    if (tMin) return this._setError(t, 'min');
+    if (tMax) return this._setError(t, 'max');
+    if (this._multiple != null && this._value % this._multiple !== 0) return this._setError(t, 'multiple');
+    if (this._positive && this._value < 0) return this._setError(t, 'positive');
+    if (this._negative && this._value >= 0) return this._setError(t, 'negative');
   }
 
   _precisionTo = (nb, nbDigit, type) => Math[type](nb * 10 ** nbDigit) / 10 ** nbDigit;

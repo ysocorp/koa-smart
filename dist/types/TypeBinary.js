@@ -5,6 +5,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.TypeBinary = undefined;
 
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -40,9 +44,20 @@ var TypeBinary = function (_TypeAny) {
 
   // the buffer's exact allowed length
   function TypeBinary() {
+    var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     (0, _classCallCheck3.default)(this, TypeBinary);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeBinary.__proto__ || (0, _getPrototypeOf2.default)(TypeBinary)).call(this, 'binary'));
+    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeBinary.__proto__ || (0, _getPrototypeOf2.default)(TypeBinary)).call(this, (0, _extends3.default)({}, params, { type: 'binary' })));
+
+    _this._getError = function (_ref, key) {
+      var _i18n = _ref._i18n;
+
+      key = _this._errorKey || key;
+      _this._errorKey = key;
+
+      if (key === 'length') return _i18n.__('Expected %d bytes', _this._length);else if (key === 'min') return _i18n.__('Smaller than %d bytes', _this._min);else if (key === 'max') return _i18n.__('Bigger than %d bytes', _this._max);
+      return null;
+    };
 
     _this._getDescription = function () {
       var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'It should be ';
@@ -65,7 +80,7 @@ var TypeBinary = function (_TypeAny) {
       return '' + msgError + paramMsg + '.';
     };
 
-    _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;
+    _this._errorMessages[_this._TypeError.INVALID_VALUE] = _this._getError;
     return _this;
   } // the buffer's minimum allowed length
   // the desired encoding of buffer
@@ -99,17 +114,17 @@ var TypeBinary = function (_TypeAny) {
     key: '_testType',
     value: function _testType() {
       if (this._encoding && !Buffer.isEncoding(this._encoding)) {
-        (0, _get3.default)(TypeBinary.prototype.__proto__ || (0, _getPrototypeOf2.default)(TypeBinary.prototype), '_setError', this).call(this, this._TypeError.INVALIDE_TYPE);
+        (0, _get3.default)(TypeBinary.prototype.__proto__ || (0, _getPrototypeOf2.default)(TypeBinary.prototype), '_setError', this).call(this, this._TypeError.INVALID_TYPE, 'encoding');
       }
     }
   }, {
     key: '_test',
     value: function _test() {
-      var t = this._TypeError.INVALIDE_VALUE;
-      if (this._min != null && this._value < this._min) return this._setError(t);
-      if (this._min && this._value.length < this._min) return this._setError(t);
-      if (this._max && this._value.length > this._max) return this._setError(t);
-      if (this._length && this._value.length !== this._length) return this._setError(t);
+      var t = this._TypeError.INVALID_VALUE;
+      if (this._min != null && this._value < this._min) return this._setError(t, 'min');
+      if (this._min && this._value.length < this._min) return this._setError(t, 'min');
+      if (this._max && this._value.length > this._max) return this._setError(t, 'max');
+      if (this._length && this._value.length !== this._length) return this._setError(t, 'length');
     }
   }, {
     key: '_transform',
@@ -117,7 +132,7 @@ var TypeBinary = function (_TypeAny) {
       try {
         this._value = Buffer.from(this._value, this._encoding);
       } catch (e) {
-        return this._setError(this._TypeError.INVALIDE_TYPE);
+        return this._setError(this._TypeError.INVALID_TYPE);
       }
     }
   }]);

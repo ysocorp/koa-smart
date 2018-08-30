@@ -4,10 +4,14 @@ export class TypeOneOf extends TypeAny {
   _types = [];
   _errors = [];
 
-  constructor() {
-    super('oneOf');
-    this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
+  constructor(params = {}) {
+    super({ ...params, type: 'oneOf' });
+    this._errorMessages[this._TypeError.INVALID_VALUE] = this._getError;
   }
+
+  _getError = ({ _i18n }) => {
+    return _i18n.__('Invalid type');
+  };
 
   _getDescription = (prefix = 'It should be ') => {
     const msgs = [];
@@ -15,7 +19,7 @@ export class TypeOneOf extends TypeAny {
       const fnMessage =
         t._getDescription ||
         t._errorMessages[this._TypeError.ALL] ||
-        t._errorMessages[this._TypeError.INVALIDE_VALUE];
+        t._errorMessages[this._TypeError.INVALID_VALUE];
       msgs.push(fnMessage('').slice(0, -1));
     }
     return `${prefix}either ${msgs.join(' OR ')}.`;
@@ -44,7 +48,7 @@ export class TypeOneOf extends TypeAny {
       }
     }
     if (!isOneOk) {
-      this._setError(this._TypeError.INVALIDE_VALUE);
+      this._setError(this._TypeError.INVALID_VALUE);
     }
   }
 }

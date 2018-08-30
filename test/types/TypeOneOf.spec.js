@@ -23,7 +23,7 @@ describe('TypeOneOf', () => {
       schema.test(true);
       expect(schema.value).toBe(true);
       expect(schema.error).toBeTruthy();
-      expect(schema.error.code).toBe(schema._errorCodes.INVALIDE_VALUE);
+      expect(schema.error.code).toBe(schema._errorCodes.INVALID_VALUE);
     });
 
     it('should not have errors if param receive as unknow params', async () => {

@@ -3,21 +3,37 @@ import { TypeAny } from './TypeAny';
 export class TypeObject extends TypeAny {
   _schema = {};
   _errors = {};
+  _errorWithKey;
 
-  constructor() {
-    super('object');
+  constructor(params = {}) {
+    super({ ...params, type: 'object' });
 
-    this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
+    this._errorMessages[this._TypeError.INVALID_VALUE] = this._getError;
   }
 
+  _getError = ({ _i18n }, key, keyError, msg) => {
+    if (key === 'add') return this._errorWithKey ? `${keyError}: ${msg}` : msg;
+    return _i18n.__('Is not an object');
+  };
+
   _getDescription = (prefix = 'It should be ') => {
-    // TODO
     return `${prefix}an object`;
   };
 
   _initValues(value) {
     super._initValues(value);
     this._errors = {};
+  }
+
+  setErrorMsg(msg, typeError) {
+    super.setErrorMsg(msg, typeError);
+    this._errorWithKey = false;
+    return this;
+  }
+
+  errorWithKey(value = true) {
+    this._errorWithKey = value;
+    return this;
   }
 
   keys(object) {
@@ -40,9 +56,8 @@ export class TypeObject extends TypeAny {
     }
 
     const keys = Object.keys(this._errors);
-    const errorsStr = keys.map(k => `${k}: ${this._errors[k]}`);
-    if (errorsStr && keys.length) {
-      super._setError(this._TypeError.INVALIDE_VALUE);
+    if (keys.length) {
+      super._setError(this._TypeError.INVALID_VALUE, 'add', keys[0], this._errors[keys[0]].msg);
     }
     this._hasError = true;
     return this._hasError;

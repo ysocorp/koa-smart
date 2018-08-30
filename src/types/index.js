@@ -1,3 +1,5 @@
+import { cloneDeep } from 'lodash';
+
 import { TypeAny as KsAny } from './TypeAny';
 import { TypeArray as KsArray } from './TypeArray';
 import { TypeBinary as KsBinary } from './TypeBinary';
@@ -20,15 +22,26 @@ export const TypeObject = KsObject;
 export const TypeOneOf = KsOneOf;
 export const TypeString = KsString;
 
+let opt = {
+  i18n: {},
+};
+
 export const Types = {
-  any: () => new KsAny(),
-  array: () => new KsArray(),
-  binary: () => new KsBinary(),
-  boolean: () => new KsBoolean(),
-  date: () => new KsDate(),
-  enum: () => new KsEnum(),
-  number: () => new KsNumber(),
-  object: () => new KsObject(),
-  oneOf: () => new KsOneOf(),
-  string: () => new KsString(),
+  init: ({ i18n = {} } = {}) => {
+    const newOpt = cloneDeep(opt);
+    opt = {
+      ...newOpt,
+      i18n: { ...opt.i18n, ...i18n },
+    };
+  },
+  any: () => new KsAny(opt),
+  array: () => new KsArray(opt),
+  binary: () => new KsBinary(opt),
+  boolean: () => new KsBoolean(opt),
+  date: () => new KsDate(opt),
+  enum: () => new KsEnum(opt),
+  number: () => new KsNumber(opt),
+  object: () => new KsObject(opt),
+  oneOf: () => new KsOneOf(opt),
+  string: () => new KsString(opt),
 };

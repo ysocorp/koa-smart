@@ -19,7 +19,6 @@ const fragmentType = {
   boolean: Types.boolean(),
   date: Types.date(),
   enum: Types.enum().oneOf('OK', 'KO'),
-  number: Types.number().port(),
   oneOf: Types.oneOf().types(Types.string().max(100), Types.number().max(100), Types.any()),
   string: Types.string(),
 };

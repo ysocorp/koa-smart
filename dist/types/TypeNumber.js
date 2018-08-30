@@ -9,6 +9,10 @@ var _maxSafeInteger = require('babel-runtime/core-js/number/max-safe-integer');
 
 var _maxSafeInteger2 = _interopRequireDefault(_maxSafeInteger);
 
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -38,18 +42,33 @@ var TypeNumber = exports.TypeNumber = function (_TypeAny) {
 
   // Specifies the type of precision : floor, ceil, trunc, round
 
-  // Requires the number to be a TCP port, so between 0 and 65535.
+  // Requires the number to be negative.
 
-  // Requires the number to be positive.
-  // Requires the number to be an integer (no floating point).
-  // Specifies the minimum value where:
+  // Specifies that the value must be a multiple of base:
+  // Specifies the maximum value where:
   function TypeNumber() {
+    var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     (0, _classCallCheck3.default)(this, TypeNumber);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeNumber.__proto__ || (0, _getPrototypeOf2.default)(TypeNumber)).call(this, 'number'));
+    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeNumber.__proto__ || (0, _getPrototypeOf2.default)(TypeNumber)).call(this, (0, _extends3.default)({}, params, { type: 'number' })));
 
     _this._positive = false;
     _this._negative = false;
+
+    _this._getError = function (_ref, key) {
+      var _i18n = _ref._i18n;
+
+      key = _this._errorKey || key;
+      _this._errorKey = key;
+
+      if (key === 'between') return _i18n.__('Is not between %d and %d', _this._min, _this._max);
+      if (key === 'min') return _i18n.__('Is smaller than %d', _this._min);
+      if (key === 'max') return _i18n.__('Is greater than %d', _this._max);
+      if (key === 'multiple') return _i18n.__('Is not a multiple of %d', _this._multiple);
+      if (key === 'positive') return _i18n.__('Is negative');
+      if (key === 'negative') return _i18n.__('Is positive');
+      return null;
+    };
 
     _this._getDescription = function () {
       var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'It should be ';
@@ -69,9 +88,6 @@ var TypeNumber = exports.TypeNumber = function (_TypeAny) {
       }
       if (_this._multiple != null) {
         paramsDesc.push('is a multiple of ' + _this._multiple);
-      }
-      if (_this._port != null) {
-        paramsDesc.push('is between 0 and 65535');
       }
       return '' + msgError + _this._generateParamDescription(paramsDesc, ' which') + '.';
     };
@@ -96,12 +112,12 @@ var TypeNumber = exports.TypeNumber = function (_TypeAny) {
       return Math[type](nb * Math.pow(10, nbDigit)) / Math.pow(10, nbDigit);
     };
 
-    _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;
+    _this._errorMessages[_this._TypeError.INVALID_VALUE] = _this._getError;
     return _this;
   } // Specifies the maximum number of decimal places where:
-  // Requires the number to be negative.
-  // Specifies that the value must be a multiple of base:
-  // Specifies the maximum value where:
+  // Requires the number to be positive.
+  // Requires the number to be an integer (no floating point).
+  // Specifies the minimum value where:
 
 
   (0, _createClass3.default)(TypeNumber, [{
@@ -158,14 +174,6 @@ var TypeNumber = exports.TypeNumber = function (_TypeAny) {
       return this;
     }
   }, {
-    key: 'port',
-    value: function port() {
-      var val = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-
-      this._port = val;
-      return this;
-    }
-  }, {
     key: 'precision',
     value: function precision(limit) {
       var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'trunc';
@@ -181,19 +189,21 @@ var TypeNumber = exports.TypeNumber = function (_TypeAny) {
     key: '_testType',
     value: function _testType() {
       if (!this._isNumber()) {
-        this._setError(this._TypeError.INVALIDE_TYPE);
+        this._setError(this._TypeError.INVALID_TYPE);
       }
     }
   }, {
     key: '_test',
     value: function _test() {
-      var t = this._TypeError.INVALIDE_VALUE;
-      if (this._min != null && this._value < this._min) return this._setError(t);
-      if (this._max != null && this._value > this._max) return this._setError(t);
-      if (this._multiple != null && this._value % this._multiple !== 0) return this._setError(t);
-      if (this._positive && this._value < 0) return this._setError(t);
-      if (this._negative && this._value >= 0) return this._setError(t);
-      if (this._port != null && (this._value < 0 || this._value > 65535)) return this._setError(t);
+      var t = this._TypeError.INVALID_VALUE;
+      var tMin = this._min != null && this._value < this._min;
+      var tMax = this._max != null && this._value > this._max;
+      if (tMin && tMax) return this._setError(t, 'between');
+      if (tMin) return this._setError(t, 'min');
+      if (tMax) return this._setError(t, 'max');
+      if (this._multiple != null && this._value % this._multiple !== 0) return this._setError(t, 'multiple');
+      if (this._positive && this._value < 0) return this._setError(t, 'positive');
+      if (this._negative && this._value >= 0) return this._setError(t, 'negative');
     }
   }, {
     key: '_transform',

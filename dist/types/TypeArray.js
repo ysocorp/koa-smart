@@ -5,6 +5,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.TypeArray = undefined;
 
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -38,16 +42,27 @@ var TypeArray = function (_TypeAny) {
 
   // the array's minimum allowed length
   function TypeArray() {
+    var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     (0, _classCallCheck3.default)(this, TypeArray);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeArray.__proto__ || (0, _getPrototypeOf2.default)(TypeArray)).call(this, 'Array'));
+    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeArray.__proto__ || (0, _getPrototypeOf2.default)(TypeArray)).call(this, (0, _extends3.default)({}, params, { type: 'Array' })));
 
     _this._tSingle = false;
+
+    _this._getError = function (_ref, key) {
+      var _i18n = _ref._i18n;
+
+      if (key === 'type') return _i18n.__('Should be an array');
+      if (key === 'length') return _i18n.__('Expected %d items', _this._length);
+      if (key === 'min') return _i18n.__('Less than %d items', _this._min);
+      if (key === 'max') return _i18n.__('More than %d items', _this._max);
+      if (key === 'innerType') return _i18n.__('Invalid item');
+      return null;
+    };
 
     _this._getDescription = function () {
       var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'It should be ';
 
-      // TODO return custom error message
       var msgError = prefix + 'an array';
       var paramsDesc = [];
       if (_this._length) {
@@ -66,8 +81,8 @@ var TypeArray = function (_TypeAny) {
       return '' + msgError + paramMsg + '.';
     };
 
-    _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;
-    _this._errorMessages[_this._TypeError.INVALIDE_TYPE] = _this._getDescription;
+    _this._errorMessages[_this._TypeError.INVALID_VALUE] = _this._getError;
+    _this._errorMessages[_this._TypeError.INVALID_TYPE] = _this._getError;
     return _this;
   } // the array's maximum allowed length
   // the array's exact allowed length
@@ -123,32 +138,32 @@ var TypeArray = function (_TypeAny) {
     value: function _testType() {
       var canSplit = this._tSplitBy != null && typeof this._value === 'string';
       if (!Array.isArray(this._value) && !this._tSingle && !canSplit) {
-        this._setError(this._TypeError.INVALIDE_TYPE);
+        this._setError(this._TypeError.INVALID_TYPE, 'type');
       }
     }
   }, {
     key: '_test',
     value: function _test() {
       if (this._min && this._value.length < this._min) {
-        return this._setError(this._TypeError.INVALIDE_VALUE);
+        return this._setError(this._TypeError.INVALID_VALUE, 'min');
       }
       if (this._max && this._value.length > this._max) {
-        return this._setError(this._TypeError.INVALIDE_VALUE);
+        return this._setError(this._TypeError.INVALID_VALUE, 'max');
       }
       if (this._length && this._value.length !== this._length) {
-        return this._setError(this._TypeError.INVALIDE_VALUE);
+        return this._setError(this._TypeError.INVALID_VALUE, 'length');
       }
       if (this._innerType && this._value) {
-        var test = true;
+        var innerTypeError = null;
         for (var i = 0; i < this._value.length; i++) {
           this._innerType.test(this._value[i]);
           if (this._innerType.error) {
-            test = false;
+            innerTypeError = this._innerType.error;
             break;
           }
           this._value[i] = this._innerType.value;
         }
-        if (!test) return this._setError(this._TypeError.INVALIDE_TYPE);
+        if (innerTypeError) return this._setError(this._TypeError.INVALID_TYPE, 'innerType');
       }
     }
   }, {

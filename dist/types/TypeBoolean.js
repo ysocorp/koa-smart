@@ -13,6 +13,10 @@ var _toConsumableArray2 = require('babel-runtime/helpers/toConsumableArray');
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -46,13 +50,20 @@ var TypeBoolean = exports.TypeBoolean = function (_TypeAny) {
 
   // Specifies additional values to be considered as 'truthy'
   function TypeBoolean() {
+    var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     (0, _classCallCheck3.default)(this, TypeBoolean);
 
-    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeBoolean.__proto__ || (0, _getPrototypeOf2.default)(TypeBoolean)).call(this, 'boolean'));
+    var _this = (0, _possibleConstructorReturn3.default)(this, (TypeBoolean.__proto__ || (0, _getPrototypeOf2.default)(TypeBoolean)).call(this, (0, _extends3.default)({}, params, { type: 'boolean' })));
 
     _this._truthyValues = ['true'];
     _this._falsyValues = ['false'];
     _this._insensitive = true;
+
+    _this._getError = function (_ref) {
+      var _i18n = _ref._i18n;
+
+      return _i18n.__('Should be a boolean');
+    };
 
     _this._getDescription = function () {
       var prefix = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'It should be ';
@@ -61,7 +72,7 @@ var TypeBoolean = exports.TypeBoolean = function (_TypeAny) {
       return prefix + 'a boolean or one of: (' + _utils.utils.joinWithCote(valideValue, ', ') + ').';
     };
 
-    _this._errorMessages[_this._TypeError.INVALIDE_VALUE] = _this._getDescription;
+    _this._errorMessages[_this._TypeError.INVALID_VALUE] = _this._getError;
     return _this;
   } // Specifies additional values to be considered as 'falsy'
 
@@ -104,14 +115,14 @@ var TypeBoolean = exports.TypeBoolean = function (_TypeAny) {
     key: '_testType',
     value: function _testType() {
       if (!['boolean', 'string', 'number'].includes((0, _typeof3.default)(this._value))) {
-        this._setError(this._TypeError.INVALIDE_TYPE);
+        this._setError(this._TypeError.INVALID_TYPE);
       }
     }
   }, {
     key: '_test',
     value: function _test() {
       if (typeof this._value !== 'boolean') {
-        this._setError(this._TypeError.INVALIDE_VALUE);
+        this._setError(this._TypeError.INVALID_VALUE);
       }
     }
   }, {

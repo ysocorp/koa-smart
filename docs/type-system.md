@@ -302,14 +302,6 @@ Defines that the parameter should be a positive number.
 
 Defines that the parameter should be a negative number.
 
-### port([enabled])
-
-Defines that the parameter should be a valid port number, which is equivalent to:
-
-```sh
-const schema = Types.number().between(0, 65535);
-```
-
 ### precision(limit, type)
 
 Defines the precision of the parameter, as well as the function that should be used to modify it.

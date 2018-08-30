@@ -6,10 +6,14 @@ export class TypeEnum extends TypeAny {
   _insensitive = true;
   _number = true;
 
-  constructor() {
-    super('enum');
-    this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
+  constructor(params = {}) {
+    super({ ...params, type: 'enum' });
+    this._errorMessages[this._TypeError.INVALID_VALUE] = this._getError;
   }
+
+  _getError = ({ _i18n }) => {
+    return _i18n.__('Should be one of %s', utils.joinWithCote(this._oneOf, ', '));
+  };
 
   _getDescription = (prefix = 'It should be ') => {
     return `${prefix}one of: (${utils.joinWithCote(this._oneOf, ', ')}).`;
@@ -41,13 +45,13 @@ export class TypeEnum extends TypeAny {
 
   _testType() {
     if (!['string', 'number'].includes(typeof this._value)) {
-      this._setError(this._TypeError.INVALIDE_TYPE);
+      this._setError(this._TypeError.INVALID_TYPE);
     }
   }
 
   _test() {
     if (!this._oneOf.includes(this._value)) {
-      this._setError(this._TypeError.INVALIDE_VALUE);
+      this._setError(this._TypeError.INVALID_VALUE);
     }
   }
 

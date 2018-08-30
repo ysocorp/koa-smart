@@ -10,10 +10,20 @@ export class TypeDate extends TypeAny {
   _min; // earliest possible date
   _max; // latest possible date
 
-  constructor() {
-    super('date');
-    this._errorMessages[this._TypeError.INVALIDE_VALUE] = this._getDescription;
+  constructor(params = {}) {
+    super({ ...params, type: 'date' });
+    this._errorMessages[this._TypeError.INVALID_VALUE] = this._getError;
   }
+
+  _getError = ({ _i18n, _max, _min }, key) => {
+    key = this._errorKey || key;
+    this._errorKey = key;
+
+    if (key === 'max') return _i18n.__('Is before %s', _max.toDateString());
+    if (key === 'min') return _i18n.__('Is after %s', _min.toDateString());
+    if (key === 'invalid') return _i18n.__('Invalid date');
+    return null;
+  };
 
   _getDescription = (prefix = 'It should be ') => {
     let msgError = `${prefix}a date`;
@@ -93,20 +103,20 @@ export class TypeDate extends TypeAny {
 
   _test() {
     super._test();
-    const t = this._TypeError.INVALIDE_VALUE;
+    const t = this._TypeError.INVALID_VALUE;
     if (!this._isValid(this._value)) {
-      return this._setError(t);
+      return this._setError(t, 'invalid');
     }
     if (this._min && moment(this._value).isBefore(this._formatDateIfEnabled(this._min))) {
-      return this._setError(t);
+      return this._setError(t, 'min');
     }
     if (this._max && moment(this._value).isAfter(this._formatDateIfEnabled(this._max))) {
-      return this._setError(t);
+      return this._setError(t, 'max');
     }
     if (this._formatOut) {
       this._value = moment(this._value).format(this._formatOut);
       if (this._value === 'Invalid date') {
-        return this._setError(t);
+        return this._setError(t, 'invalid');
       }
     }
   }

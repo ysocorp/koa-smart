@@ -323,11 +323,14 @@ export default class Route {
    *@ignore
    */
   _mlTestParams(ctx, body, type) {
-    type.test(body);
-    if (type.error || type.errors) {
-      this.throwBadRequest(type.errors || type.error);
+    const cloneType = type.clone();
+    if (ctx.i18n) cloneType.setLocale(ctx.i18n.getLocale());
+
+    cloneType.test(body);
+    if (cloneType.error || cloneType.errors) {
+      this.throwBadRequest(cloneType.errors || cloneType.error);
     }
-    return type.value;
+    return cloneType.value;
   }
 
   // ************************************ !MIDDLEWARE *********************************
