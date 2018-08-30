@@ -1,9 +1,7 @@
 /**
  * @typedef {Object} ParamsMethodDecorator
- * @property {Object.<string, boolean | PostParamsFilter>} params the params describing the route's middlewares,
- *                                                                with the key being the param's name,
- *                                                                and the value describes the way it should be handled.
- *                                                                (only applicable for requests containing a body)
+ * @property {Types} bodyType Description of the body receiving
+ * @property {Types} queryType Description of the "request.query" receiving
  * @property {string} path the path at which the route will be available.<br/>
  * By default it will take the name of the function and replace uppercase by "-".<br/>
  * ex: a function name addUser will be mount with /add-user

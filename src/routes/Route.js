@@ -27,20 +27,6 @@ export default class Route {
    */
 
   /**
-   * @typedef {Object} PostParamsFilter
-   * @property {ParamMiddlewareFunction[]} __func an array of functions which provides "middleware" functions that will be applied to the corresponding parameter one by one, in order to validate or transform it
-   * @property {boolean} __force whether the parameter is required or not.
-   */
-
-  /**
-   * @typedef {function} ParamMiddlewareFunction
-   * @param {*} elem the element the function will act upon
-   * @param {Route} [route] the element's current route
-   * @param {{ctx: KoaContext, body:Object, keyBody:string}} [context] the element's context
-   * @return {*} transformedParam the parameter, after being manipulated by the function
-   */
-
-  /**
    * @typedef {Object} RouteParams
    * @property {Koa} koaApp the Koa application
    * @property {string} prefix a prefix which will be preppended before every route's paths
@@ -111,10 +97,6 @@ export default class Route {
      */
 
     this.koaRouter = new KoaRouter();
-    /**
-     * @ignore
-     */
-    this.privateKeyInParamsRoute = ['__force', '__func'];
     // This Variable are set by RouteDecorators
     this.routes;
     this.routeBase;
