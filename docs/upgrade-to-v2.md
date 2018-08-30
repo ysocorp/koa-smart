@@ -121,6 +121,7 @@ Rename `app` to `koaApp` to not confuse. Now `app = (instance of App)` and `koaA
 - `assertBadRequest`
 - `assertUnauthorized`
 - `assertForbidden`
+- `assertNotFound`
 
   Example :
 

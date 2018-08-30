@@ -962,6 +962,25 @@ var Route = (_temp = _class = function () {
 
       this.assert(condition, Route.StatusCode.forbidden, error || 'Forbidden', translate);
     }
+
+    /**
+     * @access public
+     * @version 2.0.0
+     * @desc same as {@link assert}, but automatically sets the status to 400 BAD REQUEST
+     * @param {boolean} condition if set to false; assert will fail and throw.
+     * @param {string | object} [error] the error(s) to be yielded by the request, default to "Not found"
+     * @param {boolean} translate indicates whether the message should be translated or not
+     * @throws {ErrorApp} thrown error, should the assert fail.
+     * @return { }
+     */
+
+  }, {
+    key: 'assertNotFound',
+    value: function assertNotFound(condition, error) {
+      var translate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+      this.assert(condition, Route.StatusCode.notFound, error || 'Not found', translate);
+    }
   }]);
   return Route;
 }(), _class.displayLog = true, _class.StatusCode = _StatusCode2.default, _class.Get = _RouteDecorators2.default.Get, _class.Post = _RouteDecorators2.default.Post, _class.Put = _RouteDecorators2.default.Put, _class.Patch = _RouteDecorators2.default.Patch, _class.Delete = _RouteDecorators2.default.Delete, _class.Route = _RouteDecorators2.default.Route, _temp);

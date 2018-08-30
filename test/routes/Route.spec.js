@@ -271,5 +271,19 @@ describe('Route', () => {
         route.assertForbidden(true, 'message');
       });
     });
+    describe('assertNotFound', () => {
+      it('should throw ErrorApp with message and set statusCode = 403', () => {
+        try {
+          route.assertNotFound(false, 'messages');
+        } catch (error) {
+          expect(error instanceof ErrorApp).toBeTruthy();
+          expect(error.status).toBe(Route.StatusCode.notFound);
+          expect(error.message).toBe('messages');
+        }
+      });
+      it('should not throw ErrorApp (if condiction is true)', () => {
+        route.assertNotFound(true, 'message');
+      });
+    });
   });
 });

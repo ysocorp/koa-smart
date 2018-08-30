@@ -533,4 +533,18 @@ export default class Route {
   assertForbidden(condition, error, translate = false) {
     this.assert(condition, Route.StatusCode.forbidden, error || 'Forbidden', translate);
   }
+
+  /**
+   * @access public
+   * @version 2.0.0
+   * @desc same as {@link assert}, but automatically sets the status to 400 BAD REQUEST
+   * @param {boolean} condition if set to false; assert will fail and throw.
+   * @param {string | object} [error] the error(s) to be yielded by the request, default to "Not found"
+   * @param {boolean} translate indicates whether the message should be translated or not
+   * @throws {ErrorApp} thrown error, should the assert fail.
+   * @return { }
+   */
+  assertNotFound(condition, error, translate = false) {
+    this.assert(condition, Route.StatusCode.notFound, error || 'Not found', translate);
+  }
 }
