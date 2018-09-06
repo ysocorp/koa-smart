@@ -7,11 +7,9 @@ export class TypeObject extends TypeAny {
 
   constructor(params = {}) {
     super({ ...params, type: 'object' });
-
-    this._errorMessages[this._TypeError.INVALID_VALUE] = this._getError;
   }
 
-  _getError = ({ _i18n }, key, keyError, msg) => {
+  _getErrorInvalidValue = ({ _i18n }, key, keyError, msg) => {
     if (key === 'add') return this._errorWithKey ? `${keyError}: ${msg}` : msg;
     return _i18n.__('Is not an object');
   };

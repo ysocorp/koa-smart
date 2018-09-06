@@ -53,7 +53,7 @@ var TypeObject = exports.TypeObject = function (_TypeAny) {
     _this._schema = {};
     _this._errors = {};
 
-    _this._getError = function (_ref, key, keyError, msg) {
+    _this._getErrorInvalidValue = function (_ref, key, keyError, msg) {
       var _i18n = _ref._i18n;
 
       if (key === 'add') return _this._errorWithKey ? keyError + ': ' + msg : msg;
@@ -66,7 +66,6 @@ var TypeObject = exports.TypeObject = function (_TypeAny) {
       return prefix + 'an object';
     };
 
-    _this._errorMessages[_this._TypeError.INVALID_VALUE] = _this._getError;
     return _this;
   }
 

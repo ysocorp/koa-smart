@@ -51,7 +51,7 @@ var TypeString = function (_TypeAny) {
     _this._tUppercase = false;
     _this._tLowercase = false;
 
-    _this._getError = function (_ref, key) {
+    _this._getErrorInvalidValue = function (_ref, key) {
       var _i18n = _ref._i18n;
 
       key = _this._errorKey || key;
@@ -84,7 +84,6 @@ var TypeString = function (_TypeAny) {
       return '' + msgError + _this._generateParamDescription(paramsDesc, ' with') + '.';
     };
 
-    _this._errorMessages[_this._TypeError.INVALID_VALUE] = _this._getError;
     return _this;
   }
 

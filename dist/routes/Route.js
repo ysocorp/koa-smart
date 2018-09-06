@@ -156,10 +156,6 @@ var Route = (_temp = _class = function () {
      */
 
     this.koaRouter = new _koaRouter3.default();
-    /**
-     * @ignore
-     */
-    this.privateKeyInParamsRoute = ['__force', '__func'];
     // This Variable are set by RouteDecorators
     this.routes;
     this.routeBase;

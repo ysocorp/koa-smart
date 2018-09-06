@@ -30,7 +30,7 @@ export class TypeAny {
     [this._TypeError.REQUIRED]: () => this._i18n.__('Is required'),
     [this._TypeError.IS_NULL]: () => this._i18n.__('Cannot be null'),
     [this._TypeError.INVALID_TYPE]: () => this._i18n.__('Expected type %s', this._type),
-    [this._TypeError.INVALID_VALUE]: () => this._i18n.__('Invalid field'),
+    [this._TypeError.INVALID_VALUE]: (...rest) => this._getErrorInvalidValue(...rest),
   };
   // options
   _isRequired = false;
@@ -70,8 +70,8 @@ export class TypeAny {
     return this;
   }
 
-  _getError = () => {
-    return this._i18n.__('Invalid field');
+  _getErrorInvalidValue = ({ _i18n }) => {
+    return _i18n.__('Invalid field');
   };
 
   _getDescription = (prefix = 'It should be') => {

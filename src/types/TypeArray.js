@@ -12,11 +12,10 @@ export class TypeArray extends TypeAny {
 
   constructor(params = {}) {
     super({ ...params, type: 'Array' });
-    this._errorMessages[this._TypeError.INVALID_VALUE] = this._getError;
-    this._errorMessages[this._TypeError.INVALID_TYPE] = this._getError;
+    this._errorMessages[this._TypeError.INVALID_TYPE] = this._getErrorInvalidValue;
   }
 
-  _getError = ({ _i18n }, key) => {
+  _getErrorInvalidValue = ({ _i18n }, key) => {
     if (key === 'type') return _i18n.__('Should be an array');
     if (key === 'length') return _i18n.__('Expected %d items', this._length);
     if (key === 'min') return _i18n.__('Less than %d items', this._min);

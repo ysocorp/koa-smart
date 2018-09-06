@@ -13,10 +13,9 @@ export class TypeNumber extends TypeAny {
 
   constructor(params = {}) {
     super({ ...params, type: 'number' });
-    this._errorMessages[this._TypeError.INVALID_VALUE] = this._getError;
   }
 
-  _getError = ({ _i18n }, key) => {
+  _getErrorInvalidValue = ({ _i18n }, key) => {
     key = this._errorKey || key;
     this._errorKey = key;
 

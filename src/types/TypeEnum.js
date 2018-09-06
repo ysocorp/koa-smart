@@ -8,10 +8,9 @@ export class TypeEnum extends TypeAny {
 
   constructor(params = {}) {
     super({ ...params, type: 'enum' });
-    this._errorMessages[this._TypeError.INVALID_VALUE] = this._getError;
   }
 
-  _getError = ({ _i18n }) => {
+  _getErrorInvalidValue = ({ _i18n }) => {
     return _i18n.__('Should be one of %s', utils.joinWithCote(this._oneOf, ', '));
   };
 

@@ -55,7 +55,7 @@ var TypeNumber = exports.TypeNumber = function (_TypeAny) {
     _this._positive = false;
     _this._negative = false;
 
-    _this._getError = function (_ref, key) {
+    _this._getErrorInvalidValue = function (_ref, key) {
       var _i18n = _ref._i18n;
 
       key = _this._errorKey || key;
@@ -112,7 +112,6 @@ var TypeNumber = exports.TypeNumber = function (_TypeAny) {
       return Math[type](nb * Math.pow(10, nbDigit)) / Math.pow(10, nbDigit);
     };
 
-    _this._errorMessages[_this._TypeError.INVALID_VALUE] = _this._getError;
     return _this;
   } // Specifies the maximum number of decimal places where:
   // Requires the number to be positive.

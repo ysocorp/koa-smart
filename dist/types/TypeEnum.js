@@ -56,7 +56,7 @@ var TypeEnum = exports.TypeEnum = function (_TypeAny) {
     _this._insensitive = true;
     _this._number = true;
 
-    _this._getError = function (_ref) {
+    _this._getErrorInvalidValue = function (_ref) {
       var _i18n = _ref._i18n;
 
       return _i18n.__('Should be one of %s', _utils.utils.joinWithCote(_this._oneOf, ', '));
@@ -68,7 +68,6 @@ var TypeEnum = exports.TypeEnum = function (_TypeAny) {
       return prefix + 'one of: (' + _utils.utils.joinWithCote(_this._oneOf, ', ') + ').';
     };
 
-    _this._errorMessages[_this._TypeError.INVALID_VALUE] = _this._getError;
     return _this;
   }
 

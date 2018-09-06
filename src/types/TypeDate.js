@@ -12,10 +12,9 @@ export class TypeDate extends TypeAny {
 
   constructor(params = {}) {
     super({ ...params, type: 'date' });
-    this._errorMessages[this._TypeError.INVALID_VALUE] = this._getError;
   }
 
-  _getError = ({ _i18n, _max, _min }, key) => {
+  _getErrorInvalidValue = ({ _i18n, _max, _min }, key) => {
     key = this._errorKey || key;
     this._errorKey = key;
 

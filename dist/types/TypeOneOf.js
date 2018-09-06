@@ -49,7 +49,7 @@ var TypeOneOf = exports.TypeOneOf = function (_TypeAny) {
     _this._types = [];
     _this._errors = [];
 
-    _this._getError = function (_ref) {
+    _this._getErrorInvalidValue = function (_ref) {
       var _i18n = _ref._i18n;
 
       return _i18n.__('Invalid type');
@@ -88,7 +88,6 @@ var TypeOneOf = exports.TypeOneOf = function (_TypeAny) {
       return prefix + 'either ' + msgs.join(' OR ') + '.';
     };
 
-    _this._errorMessages[_this._TypeError.INVALID_VALUE] = _this._getError;
     return _this;
   }
 

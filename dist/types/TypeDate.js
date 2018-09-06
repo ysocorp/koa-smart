@@ -53,7 +53,7 @@ var TypeDate = function (_TypeAny) {
 
     var _this = (0, _possibleConstructorReturn3.default)(this, (TypeDate.__proto__ || (0, _getPrototypeOf2.default)(TypeDate)).call(this, (0, _extends3.default)({}, params, { type: 'date' })));
 
-    _this._getError = function (_ref, key) {
+    _this._getErrorInvalidValue = function (_ref, key) {
       var _i18n = _ref._i18n,
           _max = _ref._max,
           _min = _ref._min;
@@ -85,7 +85,6 @@ var TypeDate = function (_TypeAny) {
       return '' + msgError + paramMsg + '.';
     };
 
-    _this._errorMessages[_this._TypeError.INVALID_VALUE] = _this._getError;
     return _this;
   } // earliest possible date
   // the date's input format

@@ -37,9 +37,9 @@ var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-var _i18n = require('i18n-2');
+var _i18n2 = require('i18n-2');
 
-var _i18n2 = _interopRequireDefault(_i18n);
+var _i18n3 = _interopRequireDefault(_i18n2);
 
 var _path = require('path');
 
@@ -77,15 +77,17 @@ var TypeAny = exports.TypeAny = function () {
     }), (0, _defineProperty3.default)(_errorMessages, this._TypeError.INVALID_TYPE, function () {
       return _this._i18n.__('Expected type %s', _this._type);
     }), (0, _defineProperty3.default)(_errorMessages, this._TypeError.INVALID_VALUE, function () {
-      return _this._i18n.__('Invalid field');
+      return _this._getErrorInvalidValue.apply(_this, arguments);
     }), _errorMessages);
     this._isRequired = false;
     this._notNull = false;
     this._default = undefined;
     this._value = null;
 
-    this._getError = function () {
-      return _this._i18n.__('Invalid field');
+    this._getErrorInvalidValue = function (_ref2) {
+      var _i18n = _ref2._i18n;
+
+      return _i18n.__('Invalid field');
     };
 
     this._getDescription = function () {
@@ -100,14 +102,14 @@ var TypeAny = exports.TypeAny = function () {
       locales: ['en', 'fr'],
       extension: '.json'
     }, i18n);
-    this._i18n = new _i18n2.default(this._i18nConfig);
+    this._i18n = new _i18n3.default(this._i18nConfig);
   }
 
   (0, _createClass3.default)(TypeAny, [{
     key: 'clone',
     value: function clone() {
       var clone = (0, _assign2.default)((0, _create2.default)((0, _getPrototypeOf2.default)(this)), this);
-      clone._i18n = new _i18n2.default(this._i18nConfig);
+      clone._i18n = new _i18n3.default(this._i18nConfig);
       return clone;
     }
   }, {

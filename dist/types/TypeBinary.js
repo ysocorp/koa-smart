@@ -49,7 +49,7 @@ var TypeBinary = function (_TypeAny) {
 
     var _this = (0, _possibleConstructorReturn3.default)(this, (TypeBinary.__proto__ || (0, _getPrototypeOf2.default)(TypeBinary)).call(this, (0, _extends3.default)({}, params, { type: 'binary' })));
 
-    _this._getError = function (_ref, key) {
+    _this._getErrorInvalidValue = function (_ref, key) {
       var _i18n = _ref._i18n;
 
       key = _this._errorKey || key;
@@ -80,7 +80,6 @@ var TypeBinary = function (_TypeAny) {
       return '' + msgError + paramMsg + '.';
     };
 
-    _this._errorMessages[_this._TypeError.INVALID_VALUE] = _this._getError;
     return _this;
   } // the buffer's minimum allowed length
   // the desired encoding of buffer

@@ -49,7 +49,7 @@ var TypeArray = function (_TypeAny) {
 
     _this._tSingle = false;
 
-    _this._getError = function (_ref, key) {
+    _this._getErrorInvalidValue = function (_ref, key) {
       var _i18n = _ref._i18n;
 
       if (key === 'type') return _i18n.__('Should be an array');
@@ -81,8 +81,7 @@ var TypeArray = function (_TypeAny) {
       return '' + msgError + paramMsg + '.';
     };
 
-    _this._errorMessages[_this._TypeError.INVALID_VALUE] = _this._getError;
-    _this._errorMessages[_this._TypeError.INVALID_TYPE] = _this._getError;
+    _this._errorMessages[_this._TypeError.INVALID_TYPE] = _this._getErrorInvalidValue;
     return _this;
   } // the array's maximum allowed length
   // the array's exact allowed length
