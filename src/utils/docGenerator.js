@@ -13,6 +13,12 @@ function _capitalize(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+function _removeLast(string) {
+  const elems = string.split('/');
+  elems.pop();
+  return elems.join('/');
+}
+
 function _param(file, type, keyBase, location) {
   if (type instanceof TypeObject) {
     for (const key in type._schema) {
@@ -48,8 +54,9 @@ export function generateDoc(classRoute, route) {
 
   const { options } = route;
   const className = classRoute.constructor.name.replace('Route', '');
-  fs.mkdirpSync(pathJoin(DIR_TMP, options.routePath));
-  const file = pathJoin(DIR_TMP, `${options.routePath || className}.js`);
+  const routePathFileName = options.routePath.replace(/:/g, '-'); // to be able to create folder in Windows
+  fs.mkdirpSync(pathJoin(DIR_TMP, _removeLast(routePathFileName)));
+  const file = pathJoin(DIR_TMP, `${routePathFileName || className}.js`);
   fs.writeFileSync(file, '\n');
 
   let group = '';

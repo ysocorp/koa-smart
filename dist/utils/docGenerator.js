@@ -29,6 +29,12 @@ function _capitalize(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+function _removeLast(string) {
+  var elems = string.split('/');
+  elems.pop();
+  return elems.join('/');
+}
+
 function _param(file, type, keyBase, location) {
   if (type instanceof _TypeObject.TypeObject) {
     for (var key in type._schema) {
@@ -65,8 +71,9 @@ function generateDoc(classRoute, route) {
   var options = route.options;
 
   var className = classRoute.constructor.name.replace('Route', '');
-  _fsExtra2.default.mkdirpSync((0, _path.join)(DIR_TMP, options.routePath));
-  var file = (0, _path.join)(DIR_TMP, (options.routePath || className) + '.js');
+  var routePathFileName = options.routePath.replace(/:/g, '-'); // to be able to create folder in Windows
+  _fsExtra2.default.mkdirpSync((0, _path.join)(DIR_TMP, _removeLast(routePathFileName)));
+  var file = (0, _path.join)(DIR_TMP, (routePathFileName || className) + '.js');
   _fsExtra2.default.writeFileSync(file, '\n');
 
   var group = '';
