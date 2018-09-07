@@ -114,14 +114,26 @@ function generateDoc(classRoute, route) {
   _fsExtra2.default.appendFileSync(file, '*/\n\n');
 }
 
+function _isWindow() {
+  return process.platform === 'win32';
+}
+
+function _getCmd(cmd) {
+  return !_isWindow() ? cmd : 'cmd';
+}
+
 function end() {
   if (!ENABLE_DOC) return;
-  var cmdApidoc = (0, _child_process.spawn)('npx', ['apidoc', '-i', DIR_TMP, '-o', DIR]);
+  var isWindows = _isWindow();
+  var cmdArgsNpx = !_isWindow ? ['apidoc', '-i', DIR_TMP, '-o', DIR] : ['/s', '/c', 'npx', 'apidoc', '-i', DIR_TMP, '-o', DIR];
+  var cmdArgsRm = !isWindows ? ['-rf', DIR_TMP] : ['/s', '/c', 'rmdir', '/s', '/q', DIR_TMP];
+
+  var cmdApidoc = (0, _child_process.spawn)(_getCmd('npx'), cmdArgsNpx);
   cmdApidoc.on('close', function (code) {
     if (code === 1) {
       // eslint-disable-next-line
       console.error('[DocGenerator] an error when generate the apiDoc ');
     }
-    (0, _child_process.spawn)('rm', ['-rf', DIR_TMP]);
+    (0, _child_process.spawn)(_getCmd('rm'), cmdArgsRm);
   });
 }

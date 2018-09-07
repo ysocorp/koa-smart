@@ -93,14 +93,28 @@ export function generateDoc(classRoute, route) {
   fs.appendFileSync(file, '*/\n\n');
 }
 
+function _isWindow() {
+  return process.platform === 'win32';
+}
+
+function _getCmd(cmd) {
+  return !_isWindow() ? cmd : 'cmd';
+}
+
 export function end() {
   if (!ENABLE_DOC) return;
-  const cmdApidoc = spawn('npx', ['apidoc', '-i', DIR_TMP, '-o', DIR]);
+  const isWindows = _isWindow();
+  const cmdArgsNpx = !_isWindow
+    ? ['apidoc', '-i', DIR_TMP, '-o', DIR]
+    : ['/s', '/c', 'npx', 'apidoc', '-i', DIR_TMP, '-o', DIR];
+  const cmdArgsRm = !isWindows ? ['-rf', DIR_TMP] : ['/s', '/c', 'rmdir', '/s', '/q', DIR_TMP];
+
+  const cmdApidoc = spawn(_getCmd('npx'), cmdArgsNpx);
   cmdApidoc.on('close', code => {
     if (code === 1) {
       // eslint-disable-next-line
       console.error('[DocGenerator] an error when generate the apiDoc ');
     }
-    spawn('rm', ['-rf', DIR_TMP]);
+    spawn(_getCmd('rm'), cmdArgsRm);
   });
 }
