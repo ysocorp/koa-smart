@@ -176,7 +176,7 @@ var TypeAny = exports.TypeAny = function () {
       var val = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
       this._isRequired = val;
-      this.allowNull(false);
+      this.allowNull(!val);
       return this;
     }
   }, {

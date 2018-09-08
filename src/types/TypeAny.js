@@ -141,7 +141,7 @@ export class TypeAny {
 
   required(val = true) {
     this._isRequired = val;
-    this.allowNull(false);
+    this.allowNull(!val);
     return this;
   }
 
