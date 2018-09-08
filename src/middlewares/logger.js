@@ -29,7 +29,7 @@ async function logger(ctx, next) {
 
     const arraySequelize = ['SequelizeValidationError', 'SequelizeUniqueConstraintError'];
     if (err.constructor.name === 'ErrorApp') {
-      msg = `${err.status}: ${err.message}`;
+      msg = `${err.status}: ${err.message || JSON.stringify(err.messages)}`;
       status = err.status;
     }
     if (arraySequelize.includes(err.name)) {
@@ -37,7 +37,7 @@ async function logger(ctx, next) {
       status = 400;
     }
     // eslint-disable-next-line
-    console.log(chalk.red('[ERROR]'), `${chalk.red.bold(ctx.method)} ${ctx.url}`, msg);
+    console.log(chalk.red('[ERROR]'), `${chalk.red.bold(ctx.method)} ${ctx.url}`, msg.toString());
     throw err;
   } finally {
     const ms = new Date() - start;

@@ -8,6 +8,10 @@ var _regenerator = require('babel-runtime/regenerator');
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
 var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
@@ -40,7 +44,7 @@ var logger = function () {
             arraySequelize = ['SequelizeValidationError', 'SequelizeUniqueConstraintError'];
 
             if (_context.t0.constructor.name === 'ErrorApp') {
-              msg = _context.t0.status + ': ' + _context.t0.message;
+              msg = _context.t0.status + ': ' + (_context.t0.message || (0, _stringify2.default)(_context.t0.messages));
               status = _context.t0.status;
             }
             if (arraySequelize.includes(_context.t0.name)) {
@@ -48,7 +52,7 @@ var logger = function () {
               status = 400;
             }
             // eslint-disable-next-line
-            console.log(_chalk2.default.red('[ERROR]'), _chalk2.default.red.bold(ctx.method) + ' ' + ctx.url, msg);
+            console.log(_chalk2.default.red('[ERROR]'), _chalk2.default.red.bold(ctx.method) + ' ' + ctx.url, msg.toString());
             throw _context.t0;
 
           case 17:
