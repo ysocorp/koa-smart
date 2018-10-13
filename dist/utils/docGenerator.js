@@ -125,7 +125,7 @@ function _getCmd(cmd) {
 function end() {
   if (!ENABLE_DOC) return;
   var isWindows = _isWindow();
-  var cmdArgsNpx = !_isWindow ? ['apidoc', '-i', DIR_TMP, '-o', DIR] : ['/s', '/c', 'npx', 'apidoc', '-i', DIR_TMP, '-o', DIR];
+  var cmdArgsNpx = !isWindows ? ['apidoc', '-i', DIR_TMP, '-o', DIR] : ['/s', '/c', 'npx', 'apidoc', '-i', DIR_TMP, '-o', DIR];
   var cmdArgsRm = !isWindows ? ['-rf', DIR_TMP] : ['/s', '/c', 'rmdir', '/s', '/q', DIR_TMP];
 
   var cmdApidoc = (0, _child_process.spawn)(_getCmd('npx'), cmdArgsNpx);

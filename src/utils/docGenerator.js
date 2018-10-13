@@ -104,7 +104,7 @@ function _getCmd(cmd) {
 export function end() {
   if (!ENABLE_DOC) return;
   const isWindows = _isWindow();
-  const cmdArgsNpx = !_isWindow
+  const cmdArgsNpx = !isWindows
     ? ['apidoc', '-i', DIR_TMP, '-o', DIR]
     : ['/s', '/c', 'npx', 'apidoc', '-i', DIR_TMP, '-o', DIR];
   const cmdArgsRm = !isWindows ? ['-rf', DIR_TMP] : ['/s', '/c', 'rmdir', '/s', '/q', DIR_TMP];
