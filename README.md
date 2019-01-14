@@ -64,7 +64,6 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
   - [`koa-i18n`](https://github.com/koa-modules/i18n) for Internationalization (I18n)
 
 - [`moment`](https://github.com/moment/moment) Parse, validate, manipulate, and display dates in javascript.
-- [`lodash`](https://github.com/lodash/lodash) A modern JavaScript utility library delivering modularity, performance, & extras
 - [`jsonwebtoken`](https://github.com/auth0/node-jsonwebtoken) an implementation of [JSON Web Tokens JWT](https://tools.ietf.org/html/rfc7519)
 - 💪&nbsp;&nbsp;[`@Decorators`](https://babeljs.io/docs/plugins/transform-decorators/) to ensure a better project structure
 - 🚀&nbsp;&nbsp;[Automatic doc generation](https://ysocorp.github.io/koa-smart/manual/auto-doc.html)

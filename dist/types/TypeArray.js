@@ -29,7 +29,7 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
-var _lodash = require('lodash');
+var _utils = require('../utils/utils');
 
 var _TypeAny2 = require('./TypeAny');
 
@@ -172,7 +172,7 @@ var TypeArray = function (_TypeAny) {
         this._value = this._value.split(this._tSplitBy);
       }
       if (this._tSingle && !Array.isArray(this._value)) {
-        this._value = (0, _lodash.castArray)(this._value);
+        this._value = (0, _utils.castArray)(this._value);
       }
     }
   }]);

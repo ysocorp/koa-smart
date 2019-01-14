@@ -37,7 +37,9 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
-var _lodash = require('lodash');
+var _lodash = require('lodash.uniq');
+
+var _lodash2 = _interopRequireDefault(_lodash);
 
 var _TypeAny2 = require('./TypeAny');
 
@@ -91,7 +93,7 @@ var TypeBoolean = exports.TypeBoolean = function (_TypeAny) {
     value: function truthy() {
       var vals = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
-      this._truthyValues = (0, _lodash.uniq)([].concat((0, _toConsumableArray3.default)(this._truthyValues), (0, _toConsumableArray3.default)((0, _lodash.castArray)(vals))));
+      this._truthyValues = (0, _lodash2.default)([].concat((0, _toConsumableArray3.default)(this._truthyValues), (0, _toConsumableArray3.default)(_utils.utils.castArray(vals))));
       return this;
     }
   }, {
@@ -99,7 +101,7 @@ var TypeBoolean = exports.TypeBoolean = function (_TypeAny) {
     value: function falsy() {
       var vals = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
-      this._falsyValues = (0, _lodash.uniq)([].concat((0, _toConsumableArray3.default)(this._falsyValues), (0, _toConsumableArray3.default)((0, _lodash.castArray)(vals))));
+      this._falsyValues = (0, _lodash2.default)([].concat((0, _toConsumableArray3.default)(this._falsyValues), (0, _toConsumableArray3.default)(_utils.utils.castArray(vals))));
       return this;
     }
   }, {

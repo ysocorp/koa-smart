@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.wait = exports.timeout = exports.lodash = undefined;
+exports.wait = exports.timeout = undefined;
 
 var _keys = require('babel-runtime/core-js/object/keys');
 
@@ -69,18 +69,17 @@ exports.toNumber = toNumber;
 exports.deepCopy = deepCopy;
 exports.objValToArray = objValToArray;
 exports.joinWithCote = joinWithCote;
+exports.castArray = castArray;
 
 var _moment = require('moment');
 
 var _moment2 = _interopRequireDefault(_moment);
 
-var _lodash = require('lodash');
+var _lodash = require('lodash.clonedeep');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var lodash = exports.lodash = _lodash2.default;
 
 /**
  * @desc generates a random number configurable range and floating precision
@@ -237,7 +236,7 @@ function toNumber(elem) {
  * @return {Object} a deep copy of the supplied object
  */
 function deepCopy(obj) {
-  return _lodash2.default.cloneDeep(obj);
+  return (0, _lodash2.default)(obj);
 }
 
 /**
@@ -272,4 +271,41 @@ function joinWithCote(elems) {
     }
   }
   return str;
+}
+
+/**
+ * Casts `value` as an array if it's not one.
+ *
+ * @param {*} value The value to inspect.
+ * @returns {Array} Returns the cast array.
+ * @example
+ *
+ * castArray(1)
+ * // => [1]
+ *
+ * castArray({ 'a': 1 })
+ * // => [{ 'a': 1 }]
+ *
+ * castArray('abc')
+ * // => ['abc']
+ *
+ * castArray(null)
+ * // => [null]
+ *
+ * castArray(undefined)
+ * // => [undefined]
+ *
+ * castArray()
+ * // => []
+ *
+ * const array = [1, 2, 3]
+ * console.log(castArray(array) === array)
+ * // => true
+ */
+function castArray() {
+  if (!arguments.length) {
+    return [];
+  }
+  var value = arguments.length <= 0 ? undefined : arguments[0];
+  return Array.isArray(value) ? value : [value];
 }

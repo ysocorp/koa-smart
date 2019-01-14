@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash';
+import { deepCopy } from '../utils/utils';
 
 import { TypeAny as KsAny } from './TypeAny';
 import { TypeArray as KsArray } from './TypeArray';
@@ -28,7 +28,7 @@ let opt = {
 
 export const Types = {
   init: ({ i18n = {} } = {}) => {
-    const newOpt = cloneDeep(opt);
+    const newOpt = deepCopy(opt);
     opt = {
       ...newOpt,
       i18n: { ...opt.i18n, ...i18n },

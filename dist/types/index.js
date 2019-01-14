@@ -9,7 +9,7 @@ var _extends2 = require('babel-runtime/helpers/extends');
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _lodash = require('lodash');
+var _utils = require('../utils/utils');
 
 var _TypeAny = require('./TypeAny');
 
@@ -54,7 +54,7 @@ var Types = exports.Types = {
         _ref$i18n = _ref.i18n,
         i18n = _ref$i18n === undefined ? {} : _ref$i18n;
 
-    var newOpt = (0, _lodash.cloneDeep)(opt);
+    var newOpt = (0, _utils.deepCopy)(opt);
     opt = (0, _extends3.default)({}, newOpt, {
       i18n: (0, _extends3.default)({}, opt.i18n, i18n)
     });

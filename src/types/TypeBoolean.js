@@ -1,4 +1,4 @@
-import { castArray, uniq } from 'lodash';
+import uniq from 'lodash.uniq';
 
 import { TypeAny } from './TypeAny';
 import { utils } from '../utils';
@@ -31,12 +31,12 @@ export class TypeBoolean extends TypeAny {
   }
 
   truthy(vals = []) {
-    this._truthyValues = uniq([...this._truthyValues, ...castArray(vals)]);
+    this._truthyValues = uniq([...this._truthyValues, ...utils.castArray(vals)]);
     return this;
   }
 
   falsy(vals = []) {
-    this._falsyValues = uniq([...this._falsyValues, ...castArray(vals)]);
+    this._falsyValues = uniq([...this._falsyValues, ...utils.castArray(vals)]);
     return this;
   }
 

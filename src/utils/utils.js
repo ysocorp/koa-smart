@@ -1,7 +1,5 @@
 import moment from 'moment';
-import Lodash from 'lodash';
-
-export const lodash = Lodash;
+import cloneDeep from 'lodash.clonedeep';
 
 /**
  * @desc generates a random number configurable range and floating precision
@@ -155,7 +153,7 @@ export function toNumber(elem) {
  * @return {Object} a deep copy of the supplied object
  */
 export function deepCopy(obj) {
-  return Lodash.cloneDeep(obj);
+  return cloneDeep(obj);
 }
 
 /**
@@ -186,4 +184,41 @@ export function joinWithCote(elems, delimiter = ', ') {
     }
   }
   return str;
+}
+
+/**
+ * Casts `value` as an array if it's not one.
+ *
+ * @param {*} value The value to inspect.
+ * @returns {Array} Returns the cast array.
+ * @example
+ *
+ * castArray(1)
+ * // => [1]
+ *
+ * castArray({ 'a': 1 })
+ * // => [{ 'a': 1 }]
+ *
+ * castArray('abc')
+ * // => ['abc']
+ *
+ * castArray(null)
+ * // => [null]
+ *
+ * castArray(undefined)
+ * // => [undefined]
+ *
+ * castArray()
+ * // => []
+ *
+ * const array = [1, 2, 3]
+ * console.log(castArray(array) === array)
+ * // => true
+ */
+export function castArray(...args) {
+  if (!args.length) {
+    return [];
+  }
+  const value = args[0];
+  return Array.isArray(value) ? value : [value];
 }

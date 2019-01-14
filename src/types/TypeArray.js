@@ -1,5 +1,4 @@
-import { castArray } from 'lodash';
-
+import { castArray } from '../utils/utils';
 import { TypeAny } from './TypeAny';
 
 export class TypeArray extends TypeAny {
