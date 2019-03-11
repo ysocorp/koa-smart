@@ -30,6 +30,13 @@ export default class RouteDecorators {
     });
   }
 
+  // replace A-Z to lowercase and add - ex myFunc => my-func
+  static _getEventFromMethode(str) {
+    return str.replace(/on([A-Z][a-z]*)/g, (str, letter) => {
+      return `${letter.toLowerCase()}`;
+    });
+  }
+
   static _initData(target) {
     target.routes = target.routes || {
       get: [],
@@ -37,6 +44,7 @@ export default class RouteDecorators {
       delete: [],
       patch: [],
       put: [],
+      websocket: [],
     };
     if (target.routeBase === undefined) {
       target.routeBase = target.constructor.name.replace('Route', '');
@@ -83,6 +91,16 @@ export default class RouteDecorators {
     };
   }
 
+  static WebSocket(params) {
+    return (target, key, descriptor) => {
+      params = {
+        eventName: RouteDecorators._getEventFromMethode(key),
+        ...params,
+      };
+      const fuc = RouteDecorators._addRoute('websocket', params);
+      fuc(target, key, descriptor);
+    };
+  }
   static Get(params) {
     return (target, key, descriptor) => {
       const fuc = RouteDecorators._addRoute('get', params);

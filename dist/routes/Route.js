@@ -17,13 +17,13 @@ var _extends2 = require('babel-runtime/helpers/extends');
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _toConsumableArray2 = require('babel-runtime/helpers/toConsumableArray');
-
-var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
-
 var _getIterator2 = require('babel-runtime/core-js/get-iterator');
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
+
+var _toConsumableArray2 = require('babel-runtime/helpers/toConsumableArray');
+
+var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
 var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
@@ -175,6 +175,14 @@ var Route = (_temp = _class = function () {
 
   /**
    * @access public
+   * @desc mounts the tagged function as a GET route.
+   * @param {ParamsMethodDecorator} params the route's parameters
+   * @return {Decorator}
+   */
+
+
+  /**
+   * @access public
    * @desc mounts the tagged function as a POST route.
    * @param {ParamsMethodDecorator} params the route's parameters
    * @return {Decorator}
@@ -246,8 +254,29 @@ var Route = (_temp = _class = function () {
   }, {
     key: 'mount',
     value: function mount() {
+      var _this = this;
+
       if (this.disable !== true) {
         for (var type in this.routes) {
+          var _loop = function _loop(route) {
+            var routePath = ('/' + _this.prefix + '/' + _this.routeBase + '/' + route.path).replace(/[/]{2,10}/g, '/').replace(/[/]$/, '');
+            if (!route.options.disable) {
+              _this.log(_chalk2.default.green.bold('[Mount route]'), '\t' + type + '\t', routePath);
+              if (type === 'websocket') {
+                _this.webSocketRouter = function (ctx) {
+                  if (ctx.path === routePath) ctx.websocket.on(route.options.eventName, route.call);
+                };
+              } else {
+                var _koaRouter;
+
+                (_koaRouter = _this.koaRouter)[type].apply(_koaRouter, [routePath].concat((0, _toConsumableArray3.default)(_this._use(route))));
+              }
+              (0, _docGenerator.generateDoc)(_this, route);
+            } else {
+              _this.log(_chalk2.default.yellow.bold('[Disable Mount route]\t'), type, routePath);
+            }
+          };
+
           // eslint-disable-line
           var _iteratorNormalCompletion = true;
           var _didIteratorError = false;
@@ -257,18 +286,7 @@ var Route = (_temp = _class = function () {
             for (var _iterator = (0, _getIterator3.default)(this.routes[type]), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
               var route = _step.value;
 
-              var routePath = ('/' + this.prefix + '/' + this.routeBase + '/' + route.path).replace(/[/]{2,10}/g, '/').replace(/[/]$/, '');
-              route.options.routePath = routePath;
-              route.options.type = type;
-              if (!route.options.disable) {
-                var _koaRouter;
-
-                this.log(_chalk2.default.green.bold('[Mount route]'), '\t' + type + '\t', routePath);
-                (_koaRouter = this.koaRouter)[type].apply(_koaRouter, [routePath].concat((0, _toConsumableArray3.default)(this._use(route))));
-                (0, _docGenerator.generateDoc)(this, route);
-              } else {
-                this.log(_chalk2.default.yellow.bold('[Disable Mount route]\t'), type, routePath);
-              }
+              _loop(route);
             }
           } catch (err) {
             _didIteratorError = true;
@@ -384,7 +402,7 @@ var Route = (_temp = _class = function () {
   }, {
     key: '_beforeRoute',
     value: function _beforeRoute(infos) {
-      var _this = this;
+      var _this2 = this;
 
       return function () {
         var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(ctx, next) {
@@ -393,7 +411,7 @@ var Route = (_temp = _class = function () {
               switch (_context.prev = _context.next) {
                 case 0:
                   _context.next = 2;
-                  return _this.beforeRoute(ctx, infos, next);
+                  return _this2.beforeRoute(ctx, infos, next);
 
                 case 2:
                   return _context.abrupt('return', _context.sent);
@@ -403,7 +421,7 @@ var Route = (_temp = _class = function () {
                   return _context.stop();
               }
             }
-          }, _callee, _this);
+          }, _callee, _this2);
         }));
 
         return function (_x, _x2) {
@@ -965,5 +983,5 @@ var Route = (_temp = _class = function () {
     }
   }]);
   return Route;
-}(), _class.displayLog = true, _class.StatusCode = _StatusCode2.default, _class.Get = _RouteDecorators2.default.Get, _class.Post = _RouteDecorators2.default.Post, _class.Put = _RouteDecorators2.default.Put, _class.Patch = _RouteDecorators2.default.Patch, _class.Delete = _RouteDecorators2.default.Delete, _class.Route = _RouteDecorators2.default.Route, _temp);
+}(), _class.displayLog = true, _class.StatusCode = _StatusCode2.default, _class.WebSocket = _RouteDecorators2.default.WebSocket, _class.Get = _RouteDecorators2.default.Get, _class.Post = _RouteDecorators2.default.Post, _class.Put = _RouteDecorators2.default.Put, _class.Patch = _RouteDecorators2.default.Patch, _class.Delete = _RouteDecorators2.default.Delete, _class.Route = _RouteDecorators2.default.Route, _temp);
 exports.default = Route;

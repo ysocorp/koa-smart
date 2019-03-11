@@ -41,6 +41,10 @@ var _koaLocale = require('koa-locale');
 
 var _koaLocale2 = _interopRequireDefault(_koaLocale);
 
+var _koaWebsocket = require('koa-websocket');
+
+var _koaWebsocket2 = _interopRequireDefault(_koaWebsocket);
+
 var _Route = require('./routes/Route');
 
 var _Route2 = _interopRequireDefault(_Route);
@@ -74,7 +78,9 @@ var App = function () {
         _opt$docPath = opt.docPath,
         docPath = _opt$docPath === undefined ? (0, _path.join)(__dirname, '..', 'apidoc') : _opt$docPath,
         _opt$generateDoc = opt.generateDoc,
-        generateDoc = _opt$generateDoc === undefined ? false : _opt$generateDoc;
+        generateDoc = _opt$generateDoc === undefined ? false : _opt$generateDoc,
+        _opt$useWebSocket = opt.useWebSocket,
+        useWebSocket = _opt$useWebSocket === undefined ? false : _opt$useWebSocket;
 
     this.routeParam = routeParam;
     /**
@@ -84,9 +90,14 @@ var App = function () {
     this.port = port;
     /**
      * @ignore
+     * @type {boolean}
+     */
+    this.useWebSocket = useWebSocket;
+    /**
+     * @ignore
      * @type {Koa}
      */
-    this.koaApp = new _koa2.default();
+    this.koaApp = this.useWebSocket ? (0, _koaWebsocket2.default)(new _koa2.default()) : new _koa2.default();
 
     (0, _koaLocale2.default)(this.koaApp);
 
@@ -184,6 +195,9 @@ var App = function () {
           route.generateDoc = generateDoc;
           route.mount();
           this.koaApp.use(route.koaRouter.middleware());
+          if (this.useWebSocket && route.webSocketRouter) {
+            this.koaApp.ws.use(route.webSocketRouter);
+          }
         }
       } catch (err) {
         _didIteratorError = true;

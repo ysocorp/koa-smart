@@ -2,6 +2,7 @@ import { join as pathJoin } from 'path';
 import { readdirSync } from 'fs';
 import Koa from 'koa';
 import locale from 'koa-locale';
+import websockify from 'koa-websocket';
 
 import Route from './routes/Route';
 import notFound from './middlewares/notFound';
@@ -25,6 +26,7 @@ export default class App {
       port = process.env.PORT || 3000,
       docPath = pathJoin(__dirname, '..', 'apidoc'),
       generateDoc = false,
+      useWebSocket = false,
     } = opt;
     this.routeParam = routeParam;
     /**
@@ -34,9 +36,14 @@ export default class App {
     this.port = port;
     /**
      * @ignore
+     * @type {boolean}
+     */
+    this.useWebSocket = useWebSocket
+    /**
+     * @ignore
      * @type {Koa}
      */
-    this.koaApp = new Koa();
+    this.koaApp = this.useWebSocket ? websockify(new Koa()) : new Koa();
 
     locale(this.koaApp);
 
@@ -101,6 +108,9 @@ export default class App {
       route.generateDoc = generateDoc;
       route.mount();
       this.koaApp.use(route.koaRouter.middleware());
+      if (this.useWebSocket && route.webSocketRouter) {
+        this.koaApp.ws.use(route.webSocketRouter);
+      }
     }
   }
 
