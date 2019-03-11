@@ -61,6 +61,16 @@ var RouteDecorators = function () {
         return index === 0 ? '' + letter.toLowerCase() : '-' + letter.toLowerCase();
       });
     }
+
+    // replace A-Z to lowercase and add - ex myFunc => my-func
+
+  }, {
+    key: '_getEventFromMethode',
+    value: function _getEventFromMethode(str) {
+      return str.replace(/on([A-Z][a-z]*)/g, function (str, letter) {
+        return '' + letter.toLowerCase();
+      });
+    }
   }, {
     key: '_initData',
     value: function _initData(target) {
@@ -69,7 +79,8 @@ var RouteDecorators = function () {
         post: [],
         delete: [],
         patch: [],
-        put: []
+        put: [],
+        websocket: []
       };
       if (target.routeBase === undefined) {
         target.routeBase = target.constructor.name.replace('Route', '');
@@ -117,6 +128,17 @@ var RouteDecorators = function () {
           options: options,
           call: target[functionName]
         });
+      };
+    }
+  }, {
+    key: 'WebSocket',
+    value: function WebSocket(params) {
+      return function (target, key, descriptor) {
+        params = (0, _extends3.default)({
+          eventName: RouteDecorators._getEventFromMethode(key)
+        }, params);
+        var fuc = RouteDecorators._addRoute('websocket', params);
+        fuc(target, key, descriptor);
       };
     }
   }, {

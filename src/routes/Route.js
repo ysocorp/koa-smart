@@ -108,6 +108,14 @@ export default class Route {
    * @param {ParamsMethodDecorator} params the route's parameters
    * @return {Decorator}
    */
+  static WebSocket = RouteDecorators.WebSocket;
+
+  /**
+   * @access public
+   * @desc mounts the tagged function as a GET route.
+   * @param {ParamsMethodDecorator} params the route's parameters
+   * @return {Decorator}
+   */
   static Get = RouteDecorators.Get;
 
   /**
@@ -177,11 +185,16 @@ export default class Route {
           const routePath = `/${this.prefix}/${this.routeBase}/${route.path}`
             .replace(/[/]{2,10}/g, '/')
             .replace(/[/]$/, '');
-          route.options.routePath = routePath;
-          route.options.type = type;
           if (!route.options.disable) {
             this.log(chalk.green.bold('[Mount route]'), `\t${type}\t`, routePath);
-            this.koaRouter[type](routePath, ...this._use(route));
+            if (type === 'websocket') {
+              this.webSocketRouter = (ctx) => {
+                if (ctx.path === routePath)
+                  ctx.websocket.on(route.options.eventName, route.call);
+              };
+            } else {
+              this.koaRouter[type](routePath, ...this._use(route));
+            }
             generateDoc(this, route);
           } else {
             this.log(chalk.yellow.bold('[Disable Mount route]\t'), type, routePath);
