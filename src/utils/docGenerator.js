@@ -54,7 +54,7 @@ export function generateDoc(classRoute, route) {
 
   const { options } = route;
   const className = classRoute.constructor.name.replace('Route', '');
-  const routePathFileName = options.routePath.replace(/:/g, '-'); // to be able to create folder in Windows
+  const routePathFileName = options.routePath.replace(/:|\?|"|\\|\/|\*|\|<|>/g, '-'); // to be able to create folder in Windows
   fs.mkdirpSync(pathJoin(DIR_TMP, _removeLast(routePathFileName)));
   const file = pathJoin(DIR_TMP, `${routePathFileName || className}.js`);
   fs.writeFileSync(file, '\n');
