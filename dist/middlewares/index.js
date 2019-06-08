@@ -8,9 +8,9 @@ var _koaHelmet = require('koa-helmet');
 
 var _koaHelmet2 = _interopRequireDefault(_koaHelmet);
 
-var _koaBodyparser = require('koa-bodyparser');
+var _koaBody = require('koa-body');
 
-var _koaBodyparser2 = _interopRequireDefault(_koaBodyparser);
+var _koaBody2 = _interopRequireDefault(_koaBody);
 
 var _kcors = require('kcors');
 
@@ -39,7 +39,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 module.exports = {
   cors: _kcors2.default,
   helmet: _koaHelmet2.default,
-  bodyParser: _koaBodyparser2.default,
+  bodyParser: _koaBody2.default,
   compress: _koaCompress2.default,
   i18n: _koaI18n2.default,
   addDefaultBody: _addDefaultBody2.default,

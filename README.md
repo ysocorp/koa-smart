@@ -59,7 +59,7 @@ A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, 
   - [`kcors`](https://www.npmjs.com/package/kcors) is used to handle cross-domain requests
   - [`koa2-ratelimit`](https://github.com/ysocorp/koa2-ratelimit) To limit bruteforce requests
   - [`koa-helmet`](https://www.npmjs.com/package/koa-helmet) helps you secure your api
-  - [`koa-bodyparser`](https://github.com/koajs/bodyparser) to parse request bodies
+  - [`koa-body`](https://github.com/dlau/koa-body) to parse request bodies
   - [`koa-compress`](https://github.com/koajs/compress) to compress the response
   - [`koa-i18n`](https://github.com/koa-modules/i18n) for Internationalization (I18n)
 
@@ -413,7 +413,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
   myApp.addMiddlewares([
     cors({ credentials: true }),
     helmet(),
-    bodyParser(),
+    bodyParser({ multipart: true }),
     handleError(),
     RateLimit.middleware({ interval: { min: 1 }, max: 100 }),
     ...
@@ -461,7 +461,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
   myApp.addMiddlewares([
     cors({ credentials: true }),
     helmet(),
-    bodyParser(),
+    bodyParser({ multipart: true }),
     i18n(myApp.app, {
       directory: join(__dirname, 'locales'),
       locales: ['en', 'fr'],
@@ -511,7 +511,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
       super.addMiddlewares([
         cors({ credentials: true }),
         helmet(),
-        bodyParser(),
+        bodyParser({ multipart: true }),
         i18n(this.app, {
           directory: join(__dirname, 'locales'),
           locales: ['en', 'fr'],

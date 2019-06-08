@@ -71,7 +71,7 @@ function generateDoc(classRoute, route) {
   var options = route.options;
 
   var className = classRoute.constructor.name.replace('Route', '');
-  var routePathFileName = options.routePath.replace(/:/g, '-'); // to be able to create folder in Windows
+  var routePathFileName = options.routePath.replace(/:|\?|"|\\|\/|\*|\|<|>/g, '-'); // to be able to create folder in Windows
   _fsExtra2.default.mkdirpSync((0, _path.join)(DIR_TMP, _removeLast(routePathFileName)));
   var file = (0, _path.join)(DIR_TMP, (routePathFileName || className) + '.js');
   _fsExtra2.default.writeFileSync(file, '\n');

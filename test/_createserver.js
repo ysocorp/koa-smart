@@ -30,7 +30,7 @@ export default async function create(options = {}) {
   app.addMiddlewares([
     cors({ credentials: true }),
     helmet(),
-    bodyParser(),
+    bodyParser({ multipart: true }),
     i18n(app.koaApp, {
       directory: join(__dirname, 'locales'),
       locales: ['en', 'fr'],
