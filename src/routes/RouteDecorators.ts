@@ -44,7 +44,7 @@ export default class RouteDecorators {
     }
   }
 
-  static Route(options = {}) {
+  static Route(options: any = {}) {
     return (target /*, key, descriptor*/) => {
       const opt = { ...options, disable: !!options.disable };
       for (const key in opt) {
@@ -57,7 +57,7 @@ export default class RouteDecorators {
     };
   }
 
-  static _addRoute(type, options = {}) {
+  static _addRoute(type, options: any = {}) {
     return (target, functionName, descriptor) => {
       RouteDecorators._initData(target);
       options = {

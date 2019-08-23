@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import moment from 'moment';
+import * as moment from 'moment';
 
 function dateFormat(date) {
   return moment(date).format('YYYY/MM/DD, h:mm:ss a');
@@ -40,11 +40,11 @@ async function logger(ctx, next) {
     console.log(chalk.red('[ERROR]'), `${chalk.red.bold(ctx.method)} ${ctx.url}`, msg.toString());
     throw err;
   } finally {
-    const ms = new Date() - start;
+    const ms = (new Date()).getDate() - start.getDate();
     const fColor = chalk[getColor(status)];
     // eslint-disable-next-line
     console.log(
-      `${fColor(dateFormat(new Date()))} - ${fColor.bold(status)} ${chalk.bold(ctx.method)} ${
+      `${fColor(dateFormat(new Date()))} - ${fColor.bold(`${status}`)} ${chalk.bold(ctx.method)} ${
         ctx.url
       } - ${fColor(ms + ' ms')}`
     );

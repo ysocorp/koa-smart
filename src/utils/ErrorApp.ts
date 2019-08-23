@@ -1,4 +1,4 @@
-import { isArray, isObject } from '../utils/utils';
+import { isArray, isObject } from './utils';
 
 export default class ErrorApp extends Error {
   constructor(status, message, toTranslate = false) {

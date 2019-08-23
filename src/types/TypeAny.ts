@@ -14,10 +14,10 @@ export class TypeAny {
   _i18n;
   _TypeError = { ...TypeError };
   _type = null;
-  _error = null;
+  _error: string;
   _hasError = false;
   _isValueNull = false;
-  _codeError = null;
+  _codeError: number;
   _errorCodes = {
     [this._TypeError.ALL]: 1,
     [this._TypeError.REQUIRED]: 2,
@@ -30,13 +30,13 @@ export class TypeAny {
     [this._TypeError.REQUIRED]: () => this._i18n.__('Is required'),
     [this._TypeError.IS_NULL]: () => this._i18n.__('Cannot be null'),
     [this._TypeError.INVALID_TYPE]: () => this._i18n.__('Expected type %s', this._type),
-    [this._TypeError.INVALID_VALUE]: (...rest) => this._getErrorInvalidValue(...rest),
+    [this._TypeError.INVALID_VALUE]: ({ _i18n }) => this._getErrorInvalidValue({ _i18n }),
   };
   // options
   _isRequired = false;
   _notNull = false;
   _default = undefined;
-  _value = null;
+  _value: any = null;
 
   constructor({ type, i18n }) {
     this._type = type;
@@ -70,7 +70,7 @@ export class TypeAny {
     return this;
   }
 
-  _getErrorInvalidValue = ({ _i18n }) => {
+  _getErrorInvalidValue = ({ _i18n }): string => {
     return _i18n.__('Invalid field');
   };
 
@@ -102,30 +102,31 @@ export class TypeAny {
   _setError(typeCode, ...rest) {
     // skip error if has a default value
     if (this._default == null) {
-      const fnMessage = this._errorMessages[this._TypeError.ALL] || this._errorMessages[typeCode];
-      this._error = fnMessage(this, ...rest) || this._i18n.__('Invalid field');
+      const fnMessage = this._errorMessages[this._TypeError.ALL] || this._errorMessages[typeCode] || (({_i18n}) => _i18n);
+      this._error = fnMessage({...this, ...rest}) || this._i18n.__('Invalid field');
       this._codeError = this._errorCodes[typeCode];
     }
     this._hasError = true;
     return this._hasError;
   }
 
-  set error(string) {
-    // skip error if has a default value
-    if (this._default == null) {
-      this._error = string;
-    }
-    this._hasError = true;
-  }
-  get error() {
-    if (!this._error) {
-      return null;
-    }
-    return {
-      msg: this._error,
-      code: this.codeError,
-    };
-  }
+  // set error(string: string) {
+  //   // skip error if has a default value
+  //   if (this._default == null) {
+  //     this._error = string;
+  //   }
+  //   this._hasError = true;
+  // }
+
+  // get error() {
+  //   if (!this._error) {
+  //     return null;
+  //   }
+  //   return {
+  //     msg: this._error,
+  //     code: this.codeError,
+  //   };
+  // }
 
   get codeError() {
     return this._codeError;
@@ -162,7 +163,7 @@ export class TypeAny {
 
   _initValues(value) {
     this._value = value;
-    this._error = null;
+    this._error = '';
     this._hasError = false;
     this._isValueNull = false;
   }
@@ -172,6 +173,7 @@ export class TypeAny {
     if (!exist && this._isRequired) {
       this._setError(this._TypeError.REQUIRED);
     }
+    return exist;
   }
 
   _testNull() {
@@ -179,6 +181,7 @@ export class TypeAny {
       this._setError(TypeError.IS_NULL);
     }
     this._isValueNull = this._value == null;
+    return this._isValueNull;
   }
 
   _testType() {

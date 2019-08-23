@@ -1,6 +1,7 @@
 import { join as pathJoin } from 'path';
 import { readdirSync } from 'fs';
-import Koa from 'koa';
+
+import * as Koa from 'koa';
 import locale from 'koa-locale';
 
 import Route from './routes/Route';
@@ -13,11 +14,13 @@ export default class App {
   /**
    * @ignore
    */
-  routeParam = null;
+  routeParam: any = null;
   /**
    * @ignore
    */
   routes = {};
+  port: number;
+  koaApp: Koa;
 
   constructor(opt) {
     const {
@@ -94,7 +97,7 @@ export default class App {
    * @param {string} [prefix='/'] an optional prefix to prepend to all of the folder's routes
    * @return { }
    */
-  mountFolder(pathFolder, prefix = '/', opt = {}) {
+  mountFolder(pathFolder, prefix = '/', opt: any = {}) {
     const { generateDoc = true } = opt;
     const routes = this._getAllRoutes(pathFolder, prefix);
     for (const route of routes) {

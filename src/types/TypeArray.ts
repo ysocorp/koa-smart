@@ -9,18 +9,18 @@ export class TypeArray extends TypeAny {
   _max; // the array's maximum allowed length
   _innerType; // the array's inner type
 
-  constructor(params = {}) {
+  constructor(params: any = {}) {
     super({ ...params, type: 'Array' });
     this._errorMessages[this._TypeError.INVALID_TYPE] = this._getErrorInvalidValue;
   }
 
-  _getErrorInvalidValue = ({ _i18n }, key) => {
+  _getErrorInvalidValue = ({ _i18n }, key): string => {
     if (key === 'type') return _i18n.__('Should be an array');
     if (key === 'length') return _i18n.__('Expected %d items', this._length);
     if (key === 'min') return _i18n.__('Less than %d items', this._min);
     if (key === 'max') return _i18n.__('More than %d items', this._max);
     if (key === 'innerType') return _i18n.__('Invalid item');
-    return null;
+    return _i18n.__('Error');
   };
 
   _getDescription = (prefix = 'It should be ') => {

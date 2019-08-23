@@ -1,6 +1,7 @@
-import KoaRouter from 'koa-router';
+import * as KoaRouter from 'koa-router';
 import chalk from 'chalk';
 import { RateLimit } from 'koa2-ratelimit';
+import * as Koa from 'koa';
 
 import ErrorApp from '../utils/ErrorApp';
 import StatusCode from '../utils/StatusCode';
@@ -49,6 +50,20 @@ export default class Route {
   /**
    * @external {Koa} http://koajs.com/#application
    */
+
+   koaApp: Koa;
+   prefix: string;
+   allRoutesInstance: Route[];
+   models: any[];
+   disable: boolean;
+   middlewares: Array<(ctx: Koa.Context, next: Function) => Promise<void>>;
+   model: any;
+   koaRouter: KoaRouter;
+   routes: Array<Array<Route>>;
+   routeBase: string;
+   accesses: Array<(ctx: Koa.Context) => Promise<boolean>>
+   path: string;
+   options: any;
 
   /**
    * @param {RouteParams} params the route's parameters
@@ -394,7 +409,7 @@ export default class Route {
    * @return { }
    */
   sendNoContent(ctx) {
-    return this.send(ctx, Route.StatusCode.noContent);
+    return this.send(ctx, Route.StatusCode.noContent, null, null);
   }
 
   /**

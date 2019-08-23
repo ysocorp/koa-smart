@@ -18,11 +18,17 @@
   },
   "scripts": {
     "test": "npm run build-prod && cross-env NODE_ENV=test mocha --opts mocha.opts",
-    "build-prod": "rimraf dist && cross-env NODE_ENV=production babel src --out-dir dist --copy-files",
+    "build-prod": "rimraf dist && cross-env NODE_ENV=production npx tsc",
     "lint": "eslint src test",
     "generate-doc": "npx esdoc"
   },
   "dependencies": {
+    "@types/i18n": "^0.8.3",
+    "@types/kcors": "^2.2.3",
+    "@types/koa": "^2.0.48",
+    "@types/koa-bodyparser": "^4.2.1",
+    "@types/koa-router": "^7.0.39",
+    "@types/node": "^10.12.24",
     "apidoc": "^0.17.7",
     "babel-runtime": "^6.26.0",
     "chalk": "^2.4.2",
@@ -44,6 +50,7 @@
     "node-gettext": "^2.0.0"
   },
   "devDependencies": {
+    "awesome-typescript-loader": "^5.2.1",
     "babel-cli": "^6.26.0",
     "babel-eslint": "^10.0.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
@@ -62,6 +69,9 @@
     "prettier-eslint": "^8.8.2",
     "rimraf": "^2.6.3",
     "supertest": "^4.0.2"
+    "source-map-loader": "^0.2.4",
+    "supertest": "^3.3.0",
+    "typescript": "^3.3.1"
   },
   "keywords": [
     "koa-smart",

@@ -1,7 +1,7 @@
 import compress from 'koa-compress';
 import helmet from 'koa-helmet';
-import bodyParser from 'koa-body';
-import cors from 'kcors';
+import * as bodyParser from 'koa-bodyparser';
+import * as cors from 'kcors';
 import { RateLimit, Stores as RateLimitStores } from 'koa2-ratelimit';
 import i18n from 'koa-i18n';
 
