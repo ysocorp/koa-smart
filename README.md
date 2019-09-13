@@ -5,7 +5,7 @@
 
 A framework based on [Koajs2](https://github.com/koajs/koa) with **Decorator**, **Params checker** and a **base of modules** ([`cors`](https://www.npmjs.com/package/kcors), [`bodyparser`](https://github.com/koajs/bodyparser), [`compress`](https://github.com/koajs/compress), [`I18n`](https://github.com/koa-modules/i18n), etc... ) to allow you to develop a smart api easily
 
-```sh
+```js
   export default class RouteUsers extends Route {
 
     // get route: http://localhost:3000/users/get/:id
@@ -88,7 +88,7 @@ Or use the boilerplate ([koa-smart-boilerplate](https://github.com/ysocorp/koa-s
     2.  uppercase letters are replaced with '-'. (essentially converting camelCase into camel-case)
         **e.g.**: this will add a get route => http://localhost:3000/my-api/hello
 
-    ```sh
+    ```js
     export default class RouteMyApi extends Route {
 
         @Route.Get({})
@@ -101,7 +101,7 @@ Or use the boilerplate ([koa-smart-boilerplate](https://github.com/ysocorp/koa-s
 
   - Change prefix of all routes in the class: http://localhost:3000/my-prefix/hello
 
-    ```sh
+    ```js
     @Route.Route({
         routeBase: 'my-prefix',
     })
@@ -117,7 +117,7 @@ Or use the boilerplate ([koa-smart-boilerplate](https://github.com/ysocorp/koa-s
 
 - **Get route** http://localhost:3000/my-api/hello
 
-  ```sh
+  ```js
     @Route.Get({})
     async hello(ctx) {
       this.sendOk(ctx, null, 'hello');
@@ -126,7 +126,7 @@ Or use the boilerplate ([koa-smart-boilerplate](https://github.com/ysocorp/koa-s
 
 - **Change path** http://localhost:3000/my-api/myroute/15
 
-  ```sh
+  ```js
     @Route.Get({
       path: '/myroute/:id'
     })
@@ -137,7 +137,7 @@ Or use the boilerplate ([koa-smart-boilerplate](https://github.com/ysocorp/koa-s
 
 - **Post route** http://localhost:3000/my-api/user-post
 
-  ```sh
+  ```js
     @Route.Post({
       bodyType: Types.object().keys({ // body to allow: all other params will be rejected
         email: Types.string().required(), // return an 400 if the body doesn't contain email key
@@ -158,7 +158,7 @@ Or use the boilerplate ([koa-smart-boilerplate](https://github.com/ysocorp/koa-s
 
     to disable all routes in a class you should add `disable` in the content of your decorator class
 
-    ```sh
+    ```js
     @Route.Route({
         disable: true,
     })
@@ -171,7 +171,7 @@ Or use the boilerplate ([koa-smart-boilerplate](https://github.com/ysocorp/koa-s
 
     to disable a specific route you can add `disable` in the content of your decorator
 
-    ```sh
+    ```js
     @Route.Get({
         disable: true, // this route will not be mounted
     })
@@ -188,7 +188,7 @@ Or use the boilerplate ([koa-smart-boilerplate](https://github.com/ysocorp/koa-s
 
   If at least one of the function given returns `true`, access to the route will be granted.
 
-  ```sh
+  ```js
     async function isConnected(ctx) {
       // TODO test if the user is connected
       return ctx.state.user;
@@ -205,7 +205,7 @@ Or use the boilerplate ([koa-smart-boilerplate](https://github.com/ysocorp/koa-s
 
   - **Of a Class**
 
-    ```sh
+    ```js
     @Route.Route({ accesses: [isConnected] })
     class RouteMiddlewares extends Route {
       @Route.Get({})
@@ -218,7 +218,7 @@ Or use the boilerplate ([koa-smart-boilerplate](https://github.com/ysocorp/koa-s
 
   - **Of a specific route**
 
-    ```sh
+    ```js
     @Route.Get({})
     async myPublicRoute(ctx, next) {
       console.log('I am a public route, I can be call by any one');
@@ -242,7 +242,7 @@ Or use the boilerplate ([koa-smart-boilerplate](https://github.com/ysocorp/koa-s
 
   - **Configure**
 
-    ```sh
+    ```js
     import { App } from 'koa-smart';
     import { RateLimit, RateLimitStores } from 'koa-smart/middlewares';
 
@@ -267,7 +267,7 @@ Or use the boilerplate ([koa-smart-boilerplate](https://github.com/ysocorp/koa-s
 
     Single RateLimit
 
-    ```sh
+    ```js
     @Route.Get({ // allow only 100 requests per day to /view
         rateLimit: { interval: { day: 1 }, max: 100 },
     })
@@ -278,7 +278,7 @@ Or use the boilerplate ([koa-smart-boilerplate](https://github.com/ysocorp/koa-s
 
     Multiple RateLimit
 
-    ```sh
+    ```js
     // Multiple RateLimit
     @Route.Get({
         rateLimit: [
@@ -295,7 +295,7 @@ Or use the boilerplate ([koa-smart-boilerplate](https://github.com/ysocorp/koa-s
 
   - **Of a Class**
 
-    ```sh
+    ```js
     @Route.Route({
         middlewares: [ // Array of middlewares
           async (ctx, next) => {
@@ -315,7 +315,7 @@ Or use the boilerplate ([koa-smart-boilerplate](https://github.com/ysocorp/koa-s
 
   - **Of a specific route**
 
-    ```sh
+    ```js
     @Route.Get({
         middlewares: [ // Array of middlewares
           async (ctx, next) => {
@@ -336,7 +336,7 @@ Or use the boilerplate ([koa-smart-boilerplate](https://github.com/ysocorp/koa-s
 
   - quick example
 
-    ```sh
+    ```js
       @Route.Post({ // or Put, Patch
         bodyType: Types.object().keys({
           email: Types.string().regex(/\S+@\S+\.\S+/).required(),
@@ -360,7 +360,7 @@ Or use the boilerplate ([koa-smart-boilerplate](https://github.com/ysocorp/koa-s
 
   - quick example
 
-    ```sh
+    ```js
       @Route.Get({
         queryType: Types.object().keys({
           limit: Types.number().integer().required().default(10),
@@ -384,7 +384,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
 
 - import the app and your middlewares
 
-  ```sh
+  ```js
   import { join } from 'path';
   // import the app
   import { App } from 'koa-smart';
@@ -401,7 +401,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
 
 * create an app listening on port 3000
 
-  ```sh
+  ```js
   const myApp = new App({
     port: 3000,
   });
@@ -409,7 +409,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
 
 * add your middlewares
 
-  ```sh
+  ```js
   myApp.addMiddlewares([
     cors({ credentials: true }),
     helmet(),
@@ -423,13 +423,13 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
 * add your routes
   mount a folder with a prefix (all file who extends from `Route` will be added and mounted)
 
-  ```sh
+  ```js
       myApp.mountFolder(join(__dirname, 'routes'), '/');
   ```
 
 * Start your app
 
-  ```sh
+  ```js
   myApp.start();
   ```
 
@@ -437,7 +437,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
 
 - Basic one
 
-  ```sh
+  ```js
   import { join } from 'path';
   // import the app
   import { App } from 'koa-smart';
@@ -483,7 +483,7 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
 
 - Other example who Extends class App
 
-  ```sh
+  ```js
   import { join } from 'path';
   // import the app
   import { App } from 'koa-smart';
