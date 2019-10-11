@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import * as moment from 'moment';
+import moment from 'moment';
 
 function dateFormat(date) {
   return moment(date).format('YYYY/MM/DD, h:mm:ss a');
@@ -20,14 +20,19 @@ async function logger(ctx, next) {
   try {
     // eslint-disable-next-line
     console.log(
-      `${chalk.blue(dateFormat(start))} - ${chalk.bold(ctx.method)} ${chalk.blue.bold(ctx.url)} START`
+      `${chalk.blue(dateFormat(start))} - ${chalk.bold(
+        ctx.method
+      )} ${chalk.blue.bold(ctx.url)} START`
     );
     await next();
     status = ctx.status;
   } catch (err) {
     let msg = err;
 
-    const arraySequelize = ['SequelizeValidationError', 'SequelizeUniqueConstraintError'];
+    const arraySequelize = [
+      'SequelizeValidationError',
+      'SequelizeUniqueConstraintError',
+    ];
     if (err.constructor.name === 'ErrorApp') {
       msg = `${err.status}: ${err.message || JSON.stringify(err.messages)}`;
       status = err.status;
@@ -37,16 +42,20 @@ async function logger(ctx, next) {
       status = 400;
     }
     // eslint-disable-next-line
-    console.log(chalk.red('[ERROR]'), `${chalk.red.bold(ctx.method)} ${ctx.url}`, msg.toString());
+    console.log(
+      chalk.red('[ERROR]'),
+      `${chalk.red.bold(ctx.method)} ${ctx.url}`,
+      msg.toString()
+    );
     throw err;
   } finally {
-    const ms = (new Date()).getDate() - start.getDate();
+    const ms = new Date().getDate() - start.getDate();
     const fColor = chalk[getColor(status)];
     // eslint-disable-next-line
     console.log(
-      `${fColor(dateFormat(new Date()))} - ${fColor.bold(`${status}`)} ${chalk.bold(ctx.method)} ${
-        ctx.url
-      } - ${fColor(ms + ' ms')}`
+      `${fColor(dateFormat(new Date()))} - ${fColor.bold(
+        `${status}`
+      )} ${chalk.bold(ctx.method)} ${ctx.url} - ${fColor(ms + ' ms')}`
     );
   }
 }

@@ -9,24 +9,31 @@ export class TypeDate extends TypeAny {
   _formatOut; // the date's output format(will output a string instead of a date)
   _min; // earliest possible date
   _max; // latest possible date
+  _errorKey;
 
-  constructor(params = {}) {
+  constructor(params = { i18n: {} }) {
     super({ ...params, type: 'date' });
   }
 
-  _getErrorInvalidValue = ({ _i18n, _max, _min }, key) => {
+  _getErrorInvalidValue({ _i18n, _max, _min }, key) {
     key = this._errorKey || key;
     this._errorKey = key;
 
-    if (key === 'max') return _i18n.__('Is before %s', _max.toDateString());
-    if (key === 'min') return _i18n.__('Is after %s', _min.toDateString());
-    if (key === 'invalid') return _i18n.__('Invalid date');
+    if (key === 'max') {
+      return _i18n.__('Is before %s', _max.toDateString());
+    }
+    if (key === 'min') {
+      return _i18n.__('Is after %s', _min.toDateString());
+    }
+    if (key === 'invalid') {
+      return _i18n.__('Invalid date');
+    }
     return null;
-  };
+  }
 
-  _getDescription = (prefix = 'It should be ') => {
-    let msgError = `${prefix}a date`;
-    const paramsDesc = [];
+  _getDescription(prefix = 'It should be ') {
+    const msgError = `${prefix}a date`;
+    const paramsDesc: Array<string> = [];
     if (this._max) {
       paramsDesc.push(`is before ${this._max.toDateString()}`);
     }
@@ -34,11 +41,15 @@ export class TypeDate extends TypeAny {
       paramsDesc.push(`is after ${this._min.toDateString()}`);
     }
     if (this._formatIn) {
-      paramsDesc.push(`is formated as ${typeof this._formatIn === 'function' ? 'ISO_8601' : this._formatIn}`);
+      paramsDesc.push(
+        `is formated as ${
+          typeof this._formatIn === 'function' ? 'ISO_8601' : this._formatIn
+        }`
+      );
     }
     const paramMsg = this._generateParamDescription(paramsDesc, ' which');
     return `${msgError}${paramMsg}.`;
-  };
+  }
 
   _isValid(date) {
     return date && !isNaN(date.getTime());
@@ -94,11 +105,9 @@ export class TypeDate extends TypeAny {
     return this;
   }
 
-  _generateError() {
-    this.error = `Invalid field ${this.key}`;
+  _testType() {
+    return true;
   }
-
-  _testType() {}
 
   _test() {
     super._test();
@@ -106,10 +115,16 @@ export class TypeDate extends TypeAny {
     if (!this._isValid(this._value)) {
       return this._setError(t, 'invalid');
     }
-    if (this._min && moment(this._value).isBefore(this._formatDateIfEnabled(this._min))) {
+    if (
+      this._min &&
+      moment(this._value).isBefore(this._formatDateIfEnabled(this._min))
+    ) {
       return this._setError(t, 'min');
     }
-    if (this._max && moment(this._value).isAfter(this._formatDateIfEnabled(this._max))) {
+    if (
+      this._max &&
+      moment(this._value).isAfter(this._formatDateIfEnabled(this._max))
+    ) {
       return this._setError(t, 'max');
     }
     if (this._formatOut) {
@@ -118,6 +133,7 @@ export class TypeDate extends TypeAny {
         return this._setError(t, 'invalid');
       }
     }
+    return true;
   }
 
   _transform() {

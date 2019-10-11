@@ -1,16 +1,39 @@
-/**
- * @typedef {Object} StatusCode
- * @property {Number} ok HTTP response 200
- * @property {Number} created HTTP response 201
- * @property {Number} noContent HTTP response 204
- * @property {Number} badRequest HTTP response 400
- * @property {Number} unauthorized HTTP response 401
- * @property {Number} forbidden HTTP response 403
- * @property {Number} notFound HTTP response 404
- * @property {Number} internalServerError HTTP response 500
- */
+export interface StatusCode {
+  /**
+   * HTTP response 200
+   */
+  ok: number;
+  /**
+   * HTTP response 201
+   */
+  created: number;
+  /**
+   * HTTP response 204
+   */
+  noContent: number;
+  /**
+   * HTTP response 400
+   */
+  badRequest: number;
+  /**
+   * HTTP response 401
+   */
+  unauthorized: number;
+  /**
+   * HTTP response 403
+   */
+  forbidden: number;
+  /**
+   * HTTP response 404
+   */
+  notFound: number;
+  /**
+   * HTTP response 500
+   */
+  internalServerError: number;
+}
 
-export default {
+const statuses: StatusCode = {
   ok: 200,
   created: 201,
   noContent: 204,
@@ -20,3 +43,5 @@ export default {
   notFound: 404,
   internalServerError: 500,
 };
+
+export default statuses;

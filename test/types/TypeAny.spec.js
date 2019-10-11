@@ -9,13 +9,13 @@ describe('TypeAny', () => {
 
   describe('Set error message', () => {
     describe('Type String', () => {
-      const custumMsg = 'My custum message';
+      const custumMsg = 'My custom message';
       const schema = Types.object()
         .keys({
           rq: Types.string()
             .min(3)
             .required()
-            .setErrorMsg(custumMsg),
+            .setErrorMsg(custumMsg)
         })
         .required();
       it('Should return the default value if value = null', async () => {
@@ -28,13 +28,13 @@ describe('TypeAny', () => {
       });
     });
     describe('Function', () => {
-      const custumMsg = () => 'My custum message';
+      const custumMsg = () => 'My custom message';
       const schema = Types.object()
         .keys({
           rq: Types.string()
             .min(3)
             .required()
-            .setErrorMsg(custumMsg),
+            .setErrorMsg(custumMsg)
         })
         .required();
       it('Should return the default value if value = null', async () => {

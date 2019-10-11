@@ -1,169 +1,163 @@
-import * as KoaRouter from 'koa-router';
+/* eslint-disable no-unused-vars */
+import KoaRouter from 'koa-router';
 import chalk from 'chalk';
 import { RateLimit } from 'koa2-ratelimit';
-import * as Koa from 'koa';
+import Koa from 'koa';
 
 import ErrorApp from '../utils/ErrorApp';
 import StatusCode from '../utils/StatusCode';
 import { deepCopy, isArray } from '../utils/utils';
 import { generateDoc } from '../utils/docGenerator';
-import RouteDecorators from './RouteDecorators';
+import RouteDecorators, {
+  ParamsMethodDecorator,
+  ParamsClassDecorator,
+} from './RouteDecorators';
+
+export interface BeforeRouteParams {
+  /**
+   * the path at which the route will be available.
+   */
+  path: string;
+  options: ParamsMethodDecorator;
+  /**
+   * the fonction to call when route match, this is automaticaly add by route decorator
+   */
+  call: Function;
+}
+
+export interface RouteParams {
+  /**
+   * koaApp the Koa application
+   */
+  koaApp: Koa;
+  /**
+   * prefix a prefix which will be preppended before every route's paths
+   */
+  prefix: string;
+  /**
+   * routes an array containing all the mounted Routes
+   */
+  routes: Route[];
+  /**
+   * an array containing all of the app's models
+   */
+  models: any[];
+  /**
+   * the name of the route's own model
+   */
+  model: string;
+  /**
+   * whether the route should be disabled
+   */
+  disable: boolean;
+}
+
+type Decorator = Function;
+
+interface RateLimitOptions {
+  options: {
+    rateLimit: any;
+    routePath: string;
+    type: string;
+  };
+}
 
 export default class Route {
   /**
-   * @type {boolean}
+   * @desc mounts the tagged function as a GET route.
+   */
+  static Get: (params: ParamsMethodDecorator) => Decorator =
+  RouteDecorators.Get;
+
+  /**
+   * @desc mounts the tagged function as a POST route.
+   */
+  static Post: (params: ParamsMethodDecorator) => Decorator =
+  RouteDecorators.Post;
+
+  /**
+   * @desc mounts the tagged function as a PUT route.
+   */
+  static Put: (params: ParamsMethodDecorator) => Decorator =
+  RouteDecorators.Put;
+
+  /**
+   * @desc mounts the tagged function as a PATCH route.
+   */
+  static Patch: (params: ParamsMethodDecorator) => Decorator =
+  RouteDecorators.Patch;
+
+  /**
+   * @desc mounts the tagged function as a DELETE route.
+   */
+  static Delete: (params: ParamsMethodDecorator) => Decorator =
+  RouteDecorators.Delete;
+
+  /**
+   * @desc used to set some parameters on an entire class.
+   * The supported parameters are middlewares, disable, and routeBase.
+   */
+  static Route: (params: ParamsClassDecorator) => Decorator =
+  RouteDecorators.Route;
+  /**
    * @desc if true it will log which route are mount and which are not
    */
   static displayLog = true;
-  /**
-   * @type {StatusCode}
-   */
   static StatusCode = StatusCode;
 
-  /**
-   * @typedef {Object} BeforeRouteParams
-   * @property {string} path the path at which the route will be available.
-   * @property {ParamsMethodDecorator} options
-   * @property {function} call the fonction to call when route match, this is automaticaly add by route decorator
-   */
+  koaApp: Koa;
+  prefix: string;
+  allRoutesInstance: Route[];
+  models: any[];
+  disable: boolean;
+  middlewares: Array<(ctx: Koa.Context, next: Function) => Promise<void>>;
+  model: any;
+  koaRouter: KoaRouter;
+  routes: Array<Array<Route>>;
+  routeBase: string;
+  accesses: Array<(ctx: Koa.Context) => Promise<boolean>>;
+  path: string;
+  options: any;
 
-  /**
-   * @typedef {Object} RouteParams
-   * @property {Koa} koaApp the Koa application
-   * @property {string} prefix a prefix which will be preppended before every route's paths
-   * @property {Route[]} routes an array containing all the mounted Routes
-   * @property {Model[]} [models] an array containing all of the app's models
-   * @property {string} [model] the name of the route's own model
-   * @property {disable} [boolean] whether the route should be disabled
-   *
-   */
-
-  /**
-   * @typedef {function} Decorator
-   * @return { }
-   */
-
-  /**
-   * @external {KoaContext} http://koajs.com/#api
-   */
-
-  /**
-   * @external {Koa} http://koajs.com/#application
-   */
-
-   koaApp: Koa;
-   prefix: string;
-   allRoutesInstance: Route[];
-   models: any[];
-   disable: boolean;
-   middlewares: Array<(ctx: Koa.Context, next: Function) => Promise<void>>;
-   model: any;
-   koaRouter: KoaRouter;
-   routes: Array<Array<Route>>;
-   routeBase: string;
-   accesses: Array<(ctx: Koa.Context) => Promise<boolean>>
-   path: string;
-   options: any;
-
-  /**
-   * @param {RouteParams} params the route's parameters
-   */
-  constructor({ koaApp, prefix, routes, models, model, disable }) {
+  constructor({ koaApp, prefix, routes, models, model, disable }: RouteParams) {
     /**
-     * @type {Koa}
      * @desc the main Koa application
      */
     this.koaApp = koaApp;
     /**
-     * @type {string}
      * @desc the route's prefix
      */
     this.prefix = prefix;
     /**
-     * @type {Route[]}
      * @desc an array composed of all the availble routes in the application
      */
     this.allRoutesInstance = routes;
     /**
-     * @type {Model[]}
      * @desc an array of all the models available in the application
      */
     this.models = models;
     /**
-     * @type {boolean}
      * @desc whether the route should be disabled. disabled routes cannot be called.
      */
     this.disable = disable != null ? disable : this.disable;
     /**
-     * @type {function[]}
      * @desc the route's registered middlewares
      */
     this.middlewares = this.middlewares || [];
     if (this.models && model) {
       /**
-       * @type {Model|undefined}
        * @desc the route's own model
        */
       this.model = this.models[model];
     }
     /**
-     * @type {KoaRouter}
      * @desc the underlying koa router for this particular route
      */
-
     this.koaRouter = new KoaRouter();
     // This Variable are set by RouteDecorators
-    this.routes;
-    this.routeBase;
+    // this.routes;
+    // this.routeBase;
   }
-
-  /**
-   * @access public
-   * @desc mounts the tagged function as a GET route.
-   * @param {ParamsMethodDecorator} params the route's parameters
-   * @return {Decorator}
-   */
-  static Get = RouteDecorators.Get;
-
-  /**
-   * @access public
-   * @desc mounts the tagged function as a POST route.
-   * @param {ParamsMethodDecorator} params the route's parameters
-   * @return {Decorator}
-   */
-  static Post = RouteDecorators.Post;
-
-  /**
-   * @access public
-   * @desc mounts the tagged function as a PUT route.
-   * @param {ParamsMethodDecorator} params the route's parameters
-   * @return {Decorator}
-   */
-  static Put = RouteDecorators.Put;
-
-  /**
-   * @access public
-   * @desc mounts the tagged function as a PATCH route.
-   * @param {ParamsMethodDecorator} params the route's parameters
-   * @return {Decorator}
-   */
-  static Patch = RouteDecorators.Patch;
-
-  /**
-   * @access public
-   * @desc mounts the tagged function as a DELETE route.
-   * @param {ParamsMethodDecorator} params the route's parameters
-   * @return {Decorator}
-   */
-  static Delete = RouteDecorators.Delete;
-
-  /**
-   * @access public
-   * @desc used to set some parameters on an entire class.The supported parameters are middlewares, disable, and routeBase.
-   * @return {Decorator}
-   * @param {ParamsClassDecorator} params the route's parameters
-   */
-  static Route = RouteDecorators.Route;
 
   /**
    * logs a message, but only if the route's logs are set to be displayed.
@@ -178,7 +172,6 @@ export default class Route {
   }
 
   /**
-   * @access public
    * @desc Registers the route and makes it callable once the API is launched.
    *       the route will be called along with the middlewares that were registered in the decorator.
    *
@@ -187,24 +180,38 @@ export default class Route {
   mount() {
     if (this.disable !== true) {
       for (const type in this.routes) {
-        // eslint-disable-line
-        for (const route of this.routes[type]) {
-          const routePath = `/${this.prefix}/${this.routeBase}/${route.path}`
-            .replace(/[/]{2,10}/g, '/')
-            .replace(/[/]$/, '');
-          route.options.routePath = routePath;
-          route.options.type = type;
-          if (!route.options.disable) {
-            this.log(chalk.green.bold('[Mount route]'), `\t${type}\t`, routePath);
-            this.koaRouter[type](routePath, ...this._use(route));
-            generateDoc(this, route);
-          } else {
-            this.log(chalk.yellow.bold('[Disable Mount route]\t'), type, routePath);
+        if (this.routes.hasOwnProperty(type)) {
+          // eslint-disable-line
+          for (const route of this.routes[type]) {
+            const routePath = `/${this.prefix}/${this.routeBase}/${route.path}`
+              .replace(/[/]{2,10}/g, '/')
+              .replace(/[/]$/, '');
+            route.options.routePath = routePath;
+            route.options.type = type;
+            if (!route.options.disable) {
+              this.log(
+                chalk.green.bold('[Mount route]'),
+                `\t${type}\t`,
+                routePath
+              );
+              this.koaRouter[type](routePath, ...this._use(route));
+              generateDoc(this, route);
+            } else {
+              this.log(
+                chalk.yellow.bold('[Disable Mount route]\t'),
+                type,
+                routePath
+              );
+            }
           }
         }
       }
     } else {
-      this.log(chalk.yellow.bold(`Routes "${this.routeBase}" of class ${this.constructor.name} are't add`));
+      this.log(
+        chalk.yellow.bold(
+          `Routes "${this.routeBase}" of class ${this.constructor.name} are't add`
+        )
+      );
     }
   }
 
@@ -241,10 +248,10 @@ export default class Route {
    * with a unique ID for each route in order to differentiate the various routes.
    *
    * You should not need to call this method directly.
-   * @param {function[]} middlewares the array of currently registered middlewares for the given route
-   * @param {{options:{rateLimit:Object,routePath:string,type:string}}} params the route's parameters
+   * @param middlewares the array of currently registered middlewares for the given route
+   * @param params the route's parameters
    */
-  addRateLimit(middlewares, { options }) {
+  addRateLimit(middlewares: Function[], { options }: RateLimitOptions) {
     const { rateLimit, routePath, type } = options;
 
     if (rateLimit) {
@@ -268,11 +275,15 @@ export default class Route {
 
   /**
    * @desc a member which can be overriden, which will always be executed before the route is accessed
-   * @param {KoaContext} ctx Koa's context object
-   * @param {BeforeRouteParams} params an object containing all route parameters
-   * @param {function} next the next middleware in the chain
+   * @param ctx Koa's context object
+   * @param params an object containing all route parameters
+   * @param next the next middleware in the chain
    */
-  async beforeRoute(ctx, { options }, next) {
+  async beforeRoute(
+    ctx: Koa.Context,
+    { options }: BeforeRouteParams,
+    next: Function
+  ) {
     await this._mlTestAccess(ctx, options);
     this._mlParams(ctx, options);
     if (next) {
@@ -286,13 +297,17 @@ export default class Route {
   async _mlTestAccess(ctx, { accesses }) {
     if (isArray(accesses) && accesses.length) {
       for (const access of accesses) {
-        if (await access(ctx)) return true;
+        if (await access(ctx)) {
+          return true;
+        }
       }
       this.throwForbidden(null, true);
     }
     if (isArray(this.accesses) && this.accesses.length) {
       for (const access of this.accesses) {
-        if (await access(ctx)) return true;
+        if (await access(ctx)) {
+          return true;
+        }
       }
       this.throwForbidden(null, true);
     }
@@ -306,12 +321,20 @@ export default class Route {
   _mlParams(ctx, { bodyType, queryType }) {
     if (bodyType) {
       ctx.request.bodyOrigin = deepCopy(ctx.request.body);
-      ctx.request.bodyChanged = this._mlTestParams(ctx, ctx.request.body, bodyType);
+      ctx.request.bodyChanged = this._mlTestParams(
+        ctx,
+        ctx.request.body,
+        bodyType
+      );
       ctx.request.body = ctx.request.bodyChanged;
     }
     if (queryType) {
       ctx.request.queryOrigin = deepCopy(ctx.request.query || {});
-      ctx.request.queryChanged = this._mlTestParams(ctx, ctx.request.query, queryType);
+      ctx.request.queryChanged = this._mlTestParams(
+        ctx,
+        ctx.request.query,
+        queryType
+      );
       ctx.request.query = ctx.request.queryChanged;
     }
   }
@@ -321,7 +344,9 @@ export default class Route {
    */
   _mlTestParams(ctx, body, type) {
     const cloneType = type.clone();
-    if (ctx.i18n) cloneType.setLocale(ctx.i18n.getLocale());
+    if (ctx.i18n) {
+      cloneType.setLocale(ctx.i18n.getLocale());
+    }
 
     cloneType.test(body);
     if (cloneType.error || cloneType.errors) {
@@ -333,35 +358,34 @@ export default class Route {
   // ************************************ !MIDDLEWARE *********************************
 
   /**
-   *@desc retrieves the context's body, if the request has one.
-   *@param {KoaContext} ctx koa's context object
-   *@param {boolean} [original=false] if set to true, the function will return the body before it is filtered by the param decorator.
-   *                                  otherwise, it will return the filtered and transformed body.
+   * @desc retrieves the context's body, if the request has one.
+   * @param ctx koa's context object
+   * @param original if set to true, the function will return the body before
+   * it is filtered by the param decorator.
+   * otherwise, it will return the filtered and transformed body.
+   * @todo play with bodyOrigin elsewhere to use Koa.Context
    */
-  body(ctx, original = false) {
+  body(ctx: any /* Koa.Context */, original = false) {
     return original ? ctx.request.bodyOrigin : ctx.request.bodyChanged;
   }
 
   /**
-   * @access public
    * @desc retrieves the query params in a GET request
-   * @param {KoaContext} ctx koa's context object
-   * @return {Object.<string, *>}
+   * @param ctx koa's context object
+   * @todo play with queryOrigin elsewhere to use Koa.Context
    */
-  queryParam(ctx, original = false) {
+  queryParam(ctx: any /* Koa.Context */, original = false) {
     return original ? ctx.request.queryOrigin : ctx.request.queryChanged;
   }
 
   /**
-   * @access public
    * @desc sets the response's body (with a message + data field) and status.
-   * @param {KoaContext} ctx koa's context object
-   * @param {number} [status] the HTTP status code to end the request with
-   * @param {*} [data] the data to be yielded by the requests
-   * @param {string} [message] the message to be yielded by the request
-   * @return { }
+   * @param ctx koa's context object
+   * @param status the HTTP status code to end the request with
+   * @param data the data to be yielded by the requests
+   * @param message the message to be yielded by the request
    */
-  send(ctx, status = 200, data, message) {
+  send(ctx: Koa.Context, status = 200, data: any, message: string) {
     ctx.body = ctx.body || {}; // add default body
     ctx.status = status;
     // Do not remove this test because if status = 204 || 304, node will remove body
@@ -379,169 +403,200 @@ export default class Route {
   }
 
   /**
-   * @access public
    * @desc same as {@link send}, but automatically sets the status to 200 OK
-   * @param {KoaContext} ctx koa's context object
-   * @param {*} [data] the data to be yielded by the requests
-   * @param {string} [message] the message to be yielded by the request
-   * @return { }
+   * @param ctx koa's context object
+   * @param data the data to be yielded by the requests
+   * @param message the message to be yielded by the request
    */
-  sendOk(ctx, data, message) {
+  sendOk(ctx: Koa.Context, data: any, message: string) {
     return this.send(ctx, Route.StatusCode.ok, data, message);
   }
 
   /**
-   * @access public
    * @desc same as {@link send}, but automatically sets the status to 201 CREATED
-   * @param {KoaContext} ctx koa's context object
-   * @param {*} [data] the data to be yielded by the requests
-   * @param {string} [message] the message to be yielded by the request
-   * @return { }
+   * @param ctx koa's context object
+   * @param data the data to be yielded by the requests
+   * @param message the message to be yielded by the request
    */
-  sendCreated(ctx, data, message) {
+  sendCreated(ctx: Koa.Context, data: any, message: string) {
     return this.send(ctx, Route.StatusCode.created, data, message);
   }
 
   /**
-   * @access public
    * @desc replies with an empty body, yielding 204 NO CONTENT as the status
-   * @param {KoaContext} ctx koa's context object
-   * @return { }
+   * @param ctx koa's context object
    */
-  sendNoContent(ctx) {
+  sendNoContent(ctx: Koa.Context) {
     return this.send(ctx, Route.StatusCode.noContent, null, null);
   }
 
   /**
-   * @access public
    * @desc throws a formated error to be caught.
-   * @param {number} status the error's HTTP status StatusCode
-   * @param {string | object} [error] the error(s) to be yielded by the request
-   * @param {boolean} translate indicates whether the message should be translated or not
+   * @param status the error's HTTP status StatusCode
+   * @param error the error(s) to be yielded by the request
+   * @param translate indicates whether the message should be translated or not
    * @throws {ErrorApp} thrown error.
-   * @return { }
    */
-  throw(status, error, translate = false) {
+  throw(status: number, error: string | Object, translate = false) {
     throw new ErrorApp(status, error, translate);
   }
 
   /**
-   * @access public
    * @version 2.0.0
    * @desc same as {@link throw}, but automatically sets the status to 400 BAD REQUEST
-   * @param {string | object} [error] the error(s) to be yielded by the request, default to "Bad request"
-   * @param {boolean} translate indicates whether the message should be translated or not
-   * @return { }
+   * @param error the error(s) to be yielded by the request, default to "Bad request"
+   * @param translate indicates whether the message should be translated or not
    */
-  throwBadRequest(error, translate = false) {
-    return this.throw(Route.StatusCode.badRequest, error || 'Bad request', translate);
+  throwBadRequest(error: string | Object, translate = false) {
+    return this.throw(
+      Route.StatusCode.badRequest,
+      error || 'Bad request',
+      translate
+    );
   }
 
   /**
-   * @access public
    * @version 2.0.0
    * @desc same as {@link throw}, but automatically sets the status to 401 UNAUTHORIZED
-   * @param {string | object} [error] the error(s) to be yielded by the request, default to "Unauthorized"
-   * @param {boolean} translate indicates whether the message should be translated or not
-   * @return { }
+   * @param error the error(s) to be yielded by the request, default to "Unauthorized"
+   * @param translate indicates whether the message should be translated or not
    */
-  throwUnauthorized(error, translate = false) {
-    return this.throw(Route.StatusCode.unauthorized, error || 'Unauthorized', translate);
+  throwUnauthorized(error: string | Object, translate = false) {
+    return this.throw(
+      Route.StatusCode.unauthorized,
+      error || 'Unauthorized',
+      translate
+    );
   }
 
   /**
-   * @access public
    * @version 2.0.0
    * @desc same as {@link throw}, but automatically sets the status to 403 FORBIDDEN
-   * @param {string | object} [error] the error(s) to be yielded by the request, default to "Forbidden"
-   * @param {boolean} translate indicates whether the message should be translated or not
-   * @return { }
+   * @param error the error(s) to be yielded by the request, default to "Forbidden"
+   * @param translate indicates whether the message should be translated or not
    */
-  throwForbidden(error, translate = false) {
-    return this.throw(Route.StatusCode.forbidden, error || 'Forbidden', translate);
+  throwForbidden(error: string | Object, translate = false) {
+    return this.throw(
+      Route.StatusCode.forbidden,
+      error || 'Forbidden',
+      translate
+    );
   }
 
   /**
-   * @access public
    * @version 2.0.0
    * @desc same as {@link throw}, but automatically sets the status to 404 NOT FOUND
-   * @param {string | object} [error] the error(s) to be yielded by the request, default to "Not found"
-   * @param {boolean} translate indicates whether the message should be translated or not
-   * @return { }
+   * @param error the error(s) to be yielded by the request, default to "Not found"
+   * @param translate indicates whether the message should be translated or not
    */
-  throwNotFound(error, translate = false) {
-    return this.throw(Route.StatusCode.notFound, error || 'Not found', translate);
+  throwNotFound(error: string | Object, translate = false) {
+    return this.throw(
+      Route.StatusCode.notFound,
+      error || 'Not found',
+      translate
+    );
   }
 
   /**
-   * @access public
    * @desc checks a condition. If it evaluates to false, throws a formated error to be caught.
-   * @param {boolean} condition if set to false; assert will fail and throw.
-   * @param {number} status the error's HTTP status StatusCode
-   * @param {string | object} [error] the error(s) to be yielded by the request
-   * @param {boolean} translate indicates whether the message should be translated or not
+   * @param condition if set to false; assert will fail and throw.
+   * @param status the error's HTTP status StatusCode
+   * @param error the error(s) to be yielded by the request
+   * @param translate indicates whether the message should be translated or not
    * @throws {ErrorApp} thrown error, should the assert fail.
-   * @return { }
    */
-  assert(condition, status, error, translate = false) {
+  assert(
+    condition: boolean,
+    status: number,
+    error: string | Object,
+    translate = false
+  ) {
     if (!condition) {
       this.throw(status, error, translate);
     }
   }
 
   /**
-   * @access public
    * @version 2.0.0
    * @desc same as {@link assert}, but automatically sets the status to 400 BAD REQUEST
-   * @param {boolean} condition if set to false; assert will fail and throw.
-   * @param {string | object} [error] the error(s) to be yielded by the request, default to "Bad request"
-   * @param {boolean} translate indicates whether the message should be translated or not
+   * @param condition if set to false; assert will fail and throw.
+   * @param error the error(s) to be yielded by the request, default to "Bad request"
+   * @param translate indicates whether the message should be translated or not
    * @throws {ErrorApp} thrown error, should the assert fail.
-   * @return { }
    */
-  assertBadRequest(condition, error, translate = false) {
-    this.assert(condition, Route.StatusCode.badRequest, error || 'Bad request', translate);
+  assertBadRequest(
+    condition: boolean,
+    error: string | Object,
+    translate = false
+  ) {
+    this.assert(
+      condition,
+      Route.StatusCode.badRequest,
+      error || 'Bad request',
+      translate
+    );
   }
 
   /**
-   * @access public
    * @version 2.0.0
    * @desc same as {@link assert}, but automatically sets the status to 401 UNAUTHORIZED
-   * @param {boolean} condition if set to false; assert will fail and throw.
-   * @param {string | object} [error] the error(s) to be yielded by the request, default to "Unauthorized"
-   * @param {boolean} translate indicates whether the message should be translated or not
+   * @param condition if set to false; assert will fail and throw.
+   * @param error the error(s) to be yielded by the request, default to "Unauthorized"
+   * @param translate indicates whether the message should be translated or not
    * @throws {ErrorApp} thrown error, should the assert fail.
-   * @return { }
    */
-  assertUnauthorized(condition, error, translate = false) {
-    this.assert(condition, Route.StatusCode.unauthorized, error || 'Unauthorized', translate);
+  assertUnauthorized(
+    condition: boolean,
+    error: string | Object,
+    translate = false
+  ) {
+    this.assert(
+      condition,
+      Route.StatusCode.unauthorized,
+      error || 'Unauthorized',
+      translate
+    );
   }
 
   /**
-   * @access public
    * @version 2.0.0
    * @desc same as {@link assert}, but automatically sets the status to 403 FORBIDDEN
-   * @param {boolean} condition if set to false; assert will fail and throw.
-   * @param {string | object} [error] the error(s) to be yielded by the request, default to "Forbidden"
-   * @param {boolean} translate indicates whether the message should be translated or not
+   * @param condition if set to false; assert will fail and throw.
+   * @param error the error(s) to be yielded by the request, default to "Forbidden"
+   * @param translate indicates whether the message should be translated or not
    * @throws {ErrorApp} thrown error, should the assert fail.
-   * @return { }
    */
-  assertForbidden(condition, error, translate = false) {
-    this.assert(condition, Route.StatusCode.forbidden, error || 'Forbidden', translate);
+  assertForbidden(
+    condition: boolean,
+    error: string | Object,
+    translate = false
+  ) {
+    this.assert(
+      condition,
+      Route.StatusCode.forbidden,
+      error || 'Forbidden',
+      translate
+    );
   }
 
   /**
-   * @access public
    * @version 2.0.0
    * @desc same as {@link assert}, but automatically sets the status to 400 BAD REQUEST
-   * @param {boolean} condition if set to false; assert will fail and throw.
-   * @param {string | object} [error] the error(s) to be yielded by the request, default to "Not found"
-   * @param {boolean} translate indicates whether the message should be translated or not
+   * @param condition if set to false; assert will fail and throw.
+   * @param error the error(s) to be yielded by the request, default to "Not found"
+   * @param translate indicates whether the message should be translated or not
    * @throws {ErrorApp} thrown error, should the assert fail.
-   * @return { }
    */
-  assertNotFound(condition, error, translate = false) {
-    this.assert(condition, Route.StatusCode.notFound, error || 'Not found', translate);
+  assertNotFound(
+    condition: boolean,
+    error: string | Object,
+    translate = false
+  ) {
+    this.assert(
+      condition,
+      Route.StatusCode.notFound,
+      error || 'Not found',
+      translate
+    );
   }
 }

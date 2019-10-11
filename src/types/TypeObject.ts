@@ -5,18 +5,20 @@ export class TypeObject extends TypeAny {
   _errors = {};
   _errorWithKey;
 
-  constructor(params = {}) {
+  constructor(params = { i18n: {} }) {
     super({ ...params, type: 'object' });
   }
 
-  _getErrorInvalidValue = ({ _i18n }, key, keyError, msg) => {
-    if (key === 'add') return this._errorWithKey ? `${keyError}: ${msg}` : msg;
+  _getErrorInvalidValue({ _i18n }, key, keyError, msg) {
+    if (key === 'add') {
+      return this._errorWithKey ? `${keyError}: ${msg}` : msg;
+    }
     return _i18n.__('Is not an object');
-  };
+  }
 
-  _getDescription = (prefix = 'It should be ') => {
+  _getDescription(prefix = 'It should be ') {
     return `${prefix}an object`;
-  };
+  }
 
   _initValues(value) {
     super._initValues(value);
@@ -47,7 +49,9 @@ export class TypeObject extends TypeAny {
     if (param.errors) {
       const errors = param.errors;
       for (const keyError in errors) {
-        this._errors[`${key}.${keyError}`] = errors[keyError];
+        if (errors.hasOwnProperty(keyError)) {
+          this._errors[`${key}.${keyError}`] = errors[keyError];
+        }
       }
     } else {
       this._errors[key] = param.error;
@@ -55,7 +59,12 @@ export class TypeObject extends TypeAny {
 
     const keys = Object.keys(this._errors);
     if (keys.length) {
-      super._setError(this._TypeError.INVALID_VALUE, 'add', keys[0], this._errors[keys[0]].msg);
+      super._setError(
+        this._TypeError.INVALID_VALUE,
+        'add',
+        keys[0],
+        this._errors[keys[0]].msg
+      );
     }
     this._hasError = true;
     return this._hasError;
@@ -66,12 +75,15 @@ export class TypeObject extends TypeAny {
     this._value = {};
 
     for (const key in this._schema) {
-      const param = this._schema[key];
-      param.test(oldValue[key]);
-      if (param.error) {
-        this._addError(key, param);
-      } else {
-        this._value[key] = param.value;
+      if (this._schema.hasOwnProperty(key)) {
+        const param = this._schema[key];
+
+        param.test(oldValue[key]);
+        if (param.error) {
+          this._addError(key, param);
+        } else {
+          this._value[key] = param.value;
+        }
       }
     }
 

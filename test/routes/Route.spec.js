@@ -85,7 +85,12 @@ describe('Route', () => {
         });
         try {
           route._mlTestParams(ctx, body, paramsTest);
-          done(new Error('should throw error if elem is force but it is not in body'));
+
+          done(
+            new Error(
+              'should throw error if elem is force but it is not in body'
+            )
+          );
         } catch (err) {
           done();
         }

@@ -11,21 +11,33 @@ export class TypeArray extends TypeAny {
 
   constructor(params: any = {}) {
     super({ ...params, type: 'Array' });
-    this._errorMessages[this._TypeError.INVALID_TYPE] = this._getErrorInvalidValue;
+    this._errorMessages[
+      this._TypeError.INVALID_TYPE
+    ] = this._getErrorInvalidValue;
   }
 
-  _getErrorInvalidValue = ({ _i18n }, key): string => {
-    if (key === 'type') return _i18n.__('Should be an array');
-    if (key === 'length') return _i18n.__('Expected %d items', this._length);
-    if (key === 'min') return _i18n.__('Less than %d items', this._min);
-    if (key === 'max') return _i18n.__('More than %d items', this._max);
-    if (key === 'innerType') return _i18n.__('Invalid item');
+  _getErrorInvalidValue({ _i18n }, key): string {
+    if (key === 'type') {
+      return _i18n.__('Should be an array');
+    }
+    if (key === 'length') {
+      return _i18n.__('Expected %d items', this._length);
+    }
+    if (key === 'min') {
+      return _i18n.__('Less than %d items', this._min);
+    }
+    if (key === 'max') {
+      return _i18n.__('More than %d items', this._max);
+    }
+    if (key === 'innerType') {
+      return _i18n.__('Invalid item');
+    }
     return _i18n.__('Error');
-  };
+  }
 
-  _getDescription = (prefix = 'It should be ') => {
-    let msgError = `${prefix}an array`;
-    const paramsDesc = [];
+  _getDescription(prefix = 'It should be ') {
+    const msgError = `${prefix}an array`;
+    const paramsDesc: Array<string> = [];
     if (this._length) {
       paramsDesc.push(`exactly ${this._length} items`);
     }
@@ -36,15 +48,12 @@ export class TypeArray extends TypeAny {
       paramsDesc.push(`a maximum of ${this._max} items`);
     }
     if (this._innerType) {
-      paramsDesc.push(`each item being ${this._innerType._getDescription('').slice(0, -1)}`);
+      paramsDesc.push(
+        `each item being ${this._innerType._getDescription('').slice(0, -1)}`
+      );
     }
     const paramMsg = this._generateParamDescription(paramsDesc, ' with');
     return `${msgError}${paramMsg}.`;
-  };
-
-  _generateError() {
-    this.error = `Invalid field ${this.key}`;
-    return false;
   }
 
   single(enabled = true) {
@@ -81,7 +90,9 @@ export class TypeArray extends TypeAny {
     const canSplit = this._tSplitBy != null && typeof this._value === 'string';
     if (!Array.isArray(this._value) && !this._tSingle && !canSplit) {
       this._setError(this._TypeError.INVALID_TYPE, 'type');
+      return false;
     }
+    return true;
   }
 
   _test() {
@@ -104,8 +115,11 @@ export class TypeArray extends TypeAny {
         }
         this._value[i] = this._innerType.value;
       }
-      if (innerTypeError) return this._setError(this._TypeError.INVALID_TYPE, 'innerType');
+      if (innerTypeError) {
+        return this._setError(this._TypeError.INVALID_TYPE, 'innerType');
+      }
     }
+    return true;
   }
 
   _transform() {

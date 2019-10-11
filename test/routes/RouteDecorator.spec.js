@@ -73,7 +73,9 @@ describe('RouteDecorator', () => {
         expect(RDec._getRouteFromMethode('myPath')).toBe('my-path');
         expect(RDec._getRouteFromMethode('my-path')).toBe('my-path');
         expect(RDec._getRouteFromMethode('MyPatH')).toBe('my-pat-h');
-        expect(RDec._getRouteFromMethode('my-pathMyPathMy2')).toBe('my-path-my-path-my2');
+        expect(RDec._getRouteFromMethode('my-pathMyPathMy2')).toBe(
+          'my-path-my-path-my2'
+        );
       });
     });
     describe('routeBase', () => {
@@ -146,7 +148,9 @@ describe('RouteDecorator', () => {
           password: 'password',
           notPermited: 'notPermited',
         };
-        const { body, statusCode } = await request.post('/params').send(bodySend);
+        const { body, statusCode } = await request
+          .post('/params')
+          .send(bodySend);
 
         expect(statusCode).toBeLessThan(400);
         expect(body.data.bodyOriginal).toEqual(bodySend);
@@ -157,7 +161,9 @@ describe('RouteDecorator', () => {
         expect(body.data.bodyChecked.notPermited).toBe(undefined);
       });
       it('should return 400 if required params are not send', async () => {
-        const respKO = await request.post('/params').send({ password: 'password' });
+        const respKO = await request
+          .post('/params')
+          .send({ password: 'password' });
         expect(respKO.statusCode).toBe(400);
 
         const respOK = await request.post('/params').send({ email: 'email' });
@@ -200,9 +206,7 @@ describe('RouteDecorator', () => {
         delete querySend.passwordB;
         const { body, statusCode } = await request
           .post(
-            `/params/queryType?email=${querySend.email}&passwordQ=${querySend.passwordQ}&notPermited=${
-              querySend.notPermited
-            }`
+            `/params/queryType?email=${querySend.email}&passwordQ=${querySend.passwordQ}&notPermited=${querySend.notPermited}`
           )
           .send(bodySend);
 
@@ -223,7 +227,9 @@ describe('RouteDecorator', () => {
       });
       it('should accept array in query params', async () => {
         const bodySend = [1, 4];
-        let res = await request.post('/params/array?single=1&single=4').send(bodySend);
+        let res = await request
+          .post('/params/array?single=1&single=4')
+          .send(bodySend);
         expect(res.body.data.queryChecked.single).toEqual(bodySend);
       });
       it('should convert number to array of number in query params', async () => {
@@ -236,7 +242,9 @@ describe('RouteDecorator', () => {
     describe('Error', () => {
       it('should throw error if invalid params', async () => {
         const bodySend = {};
-        const { body, statusCode } = await request.post('/params').send(bodySend);
+        const { body, statusCode } = await request
+          .post('/params')
+          .send(bodySend);
 
         expect(statusCode).toBe(400);
         expect(Object.keys(body.messages.email)).toEqual(['msg', 'code']);
@@ -248,13 +256,17 @@ describe('RouteDecorator', () => {
       });
       it('should throw error if invalid array in bodyParams', async () => {
         const bodySend = [1, 'sisi4'];
-        let { body, statusCode } = await request.post('/params/array?single=1&single=4').send(bodySend);
+        let { body, statusCode } = await request
+          .post('/params/array?single=1&single=4')
+          .send(bodySend);
         expect(statusCode).toBe(400);
         expect(Object.keys(body.messages)).toEqual(['msg', 'code']);
       });
       it('should throw error if invalid array in queryParams', async () => {
         const bodySend = [1, 4];
-        let { body, statusCode } = await request.post('/params/array?single=1&single=sisi4').send(bodySend);
+        let { body, statusCode } = await request
+          .post('/params/array?single=1&single=sisi4')
+          .send(bodySend);
         expect(statusCode).toBe(400);
         expect(Object.keys(body.messages.single)).toEqual(['msg', 'code']);
       });

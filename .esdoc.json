@@ -1,7 +1,13 @@
 {
   "source": "./src",
   "destination": "./esdoc",
-  "includes": ["routes", "App.js", "ErrorApp.js", "StatusCode.js", "handleError.js"],
+  "includes": [
+    "routes",
+    "App.ts",
+    "ErrorApp.ts",
+    "StatusCode.ts",
+    "handleError.ts"
+  ],
   "plugins": [
     { "name": "esdoc-ecmascript-proposal-plugin", "option": { "all": true } },
     {
@@ -10,9 +16,19 @@
         "manual": {
           "globalIndex": true,
           "badge": false,
-          "files": ["./docs/type-system.md", "./docs/auto-doc.md", "./docs/upgrade-to-v2.md"],
+          "files": [
+            "./docs/type-system.md",
+            "./docs/auto-doc.md",
+            "./docs/upgrade-to-v2.md"
+          ],
           "asset": "./docs/asset"
         }
+      }
+    },
+    {
+      "name": "esdoc-typescript-plugin",
+      "option": {
+        "enable": true
       }
     }
   ]

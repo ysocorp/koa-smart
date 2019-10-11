@@ -1,9 +1,9 @@
 import { TypeAny } from './TypeAny';
 
 export class TypeString extends TypeAny {
-  _min;
-  _max;
-  _length;
+  _min: number;
+  _max: number;
+  _length?: number;
   _regex;
 
   _tTrim = true;
@@ -11,26 +11,32 @@ export class TypeString extends TypeAny {
   _tUppercase = false;
   _tLowercase = false;
   _tReplace;
+  _errorKey;
 
-  constructor(params = {}) {
+  constructor(params = { i18n: {} }) {
     super({ ...params, type: 'string' });
   }
 
-  _getErrorInvalidValue = ({ _i18n }, key) => {
+  _getErrorInvalidValue({ _i18n }, key) {
     key = this._errorKey || key;
     this._errorKey = key;
 
-    if (key === 'length') return _i18n.__('Expected %s characters', this._length);
-    else if (key === 'min') return _i18n.__('Shorter than %d characters', this._min);
-    else if (key === 'max') return _i18n.__('Longer than %d characters', this._max);
-    else if (key === 'regex') return _i18n.__('Doesn\'t match with %s', this._regex.toString());
+    if (key === 'length') {
+      return _i18n.__('Expected %s characters', this._length);
+    } else if (key === 'min') {
+      return _i18n.__('Shorter than %d characters', this._min);
+    } else if (key === 'max') {
+      return _i18n.__('Longer than %d characters', this._max);
+    } else if (key === 'regex') {
+      return _i18n.__('Doesn\'t match with %s', this._regex.toString());
+    }
     return null;
-  };
+  }
 
-  _getDescription = (prefix = 'It should be ') => {
-    let msgError = `${prefix}a string`;
+  _getDescription(prefix = 'It should be ') {
+    const msgError = `${prefix}a string`;
 
-    const paramsDesc = [];
+    const paramsDesc: Array<string> = [];
     if (this._length != null) {
       paramsDesc.push(`exactly ${this._length} characters`);
     }
@@ -46,7 +52,7 @@ export class TypeString extends TypeAny {
     }
 
     return `${msgError}${this._generateParamDescription(paramsDesc, ' with')}.`;
-  };
+  }
 
   trim(needTrim = true) {
     this._tTrim = needTrim;
@@ -101,18 +107,42 @@ export class TypeString extends TypeAny {
 
   _test() {
     const t = this._TypeError.INVALID_VALUE;
-    if (this._length && this._value.length !== this._length) return this._setError(t, 'length');
-    if (this._min && this._value.length < this._min) return this._setError(t, 'min');
-    if (this._max && this._value.length > this._max) return this._setError(t, 'max');
-    if (this._regex && !this._value.match(this._regex)) return this._setError(t, 'regex');
+    if (this._length && this._value.length !== this._length) {
+      return this._setError(t, 'length');
+    }
+    if (this._min && this._value.length < this._min) {
+      return this._setError(t, 'min');
+    }
+    if (this._max && this._value.length > this._max) {
+      return this._setError(t, 'max');
+    }
+    if (this._regex && !this._value.match(this._regex)) {
+      return this._setError(t, 'regex');
+    }
+    return true;
   }
 
   _transform() {
-    if (this._tTrim) this._value = this._value.trim();
-    if (this._tTruncate && this._max) this._value = this._value.substring(0, this._max);
-    if (this._tTruncate && this._length) this._value = this._value.substring(0, this._length);
-    if (this._tUppercase) this._value = this._value.toUpperCase();
-    if (this._tLowercase) this._value = this._value.toLowerCase();
-    if (this._tReplace) this._value = this._value.replace(this._tReplace.pattern, this._tReplace.replaceWith);
+    if (this._tTrim) {
+      this._value = this._value.trim();
+    }
+    if (this._tTruncate && this._max) {
+      this._value = this._value.substring(0, this._max);
+    }
+    if (this._tTruncate && this._length) {
+      this._value = this._value.substring(0, this._length);
+    }
+    if (this._tUppercase) {
+      this._value = this._value.toUpperCase();
+    }
+    if (this._tLowercase) {
+      this._value = this._value.toLowerCase();
+    }
+    if (this._tReplace) {
+      this._value = this._value.replace(
+        this._tReplace.pattern,
+        this._tReplace.replaceWith
+      );
+    }
   }
 }

@@ -4,16 +4,16 @@ import { spawn } from 'child_process';
 
 import { TypeArray } from '../types/TypeArray';
 import { TypeObject } from '../types/TypeObject';
+import { capitalize } from './utils';
 
 let DIR;
 let DIR_TMP;
 let ENABLE_DOC = false;
 
-function _capitalize(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-function _removeLast(string) {
+/**
+ * @desc Removes last element in a route
+ */
+function _removeLast(string: string): string {
   const elems = string.split('/');
   elems.pop();
   return elems.join('/');
@@ -22,27 +22,28 @@ function _removeLast(string) {
 function _param(file, type, keyBase, location) {
   if (type instanceof TypeObject) {
     for (const key in type._schema) {
-      const formatedLocation = location ? `[${location}] ` : '';
-      const tmpType = type._schema[key];
-      const sKey = keyBase ? `${keyBase}.${key}` : key;
-      const sKeyD = !tmpType._isRequired ? `[${sKey}]` : sKey;
-      const sType = _capitalize(tmpType._type || 'Any');
-      const description = _capitalize(tmpType._getDescription());
-      fs.appendFileSync(file, ` * @apiParam {${sType}} ${sKeyD} ${formatedLocation}${description}\n`);
-      if (tmpType instanceof TypeObject) {
-        _param(file, tmpType, sKey, location);
-      }
+      if (type._schema.hasOwnProperty(key)) {
+        const formatedLocation = location ? `[${location}] ` : '';
+        const tmpType = type._schema[key];
+        const sKey = keyBase ? `${keyBase}.${key}` : key;
+        const sKeyD = !tmpType._isRequired ? `[${sKey}]` : sKey;
+        const sType = capitalize(tmpType._type || 'Any');
+        const description = capitalize(tmpType._getDescription());
+        fs.appendFileSync(file, ` * @apiParam {${sType}} ${sKeyD} ${formatedLocation}${description}\n`);
+        if (tmpType instanceof TypeObject) {
+          _param(file, tmpType, sKey, location);
+        }}
     }
   } else if (type instanceof TypeArray) {
-    const sType = _capitalize(type._type || 'Any');
-    const description = _capitalize(type._getDescription());
+    const sType = capitalize(type._type || 'Any');
+    const description = capitalize(type._getDescription());
     fs.appendFileSync(file, ` * @apiParam {${sType}} __ARRAY_BODY__ ${description}\n`);
   }
 }
 
 export function init(pathDir, enable) {
   ENABLE_DOC = !!enable;
-  if (!ENABLE_DOC) return;
+  if (!ENABLE_DOC) { return; }
   DIR = pathDir || pathJoin(__dirname, '..', 'ApiDoc');
   DIR_TMP = pathJoin(__dirname, '..', 'ApiDocTmp');
   fs.removeSync(DIR_TMP);
@@ -50,21 +51,22 @@ export function init(pathDir, enable) {
 }
 
 export function generateDoc(classRoute, route) {
-  if (!ENABLE_DOC || classRoute.generateDoc === false || route.options.doc.disable === true) return;
+  if (!ENABLE_DOC || classRoute.generateDoc === false || route.options.doc.disable === true) { return; }
 
   const { options } = route;
   const className = classRoute.constructor.name.replace('Route', '');
-  const routePathFileName = options.routePath.replace(/:|\?|"|\\|\/|\*|\|<|>/g, '-'); // to be able to create folder in Windows
+  // to be able to create folder in Windows
+  const routePathFileName = options.routePath.replace(/:|\?|"|\\|\/|\*|\|<|>/g, '-');
   fs.mkdirpSync(pathJoin(DIR_TMP, _removeLast(routePathFileName)));
   const file = pathJoin(DIR_TMP, `${routePathFileName || className}.js`);
   fs.writeFileSync(file, '\n');
 
   let group = '';
   if (classRoute.prefix) {
-    group += _capitalize(classRoute.prefix.replace(/^\//, ''));
-    if (group.length) group += '/';
+    group += capitalize(classRoute.prefix.replace(/^\//, ''));
+    if (group.length) { group += '/'; }
   }
-  group += _capitalize(className);
+  group += capitalize(className);
 
   fs.appendFileSync(file, '/**\n');
   fs.appendFileSync(file, ` * @api {${options.type}} ${options.routePath || '/'}\n`);
@@ -102,7 +104,7 @@ function _getCmd(cmd) {
 }
 
 export function end() {
-  if (!ENABLE_DOC) return;
+  if (!ENABLE_DOC) { return; }
   const isWindows = _isWindow();
   const cmdArgsNpx = !isWindows
     ? ['apidoc', '-i', DIR_TMP, '-o', DIR]

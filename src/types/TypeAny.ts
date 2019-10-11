@@ -25,12 +25,16 @@ export class TypeAny {
     [this._TypeError.INVALID_TYPE]: 4,
     [this._TypeError.INVALID_VALUE]: 5,
   };
-  _errorMessages = {
+  _errorMessages: {
+    [x: string]: (...args: any) => string;
+  } = {
     [this._TypeError.ALL]: null,
     [this._TypeError.REQUIRED]: () => this._i18n.__('Is required'),
     [this._TypeError.IS_NULL]: () => this._i18n.__('Cannot be null'),
-    [this._TypeError.INVALID_TYPE]: () => this._i18n.__('Expected type %s', this._type),
-    [this._TypeError.INVALID_VALUE]: ({ _i18n }) => this._getErrorInvalidValue({ _i18n }),
+    [this._TypeError.INVALID_TYPE]: () =>
+      this._i18n.__('Expected type %s', this._type),
+    [this._TypeError.INVALID_VALUE]: ({ _i18n }) =>
+      this._getErrorInvalidValue({ _i18n }),
   };
   // options
   _isRequired = false;
@@ -38,7 +42,7 @@ export class TypeAny {
   _default = undefined;
   _value: any = null;
 
-  constructor({ type, i18n }) {
+  constructor({ type = null, i18n }) {
     this._type = type;
     this._i18nConfig = {
       directory: join(__dirname, 'i18n'),
@@ -50,7 +54,10 @@ export class TypeAny {
   }
 
   clone() {
-    const clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this);
+    const clone = Object.assign(
+      Object.create(Object.getPrototypeOf(this)),
+      this
+    );
     clone._i18n = new i18n2(this._i18nConfig);
     return clone;
   }
@@ -70,13 +77,15 @@ export class TypeAny {
     return this;
   }
 
-  _getErrorInvalidValue = ({ _i18n }): string => {
+  _getErrorInvalidValue({ _i18n }, ...rest: any): string {
+    if (rest || !rest) {
+    }
     return _i18n.__('Invalid field');
-  };
+  }
 
-  _getDescription = (prefix = 'It should be') => {
+  _getDescription(prefix = 'It should be') {
     return `${prefix} any type.`;
-  };
+  }
 
   _generateParamDescription(params, prefix = '') {
     if (!params.length) {
@@ -99,34 +108,44 @@ export class TypeAny {
     this._value = val;
   }
 
+  _fnMessage(typeCode, { _i18n, _errorMessages, _TypeError }, ...rest): string {
+    if (_errorMessages[_TypeError.ALL]) {
+      return _errorMessages[_TypeError.ALL]({ _i18n }, ...rest);
+    }
+    if (_errorMessages[typeCode]) {
+      return _errorMessages[typeCode]({ _i18n }, ...rest);
+    }
+    return _i18n;
+  }
+
   _setError(typeCode, ...rest) {
     // skip error if has a default value
     if (this._default == null) {
-      const fnMessage = this._errorMessages[this._TypeError.ALL] || this._errorMessages[typeCode] || (({_i18n}) => _i18n);
-      this._error = fnMessage({...this, ...rest}) || this._i18n.__('Invalid field');
+      this._error =
+        this._fnMessage(typeCode, this, ...rest) ||
+        this._i18n.__('Invalid field');
       this._codeError = this._errorCodes[typeCode];
     }
     this._hasError = true;
     return this._hasError;
   }
 
-  // set error(string: string) {
-  //   // skip error if has a default value
-  //   if (this._default == null) {
-  //     this._error = string;
-  //   }
-  //   this._hasError = true;
-  // }
-
-  // get error() {
-  //   if (!this._error) {
-  //     return null;
-  //   }
-  //   return {
-  //     msg: this._error,
-  //     code: this.codeError,
-  //   };
-  // }
+  set error({ msg }: { msg: string; code: number }) {
+    // skip error if has a default value
+    if (this._default == null) {
+      this._error = msg;
+    }
+    this._hasError = true;
+  }
+  get error() {
+    if (!this._error) {
+      return null;
+    }
+    return {
+      msg: this._error,
+      code: this.codeError,
+    };
+  }
 
   get codeError() {
     return this._codeError;
@@ -154,9 +173,15 @@ export class TypeAny {
   // Function when test and transform param
   test(value) {
     this._initValues(value);
-    if (this._testExist() || this._hasError) return;
-    if (this._testNull() || this._hasError || this._isValueNull) return;
-    if (this._testType() || this._hasError) return;
+    if (!this._testExist() || this._hasError) {
+      return;
+    }
+    if (this._testNull() || this._hasError || this._isValueNull) {
+      return;
+    }
+    if (!this._testType() || this._hasError) {
+      return;
+    }
     this._transform();
     this._test();
   }
@@ -189,6 +214,7 @@ export class TypeAny {
       this._setError(TypeError.INVALID_TYPE);
       return false;
     }
+    return true;
   }
 
   _test() {

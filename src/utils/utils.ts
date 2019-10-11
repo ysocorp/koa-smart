@@ -4,30 +4,25 @@ import cloneDeep from 'lodash.clonedeep';
 /**
  * @desc generates a random number configurable range and floating precision
  */
-export function random(from, to, fixed) {
-  return (Math.random() * (to - from) + from).toFixed(fixed) * 1;
+export function random(from: number, to: number, fixed: number): string {
+  return (Math.random() * (to - from) + from).toFixed(fixed);
 }
 
-/**
- * @access private
- */
-export function ucFirst(str) {
+function ucFirst(str: any): any {
   return str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
 }
 
 /**
  * @desc turns the first letter of every words into capital letters
  */
-export function capitalize(str) {
+export function capitalize(str: any): any {
   return ucFirst(str);
 }
 
 /**
  * @desc converts a javascript date to the YYYY-MM-DD format
- * @param {Date} date the date to convert
- * @return {string} the formated date
  */
-export function dateYYYYMMDD(date) {
+export function dateYYYYMMDD(date: Date): string {
   if (!date) {
     return undefined;
   }
@@ -36,53 +31,50 @@ export function dateYYYYMMDD(date) {
 
 /**
  * @desc checks if the given param is an array
- * @param {*} array the element to check
- * @return {boolean}
  */
-export function isArray(array) {
+export function isArray(array: any): boolean {
   return Array.isArray(array);
 }
 
 /**
  * @desc trim the given element if possible
- * @param {string | any} elem the element to trim
- * @return {string | null} the trimmed element
  */
-export function trim(elem) {
+export function trim(elem: string | any): string | null {
   if (elem.trim) {
     return elem.trim();
   }
   return null;
 }
 
-export async function timeout(ms) {
+/**
+ * @desc waits for a number of milliseconds
+ */
+export async function timeout(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 export const wait = timeout;
 
 /**
  * @desc checks whether the given element is an objects
- * @param {*} obj the element to check
- * @param {boolean} [force = true] if set to true, will first check that obj is not an array.
- * @return {boolean}
  */
-export function isObject(obj, force = true) {
-  if (force) {
+export function isObject(obj: any, excludeArray = true): boolean {
+  if (excludeArray) {
     return !isArray(obj) && isObject(obj, false);
   }
   return typeof obj === 'object';
 }
 
-export function toLowerCase(str) {
+/**
+ * @desc returns the string in lower case
+ */
+export function toLowerCase(str: string): string {
   return str.toLowerCase();
 }
 
 /**
  * @desc checks whether the given element is empty
- * @param {*} data the element to check
- * @return {boolean}
  */
-export function isEmpty(data) {
+export function isEmpty(data: any): boolean | null {
   if (data === null || data === undefined) {
     return true;
   }
@@ -103,74 +95,68 @@ export function isEmpty(data) {
 
 /**
  * @desc checks whether the given element is NOT empty
- * @param {*} elem the element to check
- * @return {boolean}
  */
-export function notEmpty(elem) {
+export function notEmpty(elem: any): boolean {
   return !isEmpty(elem);
 }
 
 /**
  * @desc checks whether the given element is empty, and return null if it is.
- * @param {*} elem the element to check
- * @return {* | null}
+ * @todo test if object, string or array
  */
-export function nullIfEmpty(elem) {
-  //TODO test if object, string or array
+export function nullIfEmpty(elem: any): any | null {
   return isEmpty(elem) ? null : elem;
 }
 
 /**
  * @desc transforms a JSON element intro a string
- * @param {Object} json the element to encode
- * @return {string}
  */
-export function jsonEncode(json) {
-  return JSON.stringify(json).catch(() => null);
+export function jsonEncode(json: Object): string | null {
+  try {
+    return JSON.stringify(json);
+  } catch (e) {
+    return null;
+  }
 }
 
 /**
  * @desc transforms JSON string into a JSON element
- * @param {string} string the element to decode
- * @return {Object}
  */
-export function jsonDecode(string) {
+export function jsonDecode(string: string): Object | null {
   return JSON.parse(string).catch(() => null);
 }
 
 /**
  * @desc converts the given element to a number
- * @param {*} elem the element to convert
- * @return {number}
  */
-export function toNumber(elem) {
+export function toNumber(elem: any): number {
   return Number(elem);
 }
 
 /**
  * @desc copy an object recursively
- * @param {Object} obj the object to clone
- * @return {Object} a deep copy of the supplied object
  */
-export function deepCopy(obj) {
+export function deepCopy(obj: Object): Object {
   return cloneDeep(obj);
+}
+
+interface KeyValue {
+  0: string;
+  1: any;
 }
 
 /**
  * @desc transforms an Object into an array of key-value pairs
- * @param {Object} obj the object to transform
- * @return {[string, *][]}
+ * @todo check if this is right => currently returns array of values and use interface KeyValue
  */
-export function objValToArray(obj) {
+export function objValToArray(obj: Object): Array<any> {
   return Object.keys(obj).map(k => obj[k]);
 }
 
 /**
  * @desc join array by adding double cote on string
- * @param {Arrat} elems the array to join
- * @return {string}
  */
-export function joinWithCote(elems, delimiter = ', ') {
+export function joinWithCote(elems: Array<any>, delimiter = ', '): string {
   let str = '';
   for (let i = 0; i < elems.length; i++) {
     const elem = elems[i];
@@ -187,10 +173,9 @@ export function joinWithCote(elems, delimiter = ', ') {
 }
 
 /**
- * Casts `value` as an array if it's not one.
+ * @desc Casts `value` as an array if it's not one.
+ * @todo Check if this can be upgraded to makle array from all args
  *
- * @param {*} value The value to inspect.
- * @returns {Array} Returns the cast array.
  * @example
  *
  * castArray(1)
@@ -215,7 +200,7 @@ export function joinWithCote(elems, delimiter = ', ') {
  * console.log(castArray(array) === array)
  * // => true
  */
-export function castArray(...args) {
+export function castArray(...args: Array<any>): Array<any> {
   if (!args.length) {
     return [];
   }

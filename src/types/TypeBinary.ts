@@ -5,24 +5,29 @@ export class TypeBinary extends TypeAny {
   _length; // the buffer's exact allowed length
   _min; // the buffer's minimum allowed length
   _max; // the buffer's maximum allowed length
+  _errorKey;
 
-  constructor(params = {}) {
+  constructor(params = { i18n: {} }) {
     super({ ...params, type: 'binary' });
   }
 
-  _getErrorInvalidValue = ({ _i18n }, key) => {
+  _getErrorInvalidValue({ _i18n }, key) {
     key = this._errorKey || key;
     this._errorKey = key;
 
-    if (key === 'length') return _i18n.__('Expected %d bytes', this._length);
-    else if (key === 'min') return _i18n.__('Smaller than %d bytes', this._min);
-    else if (key === 'max') return _i18n.__('Bigger than %d bytes', this._max);
+    if (key === 'length') {
+      return _i18n.__('Expected %d bytes', this._length);
+    } else if (key === 'min') {
+      return _i18n.__('Smaller than %d bytes', this._min);
+    } else if (key === 'max') {
+      return _i18n.__('Bigger than %d bytes', this._max);
+    }
     return null;
-  };
+  }
 
-  _getDescription = (prefix = 'It should be ') => {
-    let msgError = `${prefix}a binary`;
-    const paramsDesc = [];
+  _getDescription(prefix = 'It should be ') {
+    const msgError = `${prefix}a binary`;
+    const paramsDesc: Array<string> = [];
     if (this._encoding) {
       paramsDesc.push(`a ${this._encoding} encoding`);
     }
@@ -37,7 +42,7 @@ export class TypeBinary extends TypeAny {
     }
     const paramMsg = this._generateParamDescription(paramsDesc, ' with');
     return `${msgError}${paramMsg}.`;
-  };
+  }
 
   encoding(encodingName) {
     this._encoding = encodingName;
@@ -62,15 +67,26 @@ export class TypeBinary extends TypeAny {
   _testType() {
     if (this._encoding && !Buffer.isEncoding(this._encoding)) {
       super._setError(this._TypeError.INVALID_TYPE, 'encoding');
+      return false;
     }
+    return true;
   }
 
   _test() {
     const t = this._TypeError.INVALID_VALUE;
-    if (this._min != null && this._value < this._min) return this._setError(t, 'min');
-    if (this._min && this._value.length < this._min) return this._setError(t, 'min');
-    if (this._max && this._value.length > this._max) return this._setError(t, 'max');
-    if (this._length && this._value.length !== this._length) return this._setError(t, 'length');
+    if (this._min != null && this._value < this._min) {
+      return this._setError(t, 'min');
+    }
+    if (this._min && this._value.length < this._min) {
+      return this._setError(t, 'min');
+    }
+    if (this._max && this._value.length > this._max) {
+      return this._setError(t, 'max');
+    }
+    if (this._length && this._value.length !== this._length) {
+      return this._setError(t, 'length');
+    }
+    return true;
   }
 
   _transform() {

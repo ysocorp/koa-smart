@@ -25,5 +25,9 @@
 	"Longer than %d characters": "Longer than %d characters",
 	"Invalid type": "Invalid type",
 	"Expected %s characters": "Expected %s characters",
-	"Doesn't match with %s": "Doesn't match with %s"
+	"Doesn't match with %s": "Doesn't match with %s",
+	"Error": "Error",
+	"Invalid field": "Invalid field",
+	"Is not an object": "Is not an object",
+	"My custom message": "My custom message"
 }

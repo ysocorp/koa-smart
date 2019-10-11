@@ -1,14 +1,14 @@
-import { join as pathJoin } from 'path';
-import { readdirSync } from 'fs';
+import { join as pathJoin } from "path";
+import { readdirSync } from "fs";
 
-import * as Koa from 'koa';
-import locale from 'koa-locale';
+import Koa from "koa";
+import locale from "koa-locale";
 
-import Route from './routes/Route';
-import notFound from './middlewares/notFound';
+import Route from "./routes/Route";
+import notFound from "./middlewares/notFound";
 
-import { objValToArray } from './utils/utils';
-import * as docGenerator from './utils/docGenerator';
+import { objValToArray } from "./utils/utils";
+import * as docGenerator from "./utils/docGenerator";
 
 export default class App {
   /**
@@ -26,8 +26,8 @@ export default class App {
     const {
       routeParam = {},
       port = process.env.PORT || 3000,
-      docPath = pathJoin(__dirname, '..', 'apidoc'),
-      generateDoc = false,
+      docPath = pathJoin(__dirname, "..", "apidoc"),
+      generateDoc = false
     } = opt;
     this.routeParam = routeParam;
     /**
@@ -53,7 +53,7 @@ export default class App {
     this.routes[prefix] = this.routes[prefix] || {};
 
     readdirSync(path)
-      .filter(file => file.endsWith('.js') || file.endsWith('.ts'))
+      .filter(file => file.endsWith(".js") || file.endsWith(".ts"))
       .forEach(file => {
         const RouteClass = require(pathJoin(path, file)).default;
         if (RouteClass && RouteClass.prototype instanceof Route) {
@@ -61,7 +61,7 @@ export default class App {
             prefix,
             koaApp: this.koaApp,
             routes: this.routes[prefix],
-            ...this.routeParam,
+            ...this.routeParam
           });
           this.routes[prefix][route.constructor.name] = route;
         }
@@ -97,7 +97,7 @@ export default class App {
    * @param {string} [prefix='/'] an optional prefix to prepend to all of the folder's routes
    * @return { }
    */
-  mountFolder(pathFolder, prefix = '/', opt: any = {}) {
+  mountFolder(pathFolder, prefix = "/", opt: any = {}) {
     const { generateDoc = true } = opt;
     const routes = this._getAllRoutes(pathFolder, prefix);
     for (const route of routes) {
