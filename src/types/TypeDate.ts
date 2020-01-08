@@ -15,15 +15,15 @@ export class TypeDate extends TypeAny {
     super({ ...params, type: 'date' });
   }
 
-  _getErrorInvalidValue({ _i18n, _max, _min }, key) {
+  _getErrorInvalidValue = ({ _i18n }, key) => {
     key = this._errorKey || key;
     this._errorKey = key;
 
     if (key === 'max') {
-      return _i18n.__('Is before %s', _max.toDateString());
+      return _i18n.__('Is before %s', this._max.toDateString());
     }
     if (key === 'min') {
-      return _i18n.__('Is after %s', _min.toDateString());
+      return _i18n.__('Is after %s', this._min.toDateString());
     }
     if (key === 'invalid') {
       return _i18n.__('Invalid date');
@@ -31,7 +31,7 @@ export class TypeDate extends TypeAny {
     return null;
   }
 
-  _getDescription(prefix = 'It should be ') {
+  _getDescription = (prefix = 'It should be ') => {
     const msgError = `${prefix}a date`;
     const paramsDesc: Array<string> = [];
     if (this._max) {

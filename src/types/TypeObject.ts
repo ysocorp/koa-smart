@@ -9,14 +9,14 @@ export class TypeObject extends TypeAny {
     super({ ...params, type: 'object' });
   }
 
-  _getErrorInvalidValue({ _i18n }, key, keyError, msg) {
+  _getErrorInvalidValue = ({ _i18n }, key, keyError, msg) => {
     if (key === 'add') {
       return this._errorWithKey ? `${keyError}: ${msg}` : msg;
     }
     return _i18n.__('Is not an object');
   }
 
-  _getDescription(prefix = 'It should be ') {
+  _getDescription = (prefix = 'It should be ') => {
     return `${prefix}an object`;
   }
 
@@ -86,7 +86,6 @@ export class TypeObject extends TypeAny {
         }
       }
     }
-
     return true;
   }
 }

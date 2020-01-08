@@ -8,35 +8,35 @@ const TypeAny_1 = require("./TypeAny");
 class TypeDate extends TypeAny_1.TypeAny {
     constructor(params = { i18n: {} }) {
         super(Object.assign(Object.assign({}, params), { type: 'date' }));
-    }
-    _getErrorInvalidValue({ _i18n, _max, _min }, key) {
-        key = this._errorKey || key;
-        this._errorKey = key;
-        if (key === 'max') {
-            return _i18n.__('Is before %s', _max.toDateString());
-        }
-        if (key === 'min') {
-            return _i18n.__('Is after %s', _min.toDateString());
-        }
-        if (key === 'invalid') {
-            return _i18n.__('Invalid date');
-        }
-        return null;
-    }
-    _getDescription(prefix = 'It should be ') {
-        const msgError = `${prefix}a date`;
-        const paramsDesc = [];
-        if (this._max) {
-            paramsDesc.push(`is before ${this._max.toDateString()}`);
-        }
-        if (this._min) {
-            paramsDesc.push(`is after ${this._min.toDateString()}`);
-        }
-        if (this._formatIn) {
-            paramsDesc.push(`is formated as ${typeof this._formatIn === 'function' ? 'ISO_8601' : this._formatIn}`);
-        }
-        const paramMsg = this._generateParamDescription(paramsDesc, ' which');
-        return `${msgError}${paramMsg}.`;
+        this._getErrorInvalidValue = ({ _i18n }, key) => {
+            key = this._errorKey || key;
+            this._errorKey = key;
+            if (key === 'max') {
+                return _i18n.__('Is before %s', this._max.toDateString());
+            }
+            if (key === 'min') {
+                return _i18n.__('Is after %s', this._min.toDateString());
+            }
+            if (key === 'invalid') {
+                return _i18n.__('Invalid date');
+            }
+            return null;
+        };
+        this._getDescription = (prefix = 'It should be ') => {
+            const msgError = `${prefix}a date`;
+            const paramsDesc = [];
+            if (this._max) {
+                paramsDesc.push(`is before ${this._max.toDateString()}`);
+            }
+            if (this._min) {
+                paramsDesc.push(`is after ${this._min.toDateString()}`);
+            }
+            if (this._formatIn) {
+                paramsDesc.push(`is formated as ${typeof this._formatIn === 'function' ? 'ISO_8601' : this._formatIn}`);
+            }
+            const paramMsg = this._generateParamDescription(paramsDesc, ' which');
+            return `${msgError}${paramMsg}.`;
+        };
     }
     _isValid(date) {
         return date && !isNaN(date.getTime());

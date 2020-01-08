@@ -1,0 +1,35 @@
+import { TypeAny as KsAny } from './TypeAny';
+import { TypeArray as KsArray } from './TypeArray';
+import { TypeBinary as KsBinary } from './TypeBinary';
+import { TypeBoolean as KsBoolean } from './TypeBoolean';
+import { TypeDate as KsDate } from './TypeDate';
+import { TypeEnum as KsEnum } from './TypeEnum';
+import { TypeNumber as KsNumber } from './TypeNumber';
+import { TypeObject as KsObject } from './TypeObject';
+import { TypeOneOf as KsOneOf } from './TypeOneOf';
+import { TypeString as KsString } from './TypeString';
+export declare const TypeAny: typeof KsAny;
+export declare const TypeArray: typeof KsArray;
+export declare const TypeBinary: typeof KsBinary;
+export declare const TypeBoolean: typeof KsBoolean;
+export declare const TypeDate: typeof KsDate;
+export declare const TypeEnum: typeof KsEnum;
+export declare const TypeNumber: typeof KsNumber;
+export declare const TypeObject: typeof KsObject;
+export declare const TypeOneOf: typeof KsOneOf;
+export declare const TypeString: typeof KsString;
+export declare const Types: {
+    init: ({ i18n }?: {
+        i18n?: {};
+    }) => void;
+    any: () => KsAny;
+    array: () => KsArray;
+    binary: () => KsBinary;
+    boolean: () => KsBoolean;
+    date: () => KsDate;
+    enum: () => KsEnum;
+    number: () => KsNumber;
+    object: () => KsObject;
+    oneOf: () => KsOneOf;
+    string: () => KsString;
+};

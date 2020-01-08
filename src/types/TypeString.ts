@@ -17,7 +17,7 @@ export class TypeString extends TypeAny {
     super({ ...params, type: 'string' });
   }
 
-  _getErrorInvalidValue({ _i18n }, key) {
+  _getErrorInvalidValue = ({ _i18n }, key) => {
     key = this._errorKey || key;
     this._errorKey = key;
 
@@ -33,7 +33,7 @@ export class TypeString extends TypeAny {
     return null;
   }
 
-  _getDescription(prefix = 'It should be ') {
+  _getDescription = (prefix = 'It should be ') => {
     const msgError = `${prefix}a string`;
 
     const paramsDesc: Array<string> = [];

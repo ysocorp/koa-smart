@@ -30,13 +30,21 @@ class TypeAny {
             [this._TypeError.REQUIRED]: () => this._i18n.__('Is required'),
             [this._TypeError.IS_NULL]: () => this._i18n.__('Cannot be null'),
             [this._TypeError.INVALID_TYPE]: () => this._i18n.__('Expected type %s', this._type),
-            [this._TypeError.INVALID_VALUE]: ({ _i18n }) => this._getErrorInvalidValue({ _i18n }),
+            [this._TypeError.INVALID_VALUE]: (obj, ...args) => this._getErrorInvalidValue(obj, ...args),
         };
         // options
         this._isRequired = false;
         this._notNull = false;
         this._default = undefined;
         this._value = null;
+        this._getErrorInvalidValue = ({ _i18n }, ...rest) => {
+            if (rest || !rest) {
+            }
+            return _i18n.__('Invalid field');
+        };
+        this._getDescription = (prefix = 'It should be') => {
+            return `${prefix} any type.`;
+        };
         this._type = type;
         this._i18nConfig = Object.assign({ directory: path_1.join(__dirname, 'i18n'), locales: ['en', 'fr'], extension: '.json' }, i18n);
         this._i18n = new i18n_2_1.default(this._i18nConfig);
@@ -59,14 +67,6 @@ class TypeAny {
     setLocale(locale) {
         this._i18n.setLocale(locale);
         return this;
-    }
-    _getErrorInvalidValue({ _i18n }, ...rest) {
-        if (rest || !rest) {
-        }
-        return _i18n.__('Invalid field');
-    }
-    _getDescription(prefix = 'It should be') {
-        return `${prefix} any type.`;
     }
     _generateParamDescription(params, prefix = '') {
         if (!params.length) {

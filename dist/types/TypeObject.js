@@ -6,15 +6,15 @@ class TypeObject extends TypeAny_1.TypeAny {
         super(Object.assign(Object.assign({}, params), { type: 'object' }));
         this._schema = {};
         this._errors = {};
-    }
-    _getErrorInvalidValue({ _i18n }, key, keyError, msg) {
-        if (key === 'add') {
-            return this._errorWithKey ? `${keyError}: ${msg}` : msg;
-        }
-        return _i18n.__('Is not an object');
-    }
-    _getDescription(prefix = 'It should be ') {
-        return `${prefix}an object`;
+        this._getErrorInvalidValue = ({ _i18n }, key, keyError, msg) => {
+            if (key === 'add') {
+                return this._errorWithKey ? `${keyError}: ${msg}` : msg;
+            }
+            return _i18n.__('Is not an object');
+        };
+        this._getDescription = (prefix = 'It should be ') => {
+            return `${prefix}an object`;
+        };
     }
     _initValues(value) {
         super._initValues(value);

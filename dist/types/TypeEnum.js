@@ -11,12 +11,12 @@ class TypeEnum extends TypeAny_1.TypeAny {
         this._oneOf = [];
         this._insensitive = true;
         this._number = true;
-    }
-    _getErrorInvalidValue({ _i18n }) {
-        return _i18n.__('Should be one of %s', utils_1.default.joinWithCote(this._oneOf, ', '));
-    }
-    _getDescription(prefix = 'It should be ') {
-        return `${prefix}one of: (${utils_1.default.joinWithCote(this._oneOf, ', ')}).`;
+        this._getErrorInvalidValue = ({ _i18n }) => {
+            return _i18n.__('Should be one of %s', utils_1.default.joinWithCote(this._oneOf, ', '));
+        };
+        this._getDescription = (prefix = 'It should be ') => {
+            return `${prefix}one of: (${utils_1.default.joinWithCote(this._oneOf, ', ')}).`;
+        };
     }
     _insensitiveArray(array) {
         return array.map(value => {

@@ -9,41 +9,41 @@ describe('TypeAny', () => {
 
   describe('Set error message', () => {
     describe('Type String', () => {
-      const custumMsg = 'My custom message';
+      const customMsg = 'My custom message';
       const schema = Types.object()
         .keys({
           rq: Types.string()
             .min(3)
             .required()
-            .setErrorMsg(custumMsg)
+            .setErrorMsg(customMsg)
         })
         .required();
       it('Should return the default value if value = null', async () => {
         schema.test({ rq: 'rq' });
-        expect(schema.error.msg).toBe(custumMsg);
+        expect(schema.error.msg).toBe(customMsg);
         schema.test({ rq: 5 });
-        expect(schema.error.msg).toBe(custumMsg);
+        expect(schema.error.msg).toBe(customMsg);
         schema.test({});
-        expect(schema.error.msg).toBe(custumMsg);
+        expect(schema.error.msg).toBe(customMsg);
       });
     });
     describe('Function', () => {
-      const custumMsg = () => 'My custom message';
+      const customMsg = () => 'My custom message';
       const schema = Types.object()
         .keys({
           rq: Types.string()
             .min(3)
             .required()
-            .setErrorMsg(custumMsg)
+            .setErrorMsg(customMsg)
         })
         .required();
       it('Should return the default value if value = null', async () => {
         schema.test({ rq: 'rq' });
-        expect(schema.error.msg).toBe(custumMsg());
+        expect(schema.error.msg).toBe(customMsg());
         schema.test({ rq: 5 });
-        expect(schema.error.msg).toBe(custumMsg());
+        expect(schema.error.msg).toBe(customMsg());
         schema.test({});
-        expect(schema.error.msg).toBe(custumMsg());
+        expect(schema.error.msg).toBe(customMsg());
       });
     });
   });

@@ -12,13 +12,13 @@ class TypeBoolean extends TypeAny_1.TypeAny {
         this._truthyValues = ['true']; // Specifies additional values to be considered as 'truthy'
         this._falsyValues = ['false']; // Specifies additional values to be considered as 'falsy'
         this._insensitive = true;
-    }
-    _getErrorInvalidValue({ _i18n }) {
-        return _i18n.__('Should be a boolean');
-    }
-    _getDescription(prefix = 'It should be ') {
-        const valideValue = [...this._truthyValues, ...this._falsyValues];
-        return `${prefix}a boolean or one of: (${utils_1.default.joinWithCote(valideValue, ', ')}).`;
+        this._getErrorInvalidValue = ({ _i18n }) => {
+            return _i18n.__('Should be a boolean');
+        };
+        this._getDescription = (prefix = 'It should be ') => {
+            const valideValue = [...this._truthyValues, ...this._falsyValues];
+            return `${prefix}a boolean or one of: (${utils_1.default.joinWithCote(valideValue, ', ')}).`;
+        };
     }
     _insensitiveArray(array) {
         return array.map(value => {

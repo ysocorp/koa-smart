@@ -16,7 +16,7 @@ export class TypeArray extends TypeAny {
     ] = this._getErrorInvalidValue;
   }
 
-  _getErrorInvalidValue({ _i18n }, key): string {
+  _getErrorInvalidValue = ({ _i18n }, key): string => {
     if (key === 'type') {
       return _i18n.__('Should be an array');
     }
@@ -35,7 +35,7 @@ export class TypeArray extends TypeAny {
     return _i18n.__('Error');
   }
 
-  _getDescription(prefix = 'It should be ') {
+  _getDescription = (prefix = 'It should be ') => {
     const msgError = `${prefix}an array`;
     const paramsDesc: Array<string> = [];
     if (this._length) {

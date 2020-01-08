@@ -6,19 +6,19 @@ class TypeOneOf extends TypeAny_1.TypeAny {
         super(Object.assign(Object.assign({}, params), { type: 'oneOf' }));
         this._types = [];
         this._errors = [];
-    }
-    _getErrorInvalidValue({ _i18n }) {
-        return _i18n.__('Invalid type');
-    }
-    _getDescription(prefix = 'It should be ') {
-        const msgs = [];
-        for (const t of this._types) {
-            const fnMessage = t._getDescription ||
-                t._errorMessages[this._TypeError.ALL] ||
-                t._errorMessages[this._TypeError.INVALID_VALUE];
-            msgs.push(fnMessage({ _i18n: {} }).slice(0, -1));
-        }
-        return `${prefix}either ${msgs.join(' OR ')}.`;
+        this._getErrorInvalidValue = ({ _i18n }) => {
+            return _i18n.__('Invalid type');
+        };
+        this._getDescription = (prefix = 'It should be ') => {
+            const msgs = [];
+            for (const t of this._types) {
+                const fnMessage = t._getDescription ||
+                    t._errorMessages[this._TypeError.ALL] ||
+                    t._errorMessages[this._TypeError.INVALID_VALUE];
+                msgs.push(fnMessage({ _i18n: {} }).slice(0, -1));
+            }
+            return `${prefix}either ${msgs.join(' OR ')}.`;
+        };
     }
     types(...rest) {
         this._types = [...rest];

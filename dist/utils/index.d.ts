@@ -1,0 +1,26 @@
+import moment from 'moment';
+import * as utils from './utils';
+declare const _default: {
+    random(from: number, to: number, fixed: number): string;
+    capitalize(str: any): any;
+    dateYYYYMMDD(date: Date): string;
+    isArray(array: any): boolean;
+    trim(elem: any): string;
+    timeout(ms: number): Promise<unknown>;
+    isObject(obj: any, excludeArray?: boolean): boolean;
+    toLowerCase(str: string): string;
+    isEmpty(data: any): boolean;
+    notEmpty(elem: any): boolean;
+    nullIfEmpty(elem: any): any;
+    jsonEncode(json: Object): string;
+    jsonDecode(string: string): Object;
+    toNumber(elem: any): number;
+    deepCopy(obj: Object): Object;
+    objValToArray(obj: Object): any[];
+    joinWithCote(elems: any[], delimiter?: string): string;
+    castArray(...args: any[]): any[];
+    wait: typeof utils.timeout;
+    moment: typeof moment;
+    jsonwebtoken: any;
+};
+export default _default;

@@ -26,15 +26,15 @@ export class TypeAny {
     [this._TypeError.INVALID_VALUE]: 5,
   };
   _errorMessages: {
-    [x: string]: (...args: any) => string;
+    [x: string]: (obj: any, ...args: any) => string;
   } = {
     [this._TypeError.ALL]: null,
     [this._TypeError.REQUIRED]: () => this._i18n.__('Is required'),
     [this._TypeError.IS_NULL]: () => this._i18n.__('Cannot be null'),
     [this._TypeError.INVALID_TYPE]: () =>
       this._i18n.__('Expected type %s', this._type),
-    [this._TypeError.INVALID_VALUE]: ({ _i18n }) =>
-      this._getErrorInvalidValue({ _i18n }),
+    [this._TypeError.INVALID_VALUE]: (obj, ...args) =>
+      this._getErrorInvalidValue(obj, ...args),
   };
   // options
   _isRequired = false;
@@ -77,13 +77,13 @@ export class TypeAny {
     return this;
   }
 
-  _getErrorInvalidValue({ _i18n }, ...rest: any): string {
+  _getErrorInvalidValue = ({ _i18n }, ...rest: any): string => {
     if (rest || !rest) {
     }
     return _i18n.__('Invalid field');
   }
 
-  _getDescription(prefix = 'It should be') {
+  _getDescription = (prefix = 'It should be') => {
     return `${prefix} any type.`;
   }
 
@@ -108,7 +108,7 @@ export class TypeAny {
     this._value = val;
   }
 
-  _fnMessage(typeCode, { _i18n, _errorMessages, _TypeError }, ...rest): string {
+  _fnMessage(typeCode, { _i18n, _errorMessages, _TypeError }, ...rest: any[]): string {
     if (_errorMessages[_TypeError.ALL]) {
       return _errorMessages[_TypeError.ALL]({ _i18n }, ...rest);
     }

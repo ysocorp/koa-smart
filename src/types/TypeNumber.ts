@@ -16,7 +16,7 @@ export class TypeNumber extends TypeAny {
     super({ ...params, type: 'number' });
   }
 
-  _getErrorInvalidValue({ _i18n }, key) {
+  _getErrorInvalidValue = ({ _i18n }, key) => {
     key = this._errorKey || key;
     this._errorKey = key;
 
@@ -41,7 +41,7 @@ export class TypeNumber extends TypeAny {
     return null;
   }
 
-  _getDescription(prefix = 'It should be ') {
+  _getDescription = (prefix = 'It should be ') => {
     let pN = ' ';
     pN = this._positive ? ' positive ' : pN;
     pN = !this._positive && this._negative ? ' negative ' : pN;

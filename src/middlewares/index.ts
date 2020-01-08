@@ -1,23 +1,16 @@
-import compress from 'koa-compress';
-import helmet from 'koa-helmet';
-import bodyParser from 'koa-body';
-import cors from 'kcors';
-import { RateLimit, Stores as RateLimitStores } from 'koa2-ratelimit';
-import i18n from 'koa-i18n';
+import kcompress from 'koa-compress';
+import khelmet from 'koa-helmet';
+import kbodyParser from 'koa-body';
+import kcors from 'kcors';
+import ki18n from 'koa-i18n';
 
-import addDefaultBody from './addDefaultBody';
-import handleError from './handleError';
-import logger from './logger';
+export { RateLimit, Stores as RateLimitStores } from 'koa2-ratelimit';
+export { default as addDefaultBody } from './addDefaultBody';
+export { default as handleError } from './handleError';
+export { default as logger } from './logger';
 
-module.exports = {
-  cors,
-  helmet,
-  bodyParser,
-  compress,
-  i18n,
-  addDefaultBody,
-  handleError,
-  logger,
-  RateLimit,
-  RateLimitStores,
-};
+export const compress = kcompress;
+export const helmet = khelmet;
+export const bodyParser = kbodyParser;
+export const cors = kcors;
+export const i18n = ki18n;

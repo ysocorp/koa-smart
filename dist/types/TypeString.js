@@ -8,43 +8,43 @@ class TypeString extends TypeAny_1.TypeAny {
         this._tTruncate = false;
         this._tUppercase = false;
         this._tLowercase = false;
-    }
-    _getErrorInvalidValue({ _i18n }, key) {
-        key = this._errorKey || key;
-        this._errorKey = key;
-        if (key === 'length') {
-            return _i18n.__('Expected %s characters', this._length);
-        }
-        else if (key === 'min') {
-            return _i18n.__('Shorter than %d characters', this._min);
-        }
-        else if (key === 'max') {
-            return _i18n.__('Longer than %d characters', this._max);
-        }
-        else if (key === 'regex') {
-            return _i18n.__('Doesn\'t match with %s', this._regex.toString());
-        }
-        return null;
-    }
-    _getDescription(prefix = 'It should be ') {
-        const msgError = `${prefix}a string`;
-        const paramsDesc = [];
-        if (this._length != null) {
-            paramsDesc.push(`exactly ${this._length} characters`);
-        }
-        if (this._min != null && this._max != null) {
-            paramsDesc.push(`between ${this._min} and ${this._max} characters`);
-        }
-        else if (this._min != null) {
-            paramsDesc.push(`at least ${this._min} characters`);
-        }
-        else if (this._max != null) {
-            paramsDesc.push(`a maximum of ${this._max} characters`);
-        }
-        if (this._regex != null) {
-            paramsDesc.push(`that matches with ${this._regex.toString()}`);
-        }
-        return `${msgError}${this._generateParamDescription(paramsDesc, ' with')}.`;
+        this._getErrorInvalidValue = ({ _i18n }, key) => {
+            key = this._errorKey || key;
+            this._errorKey = key;
+            if (key === 'length') {
+                return _i18n.__('Expected %s characters', this._length);
+            }
+            else if (key === 'min') {
+                return _i18n.__('Shorter than %d characters', this._min);
+            }
+            else if (key === 'max') {
+                return _i18n.__('Longer than %d characters', this._max);
+            }
+            else if (key === 'regex') {
+                return _i18n.__('Doesn\'t match with %s', this._regex.toString());
+            }
+            return null;
+        };
+        this._getDescription = (prefix = 'It should be ') => {
+            const msgError = `${prefix}a string`;
+            const paramsDesc = [];
+            if (this._length != null) {
+                paramsDesc.push(`exactly ${this._length} characters`);
+            }
+            if (this._min != null && this._max != null) {
+                paramsDesc.push(`between ${this._min} and ${this._max} characters`);
+            }
+            else if (this._min != null) {
+                paramsDesc.push(`at least ${this._min} characters`);
+            }
+            else if (this._max != null) {
+                paramsDesc.push(`a maximum of ${this._max} characters`);
+            }
+            if (this._regex != null) {
+                paramsDesc.push(`that matches with ${this._regex.toString()}`);
+            }
+            return `${msgError}${this._generateParamDescription(paramsDesc, ' with')}.`;
+        };
     }
     trim(needTrim = true) {
         this._tTrim = needTrim;

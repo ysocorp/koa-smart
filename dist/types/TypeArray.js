@@ -6,43 +6,43 @@ class TypeArray extends TypeAny_1.TypeAny {
     constructor(params = {}) {
         super(Object.assign(Object.assign({}, params), { type: 'Array' }));
         this._tSingle = false; // whether single values are allowed
+        this._getErrorInvalidValue = ({ _i18n }, key) => {
+            if (key === 'type') {
+                return _i18n.__('Should be an array');
+            }
+            if (key === 'length') {
+                return _i18n.__('Expected %d items', this._length);
+            }
+            if (key === 'min') {
+                return _i18n.__('Less than %d items', this._min);
+            }
+            if (key === 'max') {
+                return _i18n.__('More than %d items', this._max);
+            }
+            if (key === 'innerType') {
+                return _i18n.__('Invalid item');
+            }
+            return _i18n.__('Error');
+        };
+        this._getDescription = (prefix = 'It should be ') => {
+            const msgError = `${prefix}an array`;
+            const paramsDesc = [];
+            if (this._length) {
+                paramsDesc.push(`exactly ${this._length} items`);
+            }
+            if (this._min) {
+                paramsDesc.push(`a minimum of ${this._min} items`);
+            }
+            if (this._max) {
+                paramsDesc.push(`a maximum of ${this._max} items`);
+            }
+            if (this._innerType) {
+                paramsDesc.push(`each item being ${this._innerType._getDescription('').slice(0, -1)}`);
+            }
+            const paramMsg = this._generateParamDescription(paramsDesc, ' with');
+            return `${msgError}${paramMsg}.`;
+        };
         this._errorMessages[this._TypeError.INVALID_TYPE] = this._getErrorInvalidValue;
-    }
-    _getErrorInvalidValue({ _i18n }, key) {
-        if (key === 'type') {
-            return _i18n.__('Should be an array');
-        }
-        if (key === 'length') {
-            return _i18n.__('Expected %d items', this._length);
-        }
-        if (key === 'min') {
-            return _i18n.__('Less than %d items', this._min);
-        }
-        if (key === 'max') {
-            return _i18n.__('More than %d items', this._max);
-        }
-        if (key === 'innerType') {
-            return _i18n.__('Invalid item');
-        }
-        return _i18n.__('Error');
-    }
-    _getDescription(prefix = 'It should be ') {
-        const msgError = `${prefix}an array`;
-        const paramsDesc = [];
-        if (this._length) {
-            paramsDesc.push(`exactly ${this._length} items`);
-        }
-        if (this._min) {
-            paramsDesc.push(`a minimum of ${this._min} items`);
-        }
-        if (this._max) {
-            paramsDesc.push(`a maximum of ${this._max} items`);
-        }
-        if (this._innerType) {
-            paramsDesc.push(`each item being ${this._innerType._getDescription('').slice(0, -1)}`);
-        }
-        const paramMsg = this._generateParamDescription(paramsDesc, ' with');
-        return `${msgError}${paramMsg}.`;
     }
     single(enabled = true) {
         this._tSingle = enabled;

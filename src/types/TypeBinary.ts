@@ -11,7 +11,7 @@ export class TypeBinary extends TypeAny {
     super({ ...params, type: 'binary' });
   }
 
-  _getErrorInvalidValue({ _i18n }, key) {
+  _getErrorInvalidValue = ({ _i18n }, key) => {
     key = this._errorKey || key;
     this._errorKey = key;
 
@@ -25,7 +25,7 @@ export class TypeBinary extends TypeAny {
     return null;
   }
 
-  _getDescription(prefix = 'It should be ') {
+  _getDescription = (prefix = 'It should be ') => {
     const msgError = `${prefix}a binary`;
     const paramsDesc: Array<string> = [];
     if (this._encoding) {

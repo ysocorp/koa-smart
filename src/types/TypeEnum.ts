@@ -10,14 +10,14 @@ export class TypeEnum extends TypeAny {
     super({ ...params, type: 'enum' });
   }
 
-  _getErrorInvalidValue({ _i18n }) {
+  _getErrorInvalidValue = ({ _i18n }) => {
     return _i18n.__(
       'Should be one of %s',
       utils.joinWithCote(this._oneOf, ', ')
     );
   }
 
-  _getDescription(prefix = 'It should be ') {
+  _getDescription = (prefix = 'It should be ') => {
     return `${prefix}one of: (${utils.joinWithCote(this._oneOf, ', ')}).`;
   }
 

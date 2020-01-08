@@ -9,14 +9,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 const Route_1 = __importDefault(require("./routes/Route"));
 const App_1 = __importDefault(require("./App"));
 const ErrorApp_1 = __importDefault(require("./utils/ErrorApp"));
 const StatusCode_1 = __importDefault(require("./utils/StatusCode"));
 const Types = __importStar(require("./types/index"));
+const middlewares = __importStar(require("./middlewares/index"));
 module.exports = Object.assign({ App: App_1.default,
     Route: Route_1.default,
     ErrorApp: ErrorApp_1.default,
-    StatusCode: StatusCode_1.default }, Types);
+    StatusCode: StatusCode_1.default,
+    middlewares }, Types);
 //# sourceMappingURL=index.js.map

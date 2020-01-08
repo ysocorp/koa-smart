@@ -8,11 +8,11 @@ export class TypeOneOf extends TypeAny {
     super({ ...params, type: 'oneOf' });
   }
 
-  _getErrorInvalidValue({ _i18n }) {
+  _getErrorInvalidValue = ({ _i18n }) => {
     return _i18n.__('Invalid type');
   }
 
-  _getDescription(prefix = 'It should be ') {
+  _getDescription = (prefix = 'It should be ') => {
     const msgs: Array<string> = [];
     for (const t of this._types) {
       const fnMessage =
