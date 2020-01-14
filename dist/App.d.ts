@@ -1,5 +1,6 @@
 /// <reference types="node" />
 import Koa from "koa";
+import { Server } from 'http';
 export default class App {
     /**
      * @ignore
@@ -44,5 +45,5 @@ export default class App {
      * @desc Launches the app and starts listening on the configured port.
      * @return {Koa}
      */
-    start(): Promise<import("http").Server>;
+    start(): Promise<Server>;
 }

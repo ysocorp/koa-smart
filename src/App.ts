@@ -9,6 +9,7 @@ import notFound from "./middlewares/notFound";
 
 import { objValToArray } from "./utils/utils";
 import * as docGenerator from "./utils/docGenerator";
+import { Server } from 'http';
 
 export default class App {
   /**
@@ -112,7 +113,7 @@ export default class App {
    * @desc Launches the app and starts listening on the configured port.
    * @return {Koa}
    */
-  async start() {
+  public async start(): Promise<Server> {
     this.koaApp.use(notFound());
 
     docGenerator.end();
