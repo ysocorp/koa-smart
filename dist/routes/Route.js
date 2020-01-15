@@ -13,7 +13,7 @@ const utils_1 = require("../utils/utils");
 const docGenerator_1 = require("../utils/docGenerator");
 const RouteDecorators_1 = __importDefault(require("./RouteDecorators"));
 class Route {
-    constructor({ koaApp, prefix, routes, models, model, disable }) {
+    constructor({ koaApp, prefix, disable = null }) {
         /**
          * @desc the main Koa application
          */
@@ -23,14 +23,6 @@ class Route {
          */
         this.prefix = prefix;
         /**
-         * @desc an array composed of all the availble routes in the application
-         */
-        this.allRoutesInstance = routes;
-        /**
-         * @desc an array of all the models available in the application
-         */
-        this.models = models;
-        /**
          * @desc whether the route should be disabled. disabled routes cannot be called.
          */
         this.disable = disable != null ? disable : this.disable;
@@ -38,29 +30,20 @@ class Route {
          * @desc the route's registered middlewares
          */
         this.middlewares = this.middlewares || [];
-        if (this.models && model) {
-            /**
-             * @desc the route's own model
-             */
-            this.model = this.models[model];
-        }
         /**
          * @desc the underlying koa router for this particular route
          */
         this.koaRouter = new koa_router_1.default();
-        // This Variable are set by RouteDecorators
-        // this.routes;
-        // this.routeBase;
     }
     /**
      * logs a message, but only if the route's logs are set to be displayed.
      *
      * accepts several parameters
      */
-    log(str, ...args) {
+    log(...args) {
         if (Route.displayLog) {
             // eslint-disable-next-line
-            console.log(str, ...args);
+            console.log(...args);
         }
     }
     /**
@@ -161,7 +144,7 @@ class Route {
     /**
      *@ignore
      */
-    async _mlTestAccess(ctx, { accesses }) {
+    async _mlTestAccess(ctx, { accesses = [] }) {
         if (utils_1.isArray(accesses) && accesses.length) {
             for (const access of accesses) {
                 if (await access(ctx)) {
@@ -183,7 +166,7 @@ class Route {
     /**
      *@ignore
      */
-    _mlParams(ctx, { bodyType, queryType }) {
+    _mlParams(ctx, { bodyType = null, queryType = null }) {
         if (bodyType) {
             ctx.request.bodyOrigin = utils_1.deepCopy(ctx.request.body);
             ctx.request.bodyChanged = this._mlTestParams(ctx, ctx.request.body, bodyType);

@@ -25,7 +25,7 @@ export class TypeObject extends TypeAny {
     this._errors = {};
   }
 
-  setErrorMsg(msg, typeError) {
+  setErrorMsg(msg, typeError?) {
     super.setErrorMsg(msg, typeError);
     this._errorWithKey = false;
     return this;

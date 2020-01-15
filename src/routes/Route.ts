@@ -35,10 +35,6 @@ export interface RouteParams {
    */
   prefix: string;
   /**
-   * routes an array containing all the mounted Routes
-   */
-  routes: Route[];
-  /**
    * an array containing all of the app's models
    */
   models: any[];
@@ -67,38 +63,38 @@ export default class Route {
    * @desc mounts the tagged function as a GET route.
    */
   static Get: (params: ParamsMethodDecorator) => Decorator =
-  RouteDecorators.Get;
+    RouteDecorators.Get;
 
   /**
    * @desc mounts the tagged function as a POST route.
    */
   static Post: (params: ParamsMethodDecorator) => Decorator =
-  RouteDecorators.Post;
+    RouteDecorators.Post;
 
   /**
    * @desc mounts the tagged function as a PUT route.
    */
   static Put: (params: ParamsMethodDecorator) => Decorator =
-  RouteDecorators.Put;
+    RouteDecorators.Put;
 
   /**
    * @desc mounts the tagged function as a PATCH route.
    */
   static Patch: (params: ParamsMethodDecorator) => Decorator =
-  RouteDecorators.Patch;
+    RouteDecorators.Patch;
 
   /**
    * @desc mounts the tagged function as a DELETE route.
    */
   static Delete: (params: ParamsMethodDecorator) => Decorator =
-  RouteDecorators.Delete;
+    RouteDecorators.Delete;
 
   /**
    * @desc used to set some parameters on an entire class.
    * The supported parameters are middlewares, disable, and routeBase.
    */
   static Route: (params: ParamsClassDecorator) => Decorator =
-  RouteDecorators.Route;
+    RouteDecorators.Route;
   /**
    * @desc if true it will log which route are mount and which are not
    */
@@ -108,18 +104,16 @@ export default class Route {
   koaApp: Koa;
   prefix: string;
   allRoutesInstance: Route[];
-  models: any[];
   disable: boolean;
   middlewares: Array<(ctx: Koa.Context, next: Function) => Promise<void>>;
-  model: any;
   koaRouter: KoaRouter;
-  routes: Array<Array<Route>>;
+  routes: { [routeType: string]: Array<Route> };
   routeBase: string;
   accesses: Array<(ctx: Koa.Context) => Promise<boolean>>;
   path: string;
   options: any;
 
-  constructor({ koaApp, prefix, routes, models, model, disable }: RouteParams) {
+  constructor({ koaApp, prefix, disable = null }: RouteParams) {
     /**
      * @desc the main Koa application
      */
@@ -129,14 +123,6 @@ export default class Route {
      */
     this.prefix = prefix;
     /**
-     * @desc an array composed of all the availble routes in the application
-     */
-    this.allRoutesInstance = routes;
-    /**
-     * @desc an array of all the models available in the application
-     */
-    this.models = models;
-    /**
      * @desc whether the route should be disabled. disabled routes cannot be called.
      */
     this.disable = disable != null ? disable : this.disable;
@@ -144,19 +130,10 @@ export default class Route {
      * @desc the route's registered middlewares
      */
     this.middlewares = this.middlewares || [];
-    if (this.models && model) {
-      /**
-       * @desc the route's own model
-       */
-      this.model = this.models[model];
-    }
     /**
      * @desc the underlying koa router for this particular route
      */
     this.koaRouter = new KoaRouter();
-    // This Variable are set by RouteDecorators
-    // this.routes;
-    // this.routeBase;
   }
 
   /**
@@ -164,10 +141,10 @@ export default class Route {
    *
    * accepts several parameters
    */
-  log(str, ...args) {
+  log(...args: string[]) {
     if (Route.displayLog) {
       // eslint-disable-next-line
-      console.log(str, ...args);
+      console.log(...args);
     }
   }
 
@@ -294,7 +271,7 @@ export default class Route {
   /**
    *@ignore
    */
-  async _mlTestAccess(ctx, { accesses }) {
+  async _mlTestAccess(ctx, { accesses = []}) {
     if (isArray(accesses) && accesses.length) {
       for (const access of accesses) {
         if (await access(ctx)) {
@@ -318,7 +295,7 @@ export default class Route {
   /**
    *@ignore
    */
-  _mlParams(ctx, { bodyType, queryType }) {
+  _mlParams(ctx, { bodyType = null, queryType = null }) {
     if (bodyType) {
       ctx.request.bodyOrigin = deepCopy(ctx.request.body);
       ctx.request.bodyChanged = this._mlTestParams(
@@ -408,7 +385,7 @@ export default class Route {
    * @param data the data to be yielded by the requests
    * @param message the message to be yielded by the request
    */
-  sendOk(ctx: Koa.Context, data: any, message: string) {
+  sendOk(ctx: Koa.Context, data: any, message?: string) {
     return this.send(ctx, Route.StatusCode.ok, data, message);
   }
 

@@ -54,7 +54,7 @@ class TypeAny {
         clone._i18n = new i18n_2_1.default(this._i18nConfig);
         return clone;
     }
-    setErrorMsg(msg, typeError) {
+    setErrorMsg(msg, typeError = exports.TypeError.ALL) {
         const type = exports.TypeError[typeError] ? typeError : exports.TypeError.ALL;
         if (typeof msg === 'function') {
             this._errorMessages[type] = msg;

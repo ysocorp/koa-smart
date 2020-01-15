@@ -2,55 +2,59 @@ export interface ParamsMethodDecorator {
   /**
    * Description of the body receiving
    */
-  bodyType: any;
+  bodyType?: any;
   /**
    * Description of the "request.query" receiving
    */
-  queryType: any;
+  queryType?: any;
   /**
    * the path at which the route will be available.
    * By default it will take the name of the function and replace uppercase by "-".
    * Ex: a function name addUser will be mount with /add-user
    */
-  path: string;
+  path?: string;
   /**
    * if set to true, the route will be ignored
    */
-  disabled: boolean;
+  disable?: boolean;
   /**
    * an array of Koa Middlewares, which will be mounted for the given route
    */
-  middlewares: Function[];
+  middlewares?: Function[];
   /**
    * a rateLimit object, which lets the user describe the max rate at which a user can access the route
    */
-  rateLimit: Object;
+  rateLimit?: Object;
   /**
    * an array of async function, which will be call with ctx,
    * if one of them return true, the current client will access the route.
    * This will overwrite the accesses pass to {ParamsClassDecorator}
    */
-  accesses: Function[];
+  accesses?: Function[];
+  /**
+   * an object describing the function
+   */
+  doc?: any;
 }
 
 export interface ParamsClassDecorator {
   /**
    * a prefix which will be preppended all to the route's path
    */
-  routeBase: string;
+  routeBase?: string;
   /**
    * if set to true, all route in the class will be ignored
    */
-  disabled: boolean;
+  disable?: boolean;
   /**
    * an array of Koa Middlewares, which will be mounted for the given route
    */
-  middlewares: Function[];
+  middlewares?: Function[];
   /**
    * an array of async function, which will be call (for all routes in the class) with ctx,
    * if one of them return true, the current client will access the route
    */
-  accesses: Function[];
+  accesses?: Function[];
 }
 
 /**
@@ -59,7 +63,7 @@ export interface ParamsClassDecorator {
 export default class RouteDecorators {
   // replace A-Z to lowercase and add - ex myFunc => my-func
   static _getRouteFromMethode(str) {
-    return str.replace(/([A-Z])/g, (fullString, letter, index) =>
+    return str.replace(/([A-Z])/g, (_fullString, letter, index) =>
       index === 0 ? `${letter.toLowerCase()}` : `-${letter.toLowerCase()}`
     );
   }

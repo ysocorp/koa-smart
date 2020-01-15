@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 class RouteDecorators {
     // replace A-Z to lowercase and add - ex myFunc => my-func
     static _getRouteFromMethode(str) {
-        return str.replace(/([A-Z])/g, (fullString, letter, index) => index === 0 ? `${letter.toLowerCase()}` : `-${letter.toLowerCase()}`);
+        return str.replace(/([A-Z])/g, (_fullString, letter, index) => index === 0 ? `${letter.toLowerCase()}` : `-${letter.toLowerCase()}`);
     }
     static _initData(target) {
         target.routes = target.routes || {

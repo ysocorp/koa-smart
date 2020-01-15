@@ -35,7 +35,7 @@ export declare class TypeAny {
         i18n: any;
     });
     clone(): any;
-    setErrorMsg(msg: any, typeError: any): this;
+    setErrorMsg(msg: any, typeError?: string): this;
     setLocale(locale: any): this;
     _getErrorInvalidValue: ({ _i18n }: {
         _i18n: any;

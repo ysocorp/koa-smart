@@ -22,10 +22,6 @@ export interface RouteParams {
      */
     prefix: string;
     /**
-     * routes an array containing all the mounted Routes
-     */
-    routes: Route[];
-    /**
      * an array containing all of the app's models
      */
     models: any[];
@@ -80,23 +76,23 @@ export default class Route {
     koaApp: Koa;
     prefix: string;
     allRoutesInstance: Route[];
-    models: any[];
     disable: boolean;
     middlewares: Array<(ctx: Koa.Context, next: Function) => Promise<void>>;
-    model: any;
     koaRouter: KoaRouter;
-    routes: Array<Array<Route>>;
+    routes: {
+        [routeType: string]: Array<Route>;
+    };
     routeBase: string;
     accesses: Array<(ctx: Koa.Context) => Promise<boolean>>;
     path: string;
     options: any;
-    constructor({ koaApp, prefix, routes, models, model, disable }: RouteParams);
+    constructor({ koaApp, prefix, disable }: RouteParams);
     /**
      * logs a message, but only if the route's logs are set to be displayed.
      *
      * accepts several parameters
      */
-    log(str: any, ...args: any[]): void;
+    log(...args: string[]): void;
     /**
      * @desc Registers the route and makes it callable once the API is launched.
      *       the route will be called along with the middlewares that were registered in the decorator.
@@ -136,14 +132,14 @@ export default class Route {
      *@ignore
      */
     _mlTestAccess(ctx: any, { accesses }: {
-        accesses: any;
+        accesses?: any[];
     }): Promise<boolean>;
     /**
      *@ignore
      */
     _mlParams(ctx: any, { bodyType, queryType }: {
-        bodyType: any;
-        queryType: any;
+        bodyType?: any;
+        queryType?: any;
     }): void;
     /**
      *@ignore
@@ -178,7 +174,7 @@ export default class Route {
      * @param data the data to be yielded by the requests
      * @param message the message to be yielded by the request
      */
-    sendOk(ctx: Koa.Context, data: any, message: string): void;
+    sendOk(ctx: Koa.Context, data: any, message?: string): void;
     /**
      * @desc same as {@link send}, but automatically sets the status to 201 CREATED
      * @param ctx koa's context object

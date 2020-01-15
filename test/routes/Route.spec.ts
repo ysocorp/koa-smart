@@ -22,7 +22,13 @@ describe('Route', () => {
 
   describe('Methode', () => {
     beforeEach(() => {
-      route = new Route({});
+      route = new Route({
+        disable: null,
+        koaApp : null,
+        model: null,
+        models: null,
+        prefix: null,
+      });
     });
 
     describe('_mlTestParams()', () => {

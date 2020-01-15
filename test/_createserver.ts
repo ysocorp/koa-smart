@@ -20,7 +20,7 @@ Types.init({
   },
 });
 
-export default async function create(options = {}) {
+export default async function create(options = {port: null}) {
   const app = new App({
     port: options.port || 3331,
     generateDoc: true, // indicates we want koa-smart to generate documentation

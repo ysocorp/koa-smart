@@ -11,7 +11,7 @@ export declare class TypeObject extends TypeAny {
     }, key: any, keyError: any, msg: any) => any;
     _getDescription: (prefix?: string) => string;
     _initValues(value: any): void;
-    setErrorMsg(msg: any, typeError: any): this;
+    setErrorMsg(msg: any, typeError?: any): this;
     errorWithKey(value?: boolean): this;
     keys(object: any): this;
     get errors(): {};

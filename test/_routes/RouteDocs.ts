@@ -1,5 +1,6 @@
 import Route from '../../dist/routes/Route';
 import { Types } from '../../dist';
+import { ParamsMethodDecorator } from '../../dist/routes/RouteDecorators';
 
 const fragmentType = {
   any: Types.any(),
