@@ -174,7 +174,7 @@ export default class Route {
      * @param data the data to be yielded by the requests
      * @param message the message to be yielded by the request
      */
-    sendOk(ctx: Koa.Context, data: any, message?: string): void;
+    sendOk(ctx: Koa.Context, data?: any, message?: string): void;
     /**
      * @desc same as {@link send}, but automatically sets the status to 201 CREATED
      * @param ctx koa's context object

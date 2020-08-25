@@ -16,9 +16,7 @@ export class TypeObject extends TypeAny {
     return _i18n.__('Is not an object');
   }
 
-  _getDescription = (prefix = 'It should be ') => {
-    return `${prefix}an object`;
-  }
+  _getDescription = (prefix = 'It should be ') => `${prefix}an object`;
 
   _initValues(value) {
     super._initValues(value);

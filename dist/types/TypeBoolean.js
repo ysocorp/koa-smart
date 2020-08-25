@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TypeBoolean = void 0;
 const lodash_uniq_1 = __importDefault(require("lodash.uniq"));
 const TypeAny_1 = require("./TypeAny");
 const utils_1 = __importDefault(require("../utils"));
@@ -12,9 +13,7 @@ class TypeBoolean extends TypeAny_1.TypeAny {
         this._truthyValues = ['true']; // Specifies additional values to be considered as 'truthy'
         this._falsyValues = ['false']; // Specifies additional values to be considered as 'falsy'
         this._insensitive = true;
-        this._getErrorInvalidValue = ({ _i18n }) => {
-            return _i18n.__('Should be a boolean');
-        };
+        this._getErrorInvalidValue = ({ _i18n }) => _i18n.__('Should be a boolean');
         this._getDescription = (prefix = 'It should be ') => {
             const valideValue = [...this._truthyValues, ...this._falsyValues];
             return `${prefix}a boolean or one of: (${utils_1.default.joinWithCote(valideValue, ', ')}).`;

@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TypeEnum = void 0;
 const TypeAny_1 = require("./TypeAny");
 const utils_1 = __importDefault(require("../utils"));
 class TypeEnum extends TypeAny_1.TypeAny {
@@ -11,12 +12,8 @@ class TypeEnum extends TypeAny_1.TypeAny {
         this._oneOf = [];
         this._insensitive = true;
         this._number = true;
-        this._getErrorInvalidValue = ({ _i18n }) => {
-            return _i18n.__('Should be one of %s', utils_1.default.joinWithCote(this._oneOf, ', '));
-        };
-        this._getDescription = (prefix = 'It should be ') => {
-            return `${prefix}one of: (${utils_1.default.joinWithCote(this._oneOf, ', ')}).`;
-        };
+        this._getErrorInvalidValue = ({ _i18n }) => _i18n.__('Should be one of %s', utils_1.default.joinWithCote(this._oneOf, ', '));
+        this._getDescription = (prefix = 'It should be ') => `${prefix}one of: (${utils_1.default.joinWithCote(this._oneOf, ', ')}).`;
     }
     _insensitiveArray(array) {
         return array.map(value => {

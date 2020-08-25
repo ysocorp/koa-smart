@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TypeString = void 0;
 const TypeAny_1 = require("./TypeAny");
 class TypeString extends TypeAny_1.TypeAny {
     constructor(params = { i18n: {} }) {

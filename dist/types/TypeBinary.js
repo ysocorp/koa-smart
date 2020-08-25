@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TypeBinary = void 0;
 const TypeAny_1 = require("./TypeAny");
 class TypeBinary extends TypeAny_1.TypeAny {
     constructor(params = { i18n: {} }) {

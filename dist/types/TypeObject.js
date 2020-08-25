@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TypeObject = void 0;
 const TypeAny_1 = require("./TypeAny");
 class TypeObject extends TypeAny_1.TypeAny {
     constructor(params = { i18n: {} }) {
@@ -12,9 +13,7 @@ class TypeObject extends TypeAny_1.TypeAny {
             }
             return _i18n.__('Is not an object');
         };
-        this._getDescription = (prefix = 'It should be ') => {
-            return `${prefix}an object`;
-        };
+        this._getDescription = (prefix = 'It should be ') => `${prefix}an object`;
     }
     _initValues(value) {
         super._initValues(value);

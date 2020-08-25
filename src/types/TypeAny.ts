@@ -28,14 +28,14 @@ export class TypeAny {
   _errorMessages: {
     [x: string]: (obj: any, ...args: any) => string;
   } = {
-      [this._TypeError.ALL]: null,
-      [this._TypeError.REQUIRED]: () => this._i18n.__('Is required'),
-      [this._TypeError.IS_NULL]: () => this._i18n.__('Cannot be null'),
-      [this._TypeError.INVALID_TYPE]: () =>
-        this._i18n.__('Expected type %s', this._type),
-      [this._TypeError.INVALID_VALUE]: (obj, ...args) =>
-        this._getErrorInvalidValue(obj, ...args),
-    };
+    [this._TypeError.ALL]: null,
+    [this._TypeError.REQUIRED]: () => this._i18n.__('Is required'),
+    [this._TypeError.IS_NULL]: () => this._i18n.__('Cannot be null'),
+    [this._TypeError.INVALID_TYPE]: () =>
+      this._i18n.__('Expected type %s', this._type),
+    [this._TypeError.INVALID_VALUE]: (obj, ...args) =>
+      this._getErrorInvalidValue(obj, ...args),
+  };
   // options
   _isRequired = false;
   _notNull = false;
@@ -83,9 +83,7 @@ export class TypeAny {
     return _i18n.__('Invalid field');
   }
 
-  _getDescription = (prefix = 'It should be') => {
-    return `${prefix} any type.`;
-  }
+  _getDescription = (prefix = 'It should be') => `${prefix} any type.`;
 
   _generateParamDescription(params, prefix = '') {
     if (!params.length) {

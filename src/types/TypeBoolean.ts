@@ -12,9 +12,7 @@ export class TypeBoolean extends TypeAny {
     super({ ...params, type: 'boolean' });
   }
 
-  _getErrorInvalidValue = ({ _i18n }) => {
-    return _i18n.__('Should be a boolean');
-  }
+  _getErrorInvalidValue = ({ _i18n }) => _i18n.__('Should be a boolean');
 
   _getDescription = (prefix = 'It should be ') => {
     const valideValue = [...this._truthyValues, ...this._falsyValues];

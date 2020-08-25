@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TypeAny = exports.TypeError = void 0;
 const i18n_2_1 = __importDefault(require("i18n-2"));
 const path_1 = require("path");
 exports.TypeError = {
@@ -42,9 +43,7 @@ class TypeAny {
             }
             return _i18n.__('Invalid field');
         };
-        this._getDescription = (prefix = 'It should be') => {
-            return `${prefix} any type.`;
-        };
+        this._getDescription = (prefix = 'It should be') => `${prefix} any type.`;
         this._type = type;
         this._i18nConfig = Object.assign({ directory: path_1.join(__dirname, 'i18n'), locales: ['en', 'fr'], extension: '.json' }, i18n);
         this._i18n = new i18n_2_1.default(this._i18nConfig);

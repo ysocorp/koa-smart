@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TypeArray = void 0;
 const utils_1 = require("../utils/utils");
 const TypeAny_1 = require("./TypeAny");
 class TypeArray extends TypeAny_1.TypeAny {

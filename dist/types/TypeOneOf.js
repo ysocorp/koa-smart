@@ -1,14 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.TypeOneOf = void 0;
 const TypeAny_1 = require("./TypeAny");
 class TypeOneOf extends TypeAny_1.TypeAny {
     constructor(params = { i18n: {} }) {
         super(Object.assign(Object.assign({}, params), { type: 'oneOf' }));
         this._types = [];
         this._errors = [];
-        this._getErrorInvalidValue = ({ _i18n }) => {
-            return _i18n.__('Invalid type');
-        };
+        this._getErrorInvalidValue = ({ _i18n }) => _i18n.__('Invalid type');
         this._getDescription = (prefix = 'It should be ') => {
             const msgs = [];
             for (const t of this._types) {
