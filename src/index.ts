@@ -1,15 +1,12 @@
-import Route from './routes/Route';
-import App from './App';
-import ErrorApp from './utils/ErrorApp';
-import StatusCode from './utils/StatusCode';
-import * as Types from './types/index';
-import * as middlewares from './middlewares/index';
+export { default as Route } from './routes/Route';
+export * from './routes/Route';
 
-export = {
-  App,
-  Route,
-  ErrorApp,
-  StatusCode,
-  middlewares,
-  ...Types,
-};
+export { default as App } from './App';
+
+export { default as ErrorApp } from './utils/ErrorApp';
+
+export { default as StatusCode } from './utils/StatusCode';
+export * from './utils/StatusCode';
+
+export * from './types/index';
+export * from './middlewares/index';
