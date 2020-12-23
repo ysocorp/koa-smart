@@ -22,14 +22,6 @@ export interface RouteParams {
      */
     prefix: string;
     /**
-     * an array containing all of the app's models
-     */
-    models: any[];
-    /**
-     * the name of the route's own model
-     */
-    model: string;
-    /**
      * whether the route should be disabled
      */
     disable: boolean;
@@ -167,7 +159,7 @@ export default class Route {
      * @param data the data to be yielded by the requests
      * @param message the message to be yielded by the request
      */
-    send(ctx: Koa.Context, status: number, data: any, message: string): void;
+    send(ctx: Koa.Context, status?: number, data?: any, message?: string): void;
     /**
      * @desc same as {@link send}, but automatically sets the status to 200 OK
      * @param ctx koa's context object
@@ -181,7 +173,7 @@ export default class Route {
      * @param data the data to be yielded by the requests
      * @param message the message to be yielded by the request
      */
-    sendCreated(ctx: Koa.Context, data: any, message: string): void;
+    sendCreated(ctx: Koa.Context, data?: any, message?: string): void;
     /**
      * @desc replies with an empty body, yielding 204 NO CONTENT as the status
      * @param ctx koa's context object
@@ -201,28 +193,28 @@ export default class Route {
      * @param error the error(s) to be yielded by the request, default to "Bad request"
      * @param translate indicates whether the message should be translated or not
      */
-    throwBadRequest(error: string | Object, translate?: boolean): void;
+    throwBadRequest(error?: string | Object, translate?: boolean): void;
     /**
      * @version 2.0.0
      * @desc same as {@link throw}, but automatically sets the status to 401 UNAUTHORIZED
      * @param error the error(s) to be yielded by the request, default to "Unauthorized"
      * @param translate indicates whether the message should be translated or not
      */
-    throwUnauthorized(error: string | Object, translate?: boolean): void;
+    throwUnauthorized(error?: string | Object, translate?: boolean): void;
     /**
      * @version 2.0.0
      * @desc same as {@link throw}, but automatically sets the status to 403 FORBIDDEN
      * @param error the error(s) to be yielded by the request, default to "Forbidden"
      * @param translate indicates whether the message should be translated or not
      */
-    throwForbidden(error: string | Object, translate?: boolean): void;
+    throwForbidden(error?: string | Object, translate?: boolean): void;
     /**
      * @version 2.0.0
      * @desc same as {@link throw}, but automatically sets the status to 404 NOT FOUND
      * @param error the error(s) to be yielded by the request, default to "Not found"
      * @param translate indicates whether the message should be translated or not
      */
-    throwNotFound(error: string | Object, translate?: boolean): void;
+    throwNotFound(error?: string | Object, translate?: boolean): void;
     /**
      * @desc checks a condition. If it evaluates to false, throws a formated error to be caught.
      * @param condition if set to false; assert will fail and throw.
@@ -240,7 +232,7 @@ export default class Route {
      * @param translate indicates whether the message should be translated or not
      * @throws {ErrorApp} thrown error, should the assert fail.
      */
-    assertBadRequest(condition: boolean, error: string | Object, translate?: boolean): void;
+    assertBadRequest(condition: boolean, error?: string | Object, translate?: boolean): void;
     /**
      * @version 2.0.0
      * @desc same as {@link assert}, but automatically sets the status to 401 UNAUTHORIZED
@@ -249,7 +241,7 @@ export default class Route {
      * @param translate indicates whether the message should be translated or not
      * @throws {ErrorApp} thrown error, should the assert fail.
      */
-    assertUnauthorized(condition: boolean, error: string | Object, translate?: boolean): void;
+    assertUnauthorized(condition: boolean, error?: string | Object, translate?: boolean): void;
     /**
      * @version 2.0.0
      * @desc same as {@link assert}, but automatically sets the status to 403 FORBIDDEN
@@ -258,7 +250,7 @@ export default class Route {
      * @param translate indicates whether the message should be translated or not
      * @throws {ErrorApp} thrown error, should the assert fail.
      */
-    assertForbidden(condition: boolean, error: string | Object, translate?: boolean): void;
+    assertForbidden(condition: boolean, error?: string | Object, translate?: boolean): void;
     /**
      * @version 2.0.0
      * @desc same as {@link assert}, but automatically sets the status to 400 BAD REQUEST
@@ -267,6 +259,6 @@ export default class Route {
      * @param translate indicates whether the message should be translated or not
      * @throws {ErrorApp} thrown error, should the assert fail.
      */
-    assertNotFound(condition: boolean, error: string | Object, translate?: boolean): void;
+    assertNotFound(condition: boolean, error?: string | Object, translate?: boolean): void;
 }
 export {};
