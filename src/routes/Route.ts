@@ -35,14 +35,6 @@ export interface RouteParams {
    */
   prefix: string;
   /**
-   * an array containing all of the app's models
-   */
-  models: any[];
-  /**
-   * the name of the route's own model
-   */
-  model: string;
-  /**
    * whether the route should be disabled
    */
   disable: boolean;
@@ -362,7 +354,7 @@ export default class Route {
    * @param data the data to be yielded by the requests
    * @param message the message to be yielded by the request
    */
-  send(ctx: Koa.Context, status = 200, data: any, message: string) {
+  send(ctx: Koa.Context, status = 200, data?: any, message?: string) {
     ctx.body = ctx.body || {}; // add default body
     ctx.status = status;
     // Do not remove this test because if status = 204 || 304, node will remove body
@@ -395,7 +387,7 @@ export default class Route {
    * @param data the data to be yielded by the requests
    * @param message the message to be yielded by the request
    */
-  sendCreated(ctx: Koa.Context, data: any, message: string) {
+  sendCreated(ctx: Koa.Context, data?: any, message?: string) {
     return this.send(ctx, Route.StatusCode.created, data, message);
   }
 
@@ -424,7 +416,7 @@ export default class Route {
    * @param error the error(s) to be yielded by the request, default to "Bad request"
    * @param translate indicates whether the message should be translated or not
    */
-  throwBadRequest(error: string | Object, translate = false) {
+  throwBadRequest(error?: string | Object, translate = false) {
     return this.throw(
       Route.StatusCode.badRequest,
       error || 'Bad request',
@@ -438,7 +430,7 @@ export default class Route {
    * @param error the error(s) to be yielded by the request, default to "Unauthorized"
    * @param translate indicates whether the message should be translated or not
    */
-  throwUnauthorized(error: string | Object, translate = false) {
+  throwUnauthorized(error?: string | Object, translate = false) {
     return this.throw(
       Route.StatusCode.unauthorized,
       error || 'Unauthorized',
@@ -452,7 +444,7 @@ export default class Route {
    * @param error the error(s) to be yielded by the request, default to "Forbidden"
    * @param translate indicates whether the message should be translated or not
    */
-  throwForbidden(error: string | Object, translate = false) {
+  throwForbidden(error?: string | Object, translate = false) {
     return this.throw(
       Route.StatusCode.forbidden,
       error || 'Forbidden',
@@ -466,7 +458,7 @@ export default class Route {
    * @param error the error(s) to be yielded by the request, default to "Not found"
    * @param translate indicates whether the message should be translated or not
    */
-  throwNotFound(error: string | Object, translate = false) {
+  throwNotFound(error?: string | Object, translate = false) {
     return this.throw(
       Route.StatusCode.notFound,
       error || 'Not found',
@@ -503,7 +495,7 @@ export default class Route {
    */
   assertBadRequest(
     condition: boolean,
-    error: string | Object,
+    error?: string | Object,
     translate = false
   ) {
     this.assert(
@@ -524,7 +516,7 @@ export default class Route {
    */
   assertUnauthorized(
     condition: boolean,
-    error: string | Object,
+    error?: string | Object,
     translate = false
   ) {
     this.assert(
@@ -545,7 +537,7 @@ export default class Route {
    */
   assertForbidden(
     condition: boolean,
-    error: string | Object,
+    error?: string | Object,
     translate = false
   ) {
     this.assert(
@@ -566,7 +558,7 @@ export default class Route {
    */
   assertNotFound(
     condition: boolean,
-    error: string | Object,
+    error?: string | Object,
     translate = false
   ) {
     this.assert(
