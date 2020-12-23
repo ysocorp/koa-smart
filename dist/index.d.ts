@@ -5,4 +5,4 @@ export { default as ErrorApp } from './utils/ErrorApp';
 export { default as StatusCode } from './utils/StatusCode';
 export * from './utils/StatusCode';
 export * from './types/index';
-export * from './middlewares/index';
+export * as middlewares from './middlewares/index';
