@@ -49,7 +49,7 @@ async function logger(ctx, next) {
     );
     throw err;
   } finally {
-    const ms = new Date().getDate() - start.getDate();
+    const ms = new Date().getTime() - start.getTime();
     const fColor = chalk[getColor(status)];
     // eslint-disable-next-line
     console.log(

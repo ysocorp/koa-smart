@@ -45,7 +45,7 @@ async function logger(ctx, next) {
         throw err;
     }
     finally {
-        const ms = new Date().getDate() - start.getDate();
+        const ms = new Date().getTime() - start.getTime();
         const fColor = chalk_1.default[getColor(status)];
         // eslint-disable-next-line
         console.log(`${fColor(dateFormat(new Date()))} - ${fColor.bold(`${status}`)} ${chalk_1.default.bold(ctx.method)} ${ctx.url} - ${fColor(ms + ' ms')}`);
