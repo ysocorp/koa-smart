@@ -25,8 +25,6 @@ describe('Route', () => {
       route = new Route({
         disable: null,
         koaApp : null,
-        model: null,
-        models: null,
         prefix: null,
       });
     });
