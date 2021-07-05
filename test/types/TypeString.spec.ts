@@ -95,6 +95,24 @@ describe('TypeString', () => {
     });
   });
 
+  describe('Option valid', () => {
+    let schema;
+    beforeEach(async () => {
+      schema = Types.string().valid(['foo', 'bar']);
+    });
+
+    it('should validate a value that matches the values array', async () => {
+      schema.test('foo');
+      expect(schema.error).toBeNull();
+    });
+
+    it('should reject a value that does not match values array', async () => {
+      schema.test('oof');
+      expect(schema.error).toBeTruthy();
+      expect(schema.error.code).toBe(schema._errorCodes.INVALID_VALUE);
+    });
+  });
+
   describe('Option trim', () => {
     let schema;
     beforeEach(async () => {

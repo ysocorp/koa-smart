@@ -4,6 +4,7 @@ export declare class TypeString extends TypeAny {
     _max: number;
     _length?: number;
     _regex: any;
+    _valid: string[];
     _tTrim: boolean;
     _tTruncate: boolean;
     _tUppercase: boolean;
@@ -22,6 +23,7 @@ export declare class TypeString extends TypeAny {
     max(nb?: number): this;
     length(nb: any): this;
     regex(regex: any): this;
+    valid(valid: string[]): this;
     between(nbMin: any, nbMax: any): this;
     uppercase(val?: boolean): this;
     lowercase(val?: boolean): this;

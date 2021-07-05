@@ -67,6 +67,10 @@ class TypeString extends TypeAny_1.TypeAny {
         this._regex = regex;
         return this;
     }
+    valid(valid) {
+        this._valid = valid;
+        return this;
+    }
     between(nbMin, nbMax) {
         this.min(nbMin);
         this.max(nbMax);
@@ -101,6 +105,9 @@ class TypeString extends TypeAny_1.TypeAny {
         }
         if (this._regex && !this._value.match(this._regex)) {
             return this._setError(t, 'regex');
+        }
+        if (this._valid && !this._valid.includes(this._value)) {
+            return this._setError(t, 'valid');
         }
         return true;
     }
