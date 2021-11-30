@@ -1,6 +1,7 @@
 import expect from 'expect';
 
 import { Types } from '../../dist/types';
+import { TypeObject } from '../../dist/types/TypeObject';
 
 describe('TypeObject', () => {
   before(async () => {});
@@ -143,6 +144,7 @@ describe('TypeObject', () => {
       schema = Types.object<{
         a: string,
         b: number,
+        g: Date,
         d: string | boolean | number,
         c: {
           a: number,
@@ -151,6 +153,7 @@ describe('TypeObject', () => {
       }>().keys({
         a: Types.string(),
         b: Types.number(),
+        g: Types.date(),
         d: Types.oneOf(),
         c: Types.object<{
           a: number;
