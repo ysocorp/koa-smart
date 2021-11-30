@@ -37,5 +37,10 @@ describe('TypeOneOf', () => {
       expect(schema.value).toBe(12);
       expect(schema.error).toBeNull();
     });
+
+    it('should validate type constraint', async () => {
+      const s = Types.oneOf<[number, string, boolean, { a: string }]>()
+        .types(Types.number(), Types.string(), Types.boolean(), Types.object<{ a: string }>());
+    });
   });
 });

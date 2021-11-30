@@ -44,7 +44,7 @@ class TypeDate extends TypeAny_1.TypeAny {
     }
     _formatDateIfEnabled(value) {
         if (this._formatIn) {
-            const date = moment_1.default(value, this._formatIn, true);
+            const date = (0, moment_1.default)(value, this._formatIn, true);
             return date.isValid() ? date.toDate() : new Date(value);
         }
         else {
@@ -94,15 +94,15 @@ class TypeDate extends TypeAny_1.TypeAny {
             return this._setError(t, 'invalid');
         }
         if (this._min &&
-            moment_1.default(this._value).isBefore(this._formatDateIfEnabled(this._min))) {
+            (0, moment_1.default)(this._value).isBefore(this._formatDateIfEnabled(this._min))) {
             return this._setError(t, 'min');
         }
         if (this._max &&
-            moment_1.default(this._value).isAfter(this._formatDateIfEnabled(this._max))) {
+            (0, moment_1.default)(this._value).isAfter(this._formatDateIfEnabled(this._max))) {
             return this._setError(t, 'max');
         }
         if (this._formatOut) {
-            this._value = moment_1.default(this._value).format(this._formatOut);
+            this._value = (0, moment_1.default)(this._value).format(this._formatOut);
             if (this._value === 'Invalid date') {
                 return this._setError(t, 'invalid');
             }
@@ -112,12 +112,12 @@ class TypeDate extends TypeAny_1.TypeAny {
     _transform() {
         this._value = this._formatDateIfEnabled(this._value);
         if (this._startOf) {
-            this._value = moment_1.default(this._value)
+            this._value = (0, moment_1.default)(this._value)
                 .startOf(this._startOf)
                 .toDate();
         }
         if (this._endOf) {
-            this._value = moment_1.default(this._value)
+            this._value = (0, moment_1.default)(this._value)
                 .endOf(this._endOf)
                 .toDate();
         }

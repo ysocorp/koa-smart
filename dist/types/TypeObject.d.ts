@@ -1,5 +1,6 @@
 import { TypeAny } from './TypeAny';
-export declare class TypeObject extends TypeAny {
+import { objectTyping } from './TypeTyping';
+export declare class TypeObject<T = any> extends TypeAny {
     _schema: {};
     _errors: {};
     _errorWithKey: any;
@@ -13,7 +14,7 @@ export declare class TypeObject extends TypeAny {
     _initValues(value: any): void;
     setErrorMsg(msg: any, typeError?: any): this;
     errorWithKey(value?: boolean): this;
-    keys(object: any): this;
+    keys(object: objectTyping<T>): this;
     get errors(): {};
     _addError(key: any, param: any): boolean;
     _test(): boolean;

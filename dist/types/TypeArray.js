@@ -108,7 +108,7 @@ class TypeArray extends TypeAny_1.TypeAny {
             this._value = this._value.split(this._tSplitBy);
         }
         if (this._tSingle && !Array.isArray(this._value)) {
-            this._value = utils_1.castArray(this._value);
+            this._value = (0, utils_1.castArray)(this._value);
         }
     }
 }

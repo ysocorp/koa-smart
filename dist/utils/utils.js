@@ -30,7 +30,7 @@ function dateYYYYMMDD(date) {
     if (!date) {
         return undefined;
     }
-    return moment_1.default(date).format('YYYY-MM-DD');
+    return (0, moment_1.default)(date).format('YYYY-MM-DD');
 }
 exports.dateYYYYMMDD = dateYYYYMMDD;
 /**
@@ -144,7 +144,7 @@ exports.toNumber = toNumber;
  * @desc copy an object recursively
  */
 function deepCopy(obj) {
-    return lodash_clonedeep_1.default(obj);
+    return (0, lodash_clonedeep_1.default)(obj);
 }
 exports.deepCopy = deepCopy;
 /**

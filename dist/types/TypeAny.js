@@ -45,7 +45,7 @@ class TypeAny {
         };
         this._getDescription = (prefix = 'It should be') => `${prefix} any type.`;
         this._type = type;
-        this._i18nConfig = Object.assign({ directory: path_1.join(__dirname, 'i18n'), locales: ['en', 'fr'], extension: '.json' }, i18n);
+        this._i18nConfig = Object.assign({ directory: (0, path_1.join)(__dirname, 'i18n'), locales: ['en', 'fr'], extension: '.json' }, i18n);
         this._i18n = new i18n_2_1.default(this._i18nConfig);
     }
     clone() {

@@ -1,6 +1,7 @@
 import { TypeAny } from './TypeAny';
+import { objectTyping } from './TypeTyping';
 
-export class TypeObject extends TypeAny {
+export class TypeObject<T = any> extends TypeAny {
   _schema = {};
   _errors = {};
   _errorWithKey;
@@ -34,7 +35,7 @@ export class TypeObject extends TypeAny {
     return this;
   }
 
-  keys(object) {
+  keys(object: objectTyping<T>) {
     this._schema = { ...this._schema, ...object };
     return this;
   }

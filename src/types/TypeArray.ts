@@ -1,7 +1,8 @@
 import { castArray } from '../utils/utils';
 import { TypeAny } from './TypeAny';
+import { resolveType } from './TypeTyping';
 
-export class TypeArray extends TypeAny {
+export class TypeArray<T = any> extends TypeAny {
   _tSingle = false; // whether single values are allowed
   _tSplitBy;
   _length; // the array's exact allowed length
@@ -81,7 +82,7 @@ export class TypeArray extends TypeAny {
     return this;
   }
 
-  type(itemType) {
+  type(itemType: resolveType<T>) {
     this._innerType = itemType;
     return this;
   }

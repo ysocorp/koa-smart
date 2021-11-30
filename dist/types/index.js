@@ -27,7 +27,7 @@ let opt = {
 };
 exports.Types = {
     init: ({ i18n = {} } = {}) => {
-        const newOpt = utils_1.deepCopy(opt);
+        const newOpt = (0, utils_1.deepCopy)(opt);
         opt = Object.assign(Object.assign({}, newOpt), { i18n: Object.assign(Object.assign({}, opt.i18n), i18n) });
     },
     any: () => new TypeAny_1.TypeAny(opt),

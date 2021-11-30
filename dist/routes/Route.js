@@ -66,7 +66,7 @@ class Route {
                         if (!route.options.disable) {
                             this.log(chalk_1.default.green.bold('[Mount route]'), `\t${type}\t`, routePath);
                             this.koaRouter[type](routePath, ...this._use(route));
-                            docGenerator_1.generateDoc(this, route);
+                            (0, docGenerator_1.generateDoc)(this, route);
                         }
                         else {
                             this.log(chalk_1.default.yellow.bold('[Disable Mount route]\t'), type, routePath);
@@ -111,7 +111,7 @@ class Route {
     addRateLimit(middlewares, { options }) {
         const { rateLimit, routePath, type } = options;
         if (rateLimit) {
-            if (utils_1.isArray(rateLimit)) {
+            if ((0, utils_1.isArray)(rateLimit)) {
                 for (const elem of rateLimit) {
                     middlewares.push(this.getRateLimit(elem, routePath, type));
                 }
@@ -145,7 +145,7 @@ class Route {
      *@ignore
      */
     async _mlTestAccess(ctx, { accesses = [] }) {
-        if (utils_1.isArray(accesses) && accesses.length) {
+        if ((0, utils_1.isArray)(accesses) && accesses.length) {
             for (const access of accesses) {
                 if (await access(ctx)) {
                     return true;
@@ -153,7 +153,7 @@ class Route {
             }
             this.throwForbidden(null, true);
         }
-        if (utils_1.isArray(this.accesses) && this.accesses.length) {
+        if ((0, utils_1.isArray)(this.accesses) && this.accesses.length) {
             for (const access of this.accesses) {
                 if (await access(ctx)) {
                     return true;
@@ -168,12 +168,12 @@ class Route {
      */
     _mlParams(ctx, { bodyType = null, queryType = null }) {
         if (bodyType) {
-            ctx.request.bodyOrigin = utils_1.deepCopy(ctx.request.body);
+            ctx.request.bodyOrigin = (0, utils_1.deepCopy)(ctx.request.body);
             ctx.request.bodyChanged = this._mlTestParams(ctx, ctx.request.body, bodyType);
             ctx.request.body = ctx.request.bodyChanged;
         }
         if (queryType) {
-            ctx.request.queryOrigin = utils_1.deepCopy(ctx.request.query || {});
+            ctx.request.queryOrigin = (0, utils_1.deepCopy)(ctx.request.query || {});
             ctx.request.queryChanged = this._mlTestParams(ctx, ctx.request.query, queryType);
             ctx.request.query = ctx.request.queryChanged;
         }

@@ -138,5 +138,28 @@ describe('TypeObject', () => {
         'subObj.sub3',
       ]);
     });
+
+    it('should force valid type definition', async () => {
+      schema = Types.object<{
+        a: string,
+        b: number,
+        d: string | boolean | number,
+        c: {
+          a: number,
+          b: string,
+        } | number,
+      }>().keys({
+        a: Types.string(),
+        b: Types.number(),
+        d: Types.oneOf(),
+        c: Types.object<{
+          a: number;
+          b: string;
+        }>().keys({
+          a: Types.number(),
+          b: Types.string(),
+        })
+      });
+    });
   });
 });

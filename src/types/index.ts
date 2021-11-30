@@ -35,13 +35,13 @@ export const Types = {
     };
   },
   any: () => new KsAny(opt),
-  array: () => new KsArray(opt),
+  array: <T = any>() => new KsArray<T>(opt),
   binary: () => new KsBinary(opt),
   boolean: () => new KsBoolean(opt),
   date: () => new KsDate(opt),
   enum: () => new KsEnum(opt),
   number: () => new KsNumber(opt),
-  object: () => new KsObject(opt),
-  oneOf: () => new KsOneOf(opt),
+  object: <T = any>() => new KsObject<T>(opt),
+  oneOf: <T extends unknown[] = []>() => new KsOneOf<T>(opt),
   string: () => new KsString(opt),
 };
