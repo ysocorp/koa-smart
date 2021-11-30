@@ -1,6 +1,6 @@
 import { castArray } from '../utils/utils';
 import { TypeAny } from './TypeAny';
-import { resolveType } from './TypeTyping';
+import { ResolveType } from './TypeTyping';
 
 export class TypeArray<T = any> extends TypeAny {
   _tSingle = false; // whether single values are allowed
@@ -82,7 +82,7 @@ export class TypeArray<T = any> extends TypeAny {
     return this;
   }
 
-  type(itemType: resolveType<T>) {
+  type(itemType: ResolveType<T>) {
     this._innerType = itemType;
     return this;
   }

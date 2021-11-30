@@ -1,8 +1,8 @@
 import { TypeAny } from './TypeAny';
-import { resolveType } from './TypeTyping';
-declare type unroleResolveType<T extends [...any[]]> = T extends [infer Head, ...infer Tail] ? [
-    resolveType<Head>,
-    ...unroleResolveType<Tail>
+import { ResolveType } from './TypeTyping';
+declare type UnroleResolveType<T extends [...any[]]> = T extends [infer Head, ...infer Tail] ? [
+    ResolveType<Head>,
+    ...UnroleResolveType<Tail>
 ] : [];
 export declare class TypeOneOf<T extends unknown[] = []> extends TypeAny {
     _types: Array<TypeAny>;
@@ -14,7 +14,7 @@ export declare class TypeOneOf<T extends unknown[] = []> extends TypeAny {
         _i18n: any;
     }) => any;
     _getDescription: (prefix?: string) => string;
-    types(...rest: T extends [] ? TypeAny[] : unroleResolveType<T>): this;
+    types(...rest: T extends [] ? TypeAny[] : UnroleResolveType<T>): this;
     _testType(): boolean;
     _test(): boolean;
 }

@@ -1,5 +1,5 @@
 import { TypeAny } from './TypeAny';
-import { objectTyping } from './TypeTyping';
+import { ObjectTyping } from './TypeTyping';
 
 export class TypeObject<T = any> extends TypeAny {
   _schema = {};
@@ -35,7 +35,7 @@ export class TypeObject<T = any> extends TypeAny {
     return this;
   }
 
-  keys(object: objectTyping<T>) {
+  keys(object: ObjectTyping<T>) {
     this._schema = { ...this._schema, ...object };
     return this;
   }
