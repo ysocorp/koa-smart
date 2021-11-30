@@ -1,5 +1,6 @@
 import { TypeAny } from './TypeAny';
-export declare class TypeArray extends TypeAny {
+import { resolveType } from './TypeTyping';
+export declare class TypeArray<T = any> extends TypeAny {
     _tSingle: boolean;
     _tSplitBy: any;
     _length: any;
@@ -16,7 +17,7 @@ export declare class TypeArray extends TypeAny {
     max(max: any): this;
     min(min: any): this;
     length(length: any): this;
-    type(itemType: any): this;
+    type(itemType: resolveType<T>): this;
     _testType(): boolean;
     _test(): boolean;
     _transform(): void;

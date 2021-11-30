@@ -12,25 +12,29 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
     o["default"] = v;
 });
 var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) __createBinding(exports, m, p);
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.middlewares = exports.StatusCode = exports.ErrorApp = exports.App = exports.Route = void 0;
 var Route_1 = require("./routes/Route");
-Object.defineProperty(exports, "Route", { enumerable: true, get: function () { return Route_1.default; } });
+Object.defineProperty(exports, "Route", { enumerable: true, get: function () { return __importDefault(Route_1).default; } });
 __exportStar(require("./routes/Route"), exports);
 var App_1 = require("./App");
-Object.defineProperty(exports, "App", { enumerable: true, get: function () { return App_1.default; } });
+Object.defineProperty(exports, "App", { enumerable: true, get: function () { return __importDefault(App_1).default; } });
 var ErrorApp_1 = require("./utils/ErrorApp");
-Object.defineProperty(exports, "ErrorApp", { enumerable: true, get: function () { return ErrorApp_1.default; } });
+Object.defineProperty(exports, "ErrorApp", { enumerable: true, get: function () { return __importDefault(ErrorApp_1).default; } });
 var StatusCode_1 = require("./utils/StatusCode");
-Object.defineProperty(exports, "StatusCode", { enumerable: true, get: function () { return StatusCode_1.default; } });
+Object.defineProperty(exports, "StatusCode", { enumerable: true, get: function () { return __importDefault(StatusCode_1).default; } });
 __exportStar(require("./utils/StatusCode"), exports);
 __exportStar(require("./types/index"), exports);
 exports.middlewares = __importStar(require("./middlewares/index"));

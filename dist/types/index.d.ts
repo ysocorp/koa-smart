@@ -23,13 +23,13 @@ export declare const Types: {
         i18n?: {};
     }) => void;
     any: () => KsAny;
-    array: () => KsArray;
+    array: <T = any>() => KsArray<T>;
     binary: () => KsBinary;
     boolean: () => KsBoolean;
     date: () => KsDate;
     enum: () => KsEnum;
     number: () => KsNumber;
-    object: () => KsObject;
-    oneOf: () => KsOneOf;
+    object: <T_1 = any>() => KsObject<T_1>;
+    oneOf: <T_2 extends unknown[] = []>() => KsOneOf<T_2>;
     string: () => KsString;
 };

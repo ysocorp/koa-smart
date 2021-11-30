@@ -354,7 +354,7 @@ export default class Route {
    * @param data the data to be yielded by the requests
    * @param message the message to be yielded by the request
    */
-  send(ctx: Koa.Context, status = 200, data?: any, message?: string) {
+  send(ctx: Koa.Context & { body: any }, status = 200, data?: any, message?: string) {
     ctx.body = ctx.body || {}; // add default body
     ctx.status = status;
     // Do not remove this test because if status = 204 || 304, node will remove body

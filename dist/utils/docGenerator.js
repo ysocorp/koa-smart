@@ -29,8 +29,8 @@ function _param(file, type, keyBase, location) {
                 const tmpType = type._schema[key];
                 const sKey = keyBase ? `${keyBase}.${key}` : key;
                 const sKeyD = !tmpType._isRequired ? `[${sKey}]` : sKey;
-                const sType = utils_1.capitalize(tmpType._type || 'Any');
-                const description = utils_1.capitalize(tmpType._getDescription());
+                const sType = (0, utils_1.capitalize)(tmpType._type || 'Any');
+                const description = (0, utils_1.capitalize)(tmpType._getDescription());
                 fs_extra_1.default.appendFileSync(file, ` * @apiParam {${sType}} ${sKeyD} ${formatedLocation}${description}\n`);
                 if (tmpType instanceof TypeObject_1.TypeObject) {
                     _param(file, tmpType, sKey, location);
@@ -39,8 +39,8 @@ function _param(file, type, keyBase, location) {
         }
     }
     else if (type instanceof TypeArray_1.TypeArray) {
-        const sType = utils_1.capitalize(type._type || 'Any');
-        const description = utils_1.capitalize(type._getDescription());
+        const sType = (0, utils_1.capitalize)(type._type || 'Any');
+        const description = (0, utils_1.capitalize)(type._getDescription());
         fs_extra_1.default.appendFileSync(file, ` * @apiParam {${sType}} __ARRAY_BODY__ ${description}\n`);
     }
 }
@@ -49,8 +49,8 @@ function init(pathDir, enable) {
     if (!ENABLE_DOC) {
         return;
     }
-    DIR = pathDir || path_1.join(__dirname, '..', 'ApiDoc');
-    DIR_TMP = path_1.join(__dirname, '..', 'ApiDocTmp');
+    DIR = pathDir || (0, path_1.join)(__dirname, '..', 'ApiDoc');
+    DIR_TMP = (0, path_1.join)(__dirname, '..', 'ApiDocTmp');
     fs_extra_1.default.removeSync(DIR_TMP);
     fs_extra_1.default.mkdirpSync(DIR_TMP);
 }
@@ -63,17 +63,17 @@ function generateDoc(classRoute, route) {
     const className = classRoute.constructor.name.replace('Route', '');
     // to be able to create folder in Windows
     const routePathFileName = options.routePath.replace(/:|\?|"|\\|\/|\*|\|<|>/g, '-');
-    fs_extra_1.default.mkdirpSync(path_1.join(DIR_TMP, _removeLast(routePathFileName)));
-    const file = path_1.join(DIR_TMP, `${routePathFileName || className}.js`);
+    fs_extra_1.default.mkdirpSync((0, path_1.join)(DIR_TMP, _removeLast(routePathFileName)));
+    const file = (0, path_1.join)(DIR_TMP, `${routePathFileName || className}.js`);
     fs_extra_1.default.writeFileSync(file, '\n');
     let group = '';
     if (classRoute.prefix) {
-        group += utils_1.capitalize(classRoute.prefix.replace(/^\//, ''));
+        group += (0, utils_1.capitalize)(classRoute.prefix.replace(/^\//, ''));
         if (group.length) {
             group += '/';
         }
     }
-    group += utils_1.capitalize(className);
+    group += (0, utils_1.capitalize)(className);
     fs_extra_1.default.appendFileSync(file, '/**\n');
     fs_extra_1.default.appendFileSync(file, ` * @api {${options.type}} ${options.routePath || '/'}\n`);
     fs_extra_1.default.appendFileSync(file, ` * @apiGroup ${group}\n`);
@@ -115,13 +115,13 @@ function end() {
         ? ['apidoc', '-i', DIR_TMP, '-o', DIR]
         : ['/s', '/c', 'npx', 'apidoc', '-i', DIR_TMP, '-o', DIR];
     const cmdArgsRm = !isWindows ? ['-rf', DIR_TMP] : ['/s', '/c', 'rmdir', '/s', '/q', DIR_TMP];
-    const cmdApidoc = child_process_1.spawn(_getCmd('npx'), cmdArgsNpx);
+    const cmdApidoc = (0, child_process_1.spawn)(_getCmd('npx'), cmdArgsNpx);
     cmdApidoc.on('close', code => {
         if (code === 1) {
             // eslint-disable-next-line
             console.error('[DocGenerator] an error when generate the apiDoc ');
         }
-        child_process_1.spawn(_getCmd('rm'), cmdArgsRm);
+        (0, child_process_1.spawn)(_getCmd('rm'), cmdArgsRm);
     });
 }
 exports.end = end;

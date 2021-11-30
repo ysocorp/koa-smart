@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -40,7 +40,7 @@ class App {
          * @ignore
          */
         this.routes = {};
-        const { routeParam = {}, port = process.env.PORT || 3000, docPath = path_1.join(__dirname, "..", "apidoc"), generateDoc = false } = opt;
+        const { routeParam = {}, port = process.env.PORT || 3000, docPath = (0, path_1.join)(__dirname, "..", "apidoc"), generateDoc = false } = opt;
         this.routeParam = routeParam;
         /**
          * @ignore
@@ -52,7 +52,7 @@ class App {
          * @type {Koa}
          */
         this.koaApp = new koa_1.default();
-        koa_locale_1.default(this.koaApp);
+        (0, koa_locale_1.default)(this.koaApp);
         docGenerator.init(docPath, generateDoc);
     }
     /**
@@ -60,16 +60,16 @@ class App {
      */
     _getAllRoutes(path, prefix) {
         this.routes[prefix] = this.routes[prefix] || {};
-        fs_1.readdirSync(path)
+        (0, fs_1.readdirSync)(path)
             .filter(file => file.endsWith(".js") || file.endsWith(".ts"))
             .forEach(file => {
-            const RouteClass = require(path_1.join(path, file)).default;
+            const RouteClass = require((0, path_1.join)(path, file)).default;
             if (RouteClass && RouteClass.prototype instanceof Route_1.default) {
                 const route = new RouteClass(Object.assign({ prefix, koaApp: this.koaApp, routes: this.routes[prefix] }, this.routeParam));
                 this.routes[prefix][route.constructor.name] = route;
             }
         });
-        return utils_1.objValToArray(this.routes[prefix]);
+        return (0, utils_1.objValToArray)(this.routes[prefix]);
     }
     /**
      * @access public
@@ -112,7 +112,7 @@ class App {
      * @return {Koa}
      */
     async start() {
-        this.koaApp.use(notFound_1.default());
+        this.koaApp.use((0, notFound_1.default)());
         docGenerator.end();
         return this.koaApp.listen(this.port);
     }

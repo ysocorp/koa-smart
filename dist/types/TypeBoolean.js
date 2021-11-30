@@ -28,14 +28,14 @@ class TypeBoolean extends TypeAny_1.TypeAny {
         });
     }
     truthy(vals = []) {
-        this._truthyValues = lodash_uniq_1.default([
+        this._truthyValues = (0, lodash_uniq_1.default)([
             ...this._truthyValues,
             ...utils_1.default.castArray(vals),
         ]);
         return this;
     }
     falsy(vals = []) {
-        this._falsyValues = lodash_uniq_1.default([...this._falsyValues, ...utils_1.default.castArray(vals)]);
+        this._falsyValues = (0, lodash_uniq_1.default)([...this._falsyValues, ...utils_1.default.castArray(vals)]);
         return this;
     }
     insensitive(val = true) {

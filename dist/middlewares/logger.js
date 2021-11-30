@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const chalk_1 = __importDefault(require("chalk"));
 const moment_1 = __importDefault(require("moment"));
 function dateFormat(date) {
-    return moment_1.default(date).format('YYYY/MM/DD, h:mm:ss a');
+    return (0, moment_1.default)(date).format('YYYY/MM/DD, h:mm:ss a');
 }
 function getColor(status) {
     if (status < 400) {

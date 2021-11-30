@@ -9,7 +9,7 @@ class ErrorApp {
         this.messages = null;
         this.toTranslate = false;
         this.status = status;
-        if (utils_1.isArray(message) || utils_1.isObject(message)) {
+        if ((0, utils_1.isArray)(message) || (0, utils_1.isObject)(message)) {
             this.messages = message;
         }
         else {
