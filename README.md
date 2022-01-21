@@ -534,6 +534,10 @@ in order to get started quickly, look at [this boilerplate](https://github.com/y
   const myApp = new MyApp();
   myApp.start();
   ```
+## Upgrade to 4.0.0
+4.0.0 upgrades [koa2-ratelimit](https://www.npmjs.com/package/koa2-ratelimit) to version 1.0.0
+
+This means koa2-ratelimit does not install sequelize, mongoose or redis anymore. If you use these packages, make sure you install them in your project.
 
 ## License
 
