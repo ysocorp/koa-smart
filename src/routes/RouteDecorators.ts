@@ -8,6 +8,10 @@ export interface ParamsMethodDecorator {
    */
   queryType?: any;
   /**
+   * Description of the "ctx.body.data" sent
+   */
+  returnType?: any;
+  /**
    * the path at which the route will be available.
    * By default it will take the name of the function and replace uppercase by "-".
    * Ex: a function name addUser will be mount with /add-user
@@ -103,6 +107,7 @@ export default class RouteDecorators {
         accesses: [],
         bodyType: null,
         queryType: null,
+        returnType: null,
         routeBase: target.routeBase,
         doc: {},
         ...options,

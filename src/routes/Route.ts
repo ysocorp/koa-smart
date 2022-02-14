@@ -193,6 +193,7 @@ export default class Route {
     const { middlewares = [] } = options;
 
     const middlewaresToAdd = [this._beforeRoute(infos)];
+    middlewaresToAdd.push(this._afterRoute(infos));
     middlewaresToAdd.push(...this.middlewares); // add middlewares of the class
     middlewaresToAdd.push(...middlewares); // add middlewares of the specific route
     this.addRateLimit(middlewaresToAdd, infos);
@@ -260,6 +261,27 @@ export default class Route {
     }
   }
 
+  // afterRoute
+  /**
+   *@ignore
+   */
+  _afterRoute(infos) {
+    return async (ctx, next) => await this.afterRoute(ctx, infos, next);
+  }
+
+  /**
+   * @desc a member which can be overriden, which will always be executed after the route finished
+   * @param ctx Koa's context object
+   * @param params an object containing all route parameters
+   * @param next the next middleware in the chain
+   */
+  async afterRoute( ctx: Koa.Context, { options }: BeforeRouteParams, next: Function) {
+    if (next) {
+      await next();
+    }
+    this._mlBodyReturnType(ctx, options);
+  }
+
   /**
    *@ignore
    */
@@ -305,6 +327,27 @@ export default class Route {
         queryType
       );
       ctx.request.query = ctx.request.queryChanged;
+    }
+  }
+
+  /**
+   *@ignore
+   */
+  _mlBodyReturnType(ctx, { returnType = null }) {
+    if (returnType && `${ctx.status}`.startsWith('2')) {
+      const bodyOrigin = deepCopy(ctx.body.data || {});
+
+      const cloneType = returnType.clone();
+      if (ctx.i18n) {
+        cloneType.setLocale(ctx.i18n.getLocale());
+      }
+
+      cloneType.test(bodyOrigin);
+      if (cloneType.error || cloneType.errors) {
+        throw new ErrorApp(500, cloneType.errors || cloneType.error, false);
+      }
+
+      ctx.body.data = cloneType.value;
     }
   }
 

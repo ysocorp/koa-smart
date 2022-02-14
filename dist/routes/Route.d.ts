@@ -123,6 +123,17 @@ export default class Route {
     /**
      *@ignore
      */
+    _afterRoute(infos: any): (ctx: any, next: any) => Promise<void>;
+    /**
+     * @desc a member which can be overriden, which will always be executed after the route finished
+     * @param ctx Koa's context object
+     * @param params an object containing all route parameters
+     * @param next the next middleware in the chain
+     */
+    afterRoute(ctx: Koa.Context, { options }: BeforeRouteParams, next: Function): Promise<void>;
+    /**
+     *@ignore
+     */
     _mlTestAccess(ctx: any, { accesses }: {
         accesses?: any[];
     }): Promise<boolean>;
@@ -132,6 +143,12 @@ export default class Route {
     _mlParams(ctx: any, { bodyType, queryType }: {
         bodyType?: any;
         queryType?: any;
+    }): void;
+    /**
+     *@ignore
+     */
+    _mlBodyReturnType(ctx: any, { returnType }: {
+        returnType?: any;
     }): void;
     /**
      *@ignore

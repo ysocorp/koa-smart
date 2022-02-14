@@ -353,4 +353,90 @@ describe('RouteDecorator', () => {
       expect(body.data).toEqual('content');
     });
   });
+
+  describe('ReturnType', () => {
+    it('should return 200', async () => {
+      const bodySend = {
+        stringRequired: 'stringRequired',
+        stringRequiredWithDefaultValue: 'stringRequiredWithDefaultValue',
+        stringOptional: 'stringOptional',
+        stringOptionalWithDefaultValue: 'stringOptionalWithDefaultValue',
+        deep: {
+          firstName: 'firstName',
+          lastName: 'lastName',
+        }
+      };
+
+      const { body, statusCode } = await request
+        .post('/return-types')
+        .send(bodySend);
+
+      expect(statusCode).toBe(200);
+      expect(body.data).toEqual(bodySend);
+    });
+
+    it('should keep only elem in returnType', async () => {
+      const bodySend = {
+        stringRequired: 'stringRequired',
+        stringRequiredWithDefaultValue: 'stringRequiredWithDefaultValue',
+        stringOptional: 'stringOptional',
+        stringOptionalWithDefaultValue: 'stringOptionalWithDefaultValue',
+        deep: {
+          firstName: 'firstName',
+          lastName: 'lastName',
+        }
+      };
+
+      const { body, statusCode } = await request
+        .post('/return-types')
+        .send({'notRequered': 'toto', ...bodySend});
+
+      expect(statusCode).toBe(200);
+      expect(body.data).toEqual(bodySend);
+    });
+
+    it('should put default value', async () => {
+      const bodySend = {
+        stringRequired: 'stringRequired',
+        deep: {
+          firstName: 'firstName',
+        }
+      };
+      const bodyRes = {
+        ...bodySend,
+        stringRequiredWithDefaultValue: 'stringRequiredWithDefaultValue',
+        stringOptionalWithDefaultValue: 'stringOptionalWithDefaultValue',
+        deep: {
+          firstName: 'firstName',
+          lastName: 'PWD',
+        }
+      };
+
+      const { body, statusCode } = await request
+        .post('/return-types')
+        .send(bodySend);
+
+      expect(statusCode).toBe(200);
+      expect(body.data).toEqual(bodyRes);
+    });
+
+    it('should return 500 if required return are not send', async () => {
+      const bodySend = {
+        stringRequired: undefined,
+        stringRequiredWithDefaultValue: 'stringRequiredWithDefaultValue',
+        stringOptional: 'stringOptional',
+        stringOptionalWithDefaultValue: 'stringOptionalWithDefaultValue',
+      };
+
+      const res = await request
+        .post('/return-types')
+        .send(bodySend);
+
+      expect(res.statusCode).toBe(500);
+      expect(JSON.parse(res.error.text)).toEqual({ messages: { 
+        stringRequired: { msg: 'Is required', code: 2 },
+        deep: { msg: 'Is required', code: 2 },
+      }});
+    });
+  });
 });

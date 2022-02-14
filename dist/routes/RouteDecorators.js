@@ -35,7 +35,7 @@ class RouteDecorators {
     static _addRoute(type, options = {}) {
         return (target, functionName, descriptor) => {
             RouteDecorators._initData(target);
-            options = Object.assign({ path: undefined, accesses: [], bodyType: null, queryType: null, routeBase: target.routeBase, doc: {} }, options);
+            options = Object.assign({ path: undefined, accesses: [], bodyType: null, queryType: null, returnType: null, routeBase: target.routeBase, doc: {} }, options);
             Object.defineProperty(target, functionName, descriptor);
             const routeName = options.path === undefined
                 ? RouteDecorators._getRouteFromMethode(functionName)
