@@ -66,7 +66,7 @@ class Route {
                         if (!route.options.disable) {
                             this.log(chalk_1.default.green.bold('[Mount route]'), `\t${type}\t`, routePath);
                             this.koaRouter[type](routePath, ...this._use(route));
-                            (0, docGenerator_1.generateDoc)(this, route);
+                            Route.generateDoc(this, route);
                         }
                         else {
                             this.log(chalk_1.default.yellow.bold('[Disable Mount route]\t'), type, routePath);
@@ -432,4 +432,5 @@ Route.Route = RouteDecorators_1.default.Route;
  */
 Route.displayLog = true;
 Route.StatusCode = StatusCode_1.default;
+Route.generateDoc = docGenerator_1.generateDoc;
 //# sourceMappingURL=Route.js.map

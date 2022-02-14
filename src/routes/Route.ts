@@ -92,6 +92,7 @@ export default class Route {
    */
   static displayLog = true;
   static StatusCode = StatusCode;
+  static generateDoc = generateDoc;
 
   koaApp: Koa;
   prefix: string;
@@ -164,7 +165,7 @@ export default class Route {
                 routePath
               );
               this.koaRouter[type](routePath, ...this._use(route));
-              generateDoc(this, route);
+              Route.generateDoc(this, route);
             } else {
               this.log(
                 chalk.yellow.bold('[Disable Mount route]\t'),

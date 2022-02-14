@@ -1,5 +1,6 @@
 import KoaRouter from 'koa-router';
 import Koa from 'koa';
+import { generateDoc } from '../utils/docGenerator';
 import { ParamsMethodDecorator, ParamsClassDecorator } from './RouteDecorators';
 export interface BeforeRouteParams {
     /**
@@ -65,6 +66,7 @@ export default class Route {
      */
     static displayLog: boolean;
     static StatusCode: import("../utils/StatusCode").StatusCode;
+    static generateDoc: typeof generateDoc;
     koaApp: Koa;
     prefix: string;
     allRoutesInstance: Route[];
