@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import Koa from "koa";
+import Koa from 'koa';
 import { Server } from 'http';
 export default class App {
     /**
@@ -40,6 +40,15 @@ export default class App {
      * @return { }
      */
     mountFolder(pathFolder: any, prefix?: string, opt?: any): void;
+    /**
+     * @access public
+     * @desc "mounts" a file, then adding the discovered routes to the app.
+     *       a route is a class which extends {@link Route}
+     * @param {string} pathFile the path of the file to mount
+     * @param {string} [prefix='/'] an optional prefix to prepend to all of the folder's routes
+     * @return { }
+     */
+    mountFile(pathFile: string, prefix: string, opt?: any): void;
     /**
      * @access public
      * @desc Launches the app and starts listening on the configured port.

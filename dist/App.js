@@ -40,7 +40,7 @@ class App {
          * @ignore
          */
         this.routes = {};
-        const { routeParam = {}, port = process.env.PORT || 3000, docPath = (0, path_1.join)(__dirname, "..", "apidoc"), generateDoc = false } = opt;
+        const { routeParam = {}, port = process.env.PORT || 3000, docPath = (0, path_1.join)(__dirname, '..', 'apidoc'), generateDoc = false, } = opt;
         this.routeParam = routeParam;
         /**
          * @ignore
@@ -61,7 +61,7 @@ class App {
     _getAllRoutes(path, prefix) {
         this.routes[prefix] = this.routes[prefix] || {};
         (0, fs_1.readdirSync)(path)
-            .filter(file => file.endsWith(".js") || file.endsWith(".ts"))
+            .filter(file => file.endsWith('.js') || file.endsWith('.ts'))
             .forEach(file => {
             const RouteClass = require((0, path_1.join)(path, file)).default;
             if (RouteClass && RouteClass.prototype instanceof Route_1.default) {
@@ -97,10 +97,28 @@ class App {
      * @param {string} [prefix='/'] an optional prefix to prepend to all of the folder's routes
      * @return { }
      */
-    mountFolder(pathFolder, prefix = "/", opt = {}) {
+    mountFolder(pathFolder, prefix = '/', opt = {}) {
         const { generateDoc = true } = opt;
         const routes = this._getAllRoutes(pathFolder, prefix);
         for (const route of routes) {
+            route.generateDoc = generateDoc;
+            route.mount();
+            this.koaApp.use(route.koaRouter.middleware());
+        }
+    }
+    /**
+     * @access public
+     * @desc "mounts" a file, then adding the discovered routes to the app.
+     *       a route is a class which extends {@link Route}
+     * @param {string} pathFile the path of the file to mount
+     * @param {string} [prefix='/'] an optional prefix to prepend to all of the folder's routes
+     * @return { }
+     */
+    mountFile(pathFile, prefix, opt = {}) {
+        const { generateDoc = true } = opt;
+        const RouteClass = require(pathFile).default;
+        if (RouteClass && RouteClass.prototype instanceof Route_1.default) {
+            const route = new RouteClass(Object.assign({ prefix, koaApp: this.koaApp, routes: this.routes[prefix] }, this.routeParam));
             route.generateDoc = generateDoc;
             route.mount();
             this.koaApp.use(route.koaRouter.middleware());
