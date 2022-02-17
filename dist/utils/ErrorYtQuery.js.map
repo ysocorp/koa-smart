@@ -1,0 +1,1 @@
+{"version":3,"file":"ErrorYtQuery.js","sourceRoot":"","sources":["../../src/utils/ErrorYtQuery.ts"],"names":[],"mappings":";;;;;AAAA,wDAAgC;AAEhC,MAAqB,YAAa,SAAQ,iBAAO;IAC/C,YAAY,MAAM,EAAE,OAAO,EAAE,WAAW,GAAG,KAAK;QAC9C,KAAK,CAAC,MAAM,EAAE,OAAO,EAAE,WAAW,CAAC,CAAC;QACpC,IAAI,CAAC,SAAS,GAAG,cAAc,CAAC;IAClC,CAAC;CACF;AALD,+BAKC"}

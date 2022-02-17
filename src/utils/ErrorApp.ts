@@ -6,6 +6,7 @@ export default class ErrorApp implements Error {
   message = '';
   messages: Object | Array<any> | null = null;
   toTranslate: Boolean = false;
+  typeError = 'ErrorApp';
 
   constructor(status, message, toTranslate = false) {
     this.status = status;

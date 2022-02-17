@@ -8,6 +8,7 @@ class ErrorApp {
         this.message = '';
         this.messages = null;
         this.toTranslate = false;
+        this.typeError = 'ErrorApp';
         this.status = status;
         if ((0, utils_1.isArray)(message) || (0, utils_1.isObject)(message)) {
             this.messages = message;

@@ -5,6 +5,10 @@ import { RateLimit } from 'koa2-ratelimit';
 import Koa from 'koa';
 
 import ErrorApp from '../utils/ErrorApp';
+import ErrorYtBody from '../utils/ErrorYtBody';
+import ErrorYtQuery from '../utils/ErrorYtQuery';
+import ErrorYtReturn from '../utils/ErrorYtReturn';
+import ErrorAccess from '../utils/ErrorAccess';
 import StatusCode from '../utils/StatusCode';
 import { deepCopy, isArray } from '../utils/utils';
 import { generateDoc } from '../utils/docGenerator';
@@ -293,7 +297,7 @@ export default class Route {
           return true;
         }
       }
-      this.throwForbidden(null, true);
+      throw new ErrorAccess(Route.StatusCode.forbidden, null, true);
     }
     if (isArray(this.accesses) && this.accesses.length) {
       for (const access of this.accesses) {
@@ -301,7 +305,7 @@ export default class Route {
           return true;
         }
       }
-      this.throwForbidden(null, true);
+      throw new ErrorAccess(Route.StatusCode.forbidden, null, true);
     }
 
     return true;
@@ -316,7 +320,8 @@ export default class Route {
       ctx.request.bodyChanged = this._mlTestParams(
         ctx,
         ctx.request.body,
-        bodyType
+        bodyType,
+        ErrorYtBody
       );
       ctx.request.body = ctx.request.bodyChanged;
     }
@@ -325,7 +330,8 @@ export default class Route {
       ctx.request.queryChanged = this._mlTestParams(
         ctx,
         ctx.request.query,
-        queryType
+        queryType,
+        ErrorYtQuery
       );
       ctx.request.query = ctx.request.queryChanged;
     }
@@ -345,7 +351,7 @@ export default class Route {
 
       cloneType.test(bodyOrigin);
       if (cloneType.error || cloneType.errors) {
-        throw new ErrorApp(500, cloneType.errors || cloneType.error, false);
+        throw new ErrorYtReturn(500, cloneType.errors || cloneType.error, false);
       }
 
       ctx.body.data = cloneType.value;
@@ -355,7 +361,7 @@ export default class Route {
   /**
    *@ignore
    */
-  _mlTestParams(ctx, body, type) {
+  _mlTestParams(ctx, body, type, ErrorClass) {
     const cloneType = type.clone();
     if (ctx.i18n) {
       cloneType.setLocale(ctx.i18n.getLocale());
@@ -363,7 +369,7 @@ export default class Route {
 
     cloneType.test(body);
     if (cloneType.error || cloneType.errors) {
-      this.throwBadRequest(cloneType.errors || cloneType.error);
+      throw new ErrorClass(Route.StatusCode.badRequest, cloneType.errors || cloneType.error, false);
     }
     return cloneType.value;
   }

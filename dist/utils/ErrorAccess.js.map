@@ -1,0 +1,1 @@
+{"version":3,"file":"ErrorAccess.js","sourceRoot":"","sources":["../../src/utils/ErrorAccess.ts"],"names":[],"mappings":";;;;;AAAA,0DAAkC;AAElC,MAAqB,WAAY,SAAQ,kBAAQ;IAC/C,YAAY,MAAM,EAAE,OAAO,EAAE,WAAW,GAAG,KAAK;QAC9C,KAAK,CAAC,MAAM,EAAE,OAAO,EAAE,WAAW,CAAC,CAAC;QACpC,IAAI,CAAC,SAAS,GAAG,aAAa,CAAC;IACjC,CAAC;CACF;AALD,8BAKC"}

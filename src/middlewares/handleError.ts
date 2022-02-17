@@ -1,3 +1,5 @@
+import ErrorApp from '../utils/ErrorApp';
+
 const __ = string => string;
 
 interface OptionsErrors {
@@ -53,7 +55,7 @@ async function handleError(ctx, next) {
       'SequelizeUniqueConstraintError',
     ];
 
-    if (err.constructor.name === 'ErrorApp') {
+    if (err instanceof ErrorApp) {
       // expected error
       ctx.status = err.status;
       ctx.body = {};

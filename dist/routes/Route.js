@@ -8,6 +8,10 @@ const koa_router_1 = __importDefault(require("koa-router"));
 const chalk_1 = __importDefault(require("chalk"));
 const koa2_ratelimit_1 = require("koa2-ratelimit");
 const ErrorApp_1 = __importDefault(require("../utils/ErrorApp"));
+const ErrorYtBody_1 = __importDefault(require("../utils/ErrorYtBody"));
+const ErrorYtQuery_1 = __importDefault(require("../utils/ErrorYtQuery"));
+const ErrorYtReturn_1 = __importDefault(require("../utils/ErrorYtReturn"));
+const ErrorAccess_1 = __importDefault(require("../utils/ErrorAccess"));
 const StatusCode_1 = __importDefault(require("../utils/StatusCode"));
 const utils_1 = require("../utils/utils");
 const docGenerator_1 = require("../utils/docGenerator");
@@ -171,7 +175,7 @@ class Route {
                     return true;
                 }
             }
-            this.throwForbidden(null, true);
+            throw new ErrorAccess_1.default(Route.StatusCode.forbidden, null, true);
         }
         if ((0, utils_1.isArray)(this.accesses) && this.accesses.length) {
             for (const access of this.accesses) {
@@ -179,7 +183,7 @@ class Route {
                     return true;
                 }
             }
-            this.throwForbidden(null, true);
+            throw new ErrorAccess_1.default(Route.StatusCode.forbidden, null, true);
         }
         return true;
     }
@@ -189,12 +193,12 @@ class Route {
     _mlParams(ctx, { bodyType = null, queryType = null }) {
         if (bodyType) {
             ctx.request.bodyOrigin = (0, utils_1.deepCopy)(ctx.request.body);
-            ctx.request.bodyChanged = this._mlTestParams(ctx, ctx.request.body, bodyType);
+            ctx.request.bodyChanged = this._mlTestParams(ctx, ctx.request.body, bodyType, ErrorYtBody_1.default);
             ctx.request.body = ctx.request.bodyChanged;
         }
         if (queryType) {
             ctx.request.queryOrigin = (0, utils_1.deepCopy)(ctx.request.query || {});
-            ctx.request.queryChanged = this._mlTestParams(ctx, ctx.request.query, queryType);
+            ctx.request.queryChanged = this._mlTestParams(ctx, ctx.request.query, queryType, ErrorYtQuery_1.default);
             ctx.request.query = ctx.request.queryChanged;
         }
     }
@@ -210,7 +214,7 @@ class Route {
             }
             cloneType.test(bodyOrigin);
             if (cloneType.error || cloneType.errors) {
-                throw new ErrorApp_1.default(500, cloneType.errors || cloneType.error, false);
+                throw new ErrorYtReturn_1.default(500, cloneType.errors || cloneType.error, false);
             }
             ctx.body.data = cloneType.value;
         }
@@ -218,14 +222,14 @@ class Route {
     /**
      *@ignore
      */
-    _mlTestParams(ctx, body, type) {
+    _mlTestParams(ctx, body, type, ErrorClass) {
         const cloneType = type.clone();
         if (ctx.i18n) {
             cloneType.setLocale(ctx.i18n.getLocale());
         }
         cloneType.test(body);
         if (cloneType.error || cloneType.errors) {
-            this.throwBadRequest(cloneType.errors || cloneType.error);
+            throw new ErrorClass(Route.StatusCode.badRequest, cloneType.errors || cloneType.error, false);
         }
         return cloneType.value;
     }

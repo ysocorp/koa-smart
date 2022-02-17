@@ -1,5 +1,9 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const ErrorApp_1 = __importDefault(require("../utils/ErrorApp"));
 const __ = string => string;
 let options = {
     logAll: false,
@@ -33,7 +37,7 @@ async function handleError(ctx, next) {
             'SequelizeValidationError',
             'SequelizeUniqueConstraintError',
         ];
-        if (err.constructor.name === 'ErrorApp') {
+        if (err instanceof ErrorApp_1.default) {
             // expected error
             ctx.status = err.status;
             ctx.body = {};

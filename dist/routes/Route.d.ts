@@ -155,7 +155,7 @@ export default class Route {
     /**
      *@ignore
      */
-    _mlTestParams(ctx: any, body: any, type: any): any;
+    _mlTestParams(ctx: any, body: any, type: any, ErrorClass: any): any;
     /**
      * @desc retrieves the context's body, if the request has one.
      * @param ctx koa's context object
