@@ -15,6 +15,7 @@ export class TypeAny {
   _TypeError = { ...TypeError };
   _type = null;
   _error: string;
+  _errors = {};
   _hasError = false;
   _isValueNull = false;
   _codeError: number;
@@ -143,6 +144,35 @@ export class TypeAny {
       msg: this._error,
       code: this.codeError,
     };
+  }
+
+  get errors() {
+    return Object.keys(this._errors).length ? this._errors : null;
+  }
+
+  _addError(key, param) {
+    if (param.errors) {
+      const errors = param.errors;
+      for (const keyError in errors) {
+        if (errors.hasOwnProperty(keyError)) {
+          this._errors[`${key}.${keyError}`] = errors[keyError];
+        }
+      }
+    } else {
+      this._errors[key] = param.error;
+    }
+
+    const keys = Object.keys(this._errors);
+    if (keys.length) {
+      this._setError(
+        this._TypeError.INVALID_VALUE,
+        'add',
+        keys[0],
+        this._errors[keys[0]].msg
+      );
+    }
+    this._hasError = true;
+    return this._hasError;
   }
 
   get codeError() {

@@ -6,7 +6,6 @@ declare type UnroleResolveType<T extends [...any[]]> = T extends [infer Head, ..
 ] : [];
 export declare class TypeOneOf<T extends unknown[] = []> extends TypeAny {
     _types: Array<TypeAny>;
-    _errors: Array<string>;
     constructor(params?: {
         i18n: {};
     });

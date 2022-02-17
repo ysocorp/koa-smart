@@ -17,6 +17,7 @@ export declare class TypeAny {
     };
     _type: any;
     _error: string;
+    _errors: {};
     _hasError: boolean;
     _isValueNull: boolean;
     _codeError: number;
@@ -58,6 +59,8 @@ export declare class TypeAny {
         msg: string;
         code: number;
     };
+    get errors(): {};
+    _addError(key: any, param: any): boolean;
     get codeError(): number;
     get codeMsg(): string;
     default(val: any): this;

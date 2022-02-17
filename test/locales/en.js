@@ -1,4 +1,5 @@
 {
 	"Forbidden": "Forbidden",
-	"Not found": "Not found"
+	"Not found": "Not found",
+	"": ""
 }

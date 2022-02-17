@@ -17,6 +17,7 @@ class TypeAny {
     constructor({ type = null, i18n }) {
         this._TypeError = Object.assign({}, exports.TypeError);
         this._type = null;
+        this._errors = {};
         this._hasError = false;
         this._isValueNull = false;
         this._errorCodes = {
@@ -121,6 +122,28 @@ class TypeAny {
             msg: this._error,
             code: this.codeError,
         };
+    }
+    get errors() {
+        return Object.keys(this._errors).length ? this._errors : null;
+    }
+    _addError(key, param) {
+        if (param.errors) {
+            const errors = param.errors;
+            for (const keyError in errors) {
+                if (errors.hasOwnProperty(keyError)) {
+                    this._errors[`${key}.${keyError}`] = errors[keyError];
+                }
+            }
+        }
+        else {
+            this._errors[key] = param.error;
+        }
+        const keys = Object.keys(this._errors);
+        if (keys.length) {
+            this._setError(this._TypeError.INVALID_VALUE, 'add', keys[0], this._errors[keys[0]].msg);
+        }
+        this._hasError = true;
+        return this._hasError;
     }
     get codeError() {
         return this._codeError;

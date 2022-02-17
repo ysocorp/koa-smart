@@ -6,7 +6,6 @@ type UnroleResolveType<T extends [...any[]]> = T extends [infer Head, ...infer T
 
   export class TypeOneOf<T extends unknown[] = [] > extends TypeAny {
   _types: Array<TypeAny> = [];
-  _errors: Array<string> = [];
 
   constructor(params = { i18n: {} }) {
     super({ ...params, type: 'oneOf' });
@@ -44,9 +43,7 @@ type UnroleResolveType<T extends [...any[]]> = T extends [infer Head, ...infer T
       if (!isOneOk && !t._error) {
         isOneOk = true;
         this._value = t.value;
-      }
-      if (t._error) {
-        this._errors.push(t._error);
+        break;
       }
     }
     if (!isOneOk) {

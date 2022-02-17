@@ -110,7 +110,10 @@ export class TypeArray<T = any> extends TypeAny {
       let innerTypeError = null;
       for (let i = 0; i < this._value.length; i++) {
         this._innerType.test(this._value[i]);
-        if (this._innerType.error) {
+        if (this._innerType.errors) {
+          super._addError(i, this._innerType);
+          break;
+        } else if (this._innerType.error) {
           innerTypeError = this._innerType.error;
           break;
         }

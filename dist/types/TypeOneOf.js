@@ -6,7 +6,6 @@ class TypeOneOf extends TypeAny_1.TypeAny {
     constructor(params = { i18n: {} }) {
         super(Object.assign(Object.assign({}, params), { type: 'oneOf' }));
         this._types = [];
-        this._errors = [];
         this._getErrorInvalidValue = ({ _i18n }) => _i18n.__('Invalid type');
         this._getDescription = (prefix = 'It should be ') => {
             const msgs = [];
@@ -35,9 +34,7 @@ class TypeOneOf extends TypeAny_1.TypeAny {
             if (!isOneOk && !t._error) {
                 isOneOk = true;
                 this._value = t.value;
-            }
-            if (t._error) {
-                this._errors.push(t._error);
+                break;
             }
         }
         if (!isOneOk) {

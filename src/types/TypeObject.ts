@@ -3,7 +3,6 @@ import { ObjectTyping } from './TypeTyping';
 
 export class TypeObject<T = any> extends TypeAny {
   _schema = {};
-  _errors = {};
   _errorWithKey;
 
   constructor(params = { i18n: {} }) {
@@ -38,35 +37,6 @@ export class TypeObject<T = any> extends TypeAny {
   keys(object: ObjectTyping<T>) {
     this._schema = { ...this._schema, ...object };
     return this;
-  }
-
-  get errors() {
-    return Object.keys(this._errors).length ? this._errors : null;
-  }
-
-  _addError(key, param) {
-    if (param.errors) {
-      const errors = param.errors;
-      for (const keyError in errors) {
-        if (errors.hasOwnProperty(keyError)) {
-          this._errors[`${key}.${keyError}`] = errors[keyError];
-        }
-      }
-    } else {
-      this._errors[key] = param.error;
-    }
-
-    const keys = Object.keys(this._errors);
-    if (keys.length) {
-      super._setError(
-        this._TypeError.INVALID_VALUE,
-        'add',
-        keys[0],
-        this._errors[keys[0]].msg
-      );
-    }
-    this._hasError = true;
-    return this._hasError;
   }
 
   _test() {
