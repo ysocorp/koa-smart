@@ -4,3 +4,4 @@ package-lock.json
 yarn.lock
 apidoc/
 esdoc/
+*.DS_Store
