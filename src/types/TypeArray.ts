@@ -128,7 +128,11 @@ export class TypeArray<T = any> extends TypeAny {
 
   _transform() {
     if (this._tSplitBy != null && typeof this._value === 'string') {
-      this._value = this._value.split(this._tSplitBy);
+      if (this._value === '') {
+        this._value = [];
+      } else {
+        this._value = this._value.split(this._tSplitBy);
+      }
     }
     if (this._tSingle && !Array.isArray(this._value)) {
       this._value = castArray(this._value);
