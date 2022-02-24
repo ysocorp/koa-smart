@@ -31,6 +31,7 @@ export declare class TypeAny {
     _notNull: boolean;
     _default: any;
     _value: any;
+    _isIgnoreDoc: boolean;
     constructor({ type, i18n }: {
         type?: any;
         i18n: any;
@@ -63,8 +64,10 @@ export declare class TypeAny {
     _addError(key: any, param: any): boolean;
     get codeError(): number;
     get codeMsg(): string;
+    get isIgnoreDoc(): boolean;
     default(val: any): this;
     required(val?: boolean): this;
+    ignoreDoc(val?: boolean): this;
     allowNull(val?: boolean): this;
     test(value: any): void;
     _initValues(value: any): void;

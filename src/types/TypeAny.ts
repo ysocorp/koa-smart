@@ -42,6 +42,7 @@ export class TypeAny {
   _notNull = false;
   _default = undefined;
   _value: any = null;
+  _isIgnoreDoc = false;
 
   constructor({ type = null, i18n }) {
     this._type = type;
@@ -182,6 +183,10 @@ export class TypeAny {
     return this._error;
   }
 
+  get isIgnoreDoc() {
+    return this._isIgnoreDoc;
+  }
+
   default(val) {
     this._default = val;
     return this;
@@ -190,6 +195,11 @@ export class TypeAny {
   required(val = true) {
     this._isRequired = val;
     this.allowNull(!val);
+    return this;
+  }
+
+  ignoreDoc(val = true) {
+    this._isIgnoreDoc = val;
     return this;
   }
 

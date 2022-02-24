@@ -39,6 +39,7 @@ class TypeAny {
         this._notNull = false;
         this._default = undefined;
         this._value = null;
+        this._isIgnoreDoc = false;
         this._getErrorInvalidValue = ({ _i18n }, ...rest) => {
             if (rest || !rest) {
             }
@@ -151,6 +152,9 @@ class TypeAny {
     get codeMsg() {
         return this._error;
     }
+    get isIgnoreDoc() {
+        return this._isIgnoreDoc;
+    }
     default(val) {
         this._default = val;
         return this;
@@ -158,6 +162,10 @@ class TypeAny {
     required(val = true) {
         this._isRequired = val;
         this.allowNull(!val);
+        return this;
+    }
+    ignoreDoc(val = true) {
+        this._isIgnoreDoc = val;
         return this;
     }
     allowNull(val = true) {
